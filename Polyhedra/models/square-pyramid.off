@@ -1,0 +1,19 @@
+OFF
+# OFF file for a square-based pyramid.
+# NumVertices, NumFaces, NumEdges (NumEdges is ignored)
+5 5 8
+
+# Vertices.  Each line is the XYZ coordinates of one vertex.
+-1.0  -0.28284271247461901  1.0
+ 1.0  -0.28284271247461895  1.0
+ 0.0   1.13137084989847580  0.0
+-1.0  -0.28284271247461906 -1.0
+ 1.0  -0.28284271247461895 -1.0
+
+# Faces.  Each line has the following format:
+#   
+4 4 1 0 3     0   0 255
+3 1 4 2     255   0   0
+3 0 1 2     255 128   0
+3 3 0 2     255 255   0
+3 4 3 2     128 255   0
