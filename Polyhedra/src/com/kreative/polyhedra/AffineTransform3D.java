@@ -120,7 +120,22 @@ public class AffineTransform3D {
 		this.m23 = (flatmatrix.length > 11) ? flatmatrix[11] : 0;
 	}
 	
-	// TODO public AffineTransform3D concatenate(AffineTransform3D tx);
+	public AffineTransform3D concatenate(AffineTransform3D tx) {
+		return new AffineTransform3D(
+			this.m00 * tx.m00 + this.m01 * tx.m10 + this.m02 * tx.m20,
+			this.m10 * tx.m00 + this.m11 * tx.m10 + this.m12 * tx.m20,
+			this.m20 * tx.m00 + this.m21 * tx.m10 + this.m22 * tx.m20,
+			this.m00 * tx.m01 + this.m01 * tx.m11 + this.m02 * tx.m21,
+			this.m10 * tx.m01 + this.m11 * tx.m11 + this.m12 * tx.m21,
+			this.m20 * tx.m01 + this.m21 * tx.m11 + this.m22 * tx.m21,
+			this.m00 * tx.m02 + this.m01 * tx.m12 + this.m02 * tx.m22,
+			this.m10 * tx.m02 + this.m11 * tx.m12 + this.m12 * tx.m22,
+			this.m20 * tx.m02 + this.m21 * tx.m12 + this.m22 * tx.m22,
+			this.m00 * tx.m03 + this.m01 * tx.m13 + this.m02 * tx.m23 + this.m03,
+			this.m10 * tx.m03 + this.m11 * tx.m13 + this.m12 * tx.m23 + this.m13,
+			this.m20 * tx.m03 + this.m21 * tx.m13 + this.m22 * tx.m23 + this.m23
+		);
+	}
 	
 	public Point3D deltaTransform(double x, double y, double z) {
 		double x1 = m00 * x + m01 * y + m02 * z;
@@ -151,6 +166,24 @@ public class AffineTransform3D {
 			&& this.m21 == ((AffineTransform3D)obj).m21
 			&& this.m22 == ((AffineTransform3D)obj).m22
 			&& this.m23 == ((AffineTransform3D)obj).m23
+		);
+	}
+	
+	public boolean equals(AffineTransform3D tx, double epsilon) {
+		return (
+			(tx != null)
+			&& Math.abs(this.m00 - tx.m00) < epsilon
+			&& Math.abs(this.m01 - tx.m01) < epsilon
+			&& Math.abs(this.m02 - tx.m02) < epsilon
+			&& Math.abs(this.m03 - tx.m03) < epsilon
+			&& Math.abs(this.m10 - tx.m10) < epsilon
+			&& Math.abs(this.m11 - tx.m11) < epsilon
+			&& Math.abs(this.m12 - tx.m12) < epsilon
+			&& Math.abs(this.m13 - tx.m13) < epsilon
+			&& Math.abs(this.m20 - tx.m20) < epsilon
+			&& Math.abs(this.m21 - tx.m21) < epsilon
+			&& Math.abs(this.m22 - tx.m22) < epsilon
+			&& Math.abs(this.m23 - tx.m23) < epsilon
 		);
 	}
 	
@@ -279,19 +312,60 @@ public class AffineTransform3D {
 		);
 	}
 	
-	// TODO public AffineTransform3D preConcatenate(AffineTransform3D tx);
+	public boolean isIdentity(double epsilon) {
+		return equals(IDENTITY, epsilon);
+	}
 	
-	// TODO public AffineTransform3D quadrantRotateX(int numQuadrants);
-	// TODO public AffineTransform3D quadrantRotateY(int numQuadrants);
-	// TODO public AffineTransform3D quadrantRotateZ(int numQuadrants);
+	public AffineTransform3D preConcatenate(AffineTransform3D tx) {
+		return new AffineTransform3D(
+			tx.m00 * this.m00 + tx.m01 * this.m10 + tx.m02 * this.m20,
+			tx.m10 * this.m00 + tx.m11 * this.m10 + tx.m12 * this.m20,
+			tx.m20 * this.m00 + tx.m21 * this.m10 + tx.m22 * this.m20,
+			tx.m00 * this.m01 + tx.m01 * this.m11 + tx.m02 * this.m21,
+			tx.m10 * this.m01 + tx.m11 * this.m11 + tx.m12 * this.m21,
+			tx.m20 * this.m01 + tx.m21 * this.m11 + tx.m22 * this.m21,
+			tx.m00 * this.m02 + tx.m01 * this.m12 + tx.m02 * this.m22,
+			tx.m10 * this.m02 + tx.m11 * this.m12 + tx.m12 * this.m22,
+			tx.m20 * this.m02 + tx.m21 * this.m12 + tx.m22 * this.m22,
+			tx.m00 * this.m03 + tx.m01 * this.m13 + tx.m02 * this.m23 + tx.m03,
+			tx.m10 * this.m03 + tx.m11 * this.m13 + tx.m12 * this.m23 + tx.m13,
+			tx.m20 * this.m03 + tx.m21 * this.m13 + tx.m22 * this.m23 + tx.m23
+		);
+	}
 	
-	// TODO public AffineTransform3D rotateX(double theta);
-	// TODO public AffineTransform3D rotateY(double theta);
-	// TODO public AffineTransform3D rotateZ(double theta);
+	public AffineTransform3D quadrantRotateX(int numQuadrants) {
+		return concatenate(getQuadrantRotateXInstance(numQuadrants));
+	}
 	
-	// TODO public AffineTransform3D scale(double sx, double sy, double sz);
+	public AffineTransform3D quadrantRotateY(int numQuadrants) {
+		return concatenate(getQuadrantRotateYInstance(numQuadrants));
+	}
 	
-	// TODO public AffineTransform3D shear(double shxy, double shxz, double shyx, double shyz, double shzx, double shzy);
+	public AffineTransform3D quadrantRotateZ(int numQuadrants) {
+		return concatenate(getQuadrantRotateZInstance(numQuadrants));
+	}
+	
+	public AffineTransform3D rotateX(double theta) {
+		return concatenate(getRotateXInstance(theta));
+	}
+	
+	public AffineTransform3D rotateY(double theta) {
+		return concatenate(getRotateYInstance(theta));
+	}
+	
+	public AffineTransform3D rotateZ(double theta) {
+		return concatenate(getRotateZInstance(theta));
+	}
+	
+	public AffineTransform3D scale(double sx, double sy, double sz) {
+		return concatenate(getScaleInstance(sx, sy, sz));
+	}
+	
+	public AffineTransform3D shear(
+		double shxy, double shxz, double shyx, double shyz, double shzx, double shzy
+	) {
+		return concatenate(getShearInstance(shxy, shxz, shyx, shyz, shzx, shzy));
+	}
 	
 	public String toString(String prefix, String delim, String suffix) {
 		return (
@@ -308,7 +382,9 @@ public class AffineTransform3D {
 		return toString("(", ", ", ")");
 	}
 	
-	// TODO public AffineTransform3D translate(double tx, double ty, double tz);
+	public AffineTransform3D translate(double tx, double ty, double tz) {
+		return concatenate(getTranslateInstance(tx, ty, tz));
+	}
 	
 	public Point3D transform(double x, double y, double z) {
 		double x1 = m00 * x + m01 * y + m02 * z + m03;
