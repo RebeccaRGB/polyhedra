@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import javax.media.j3d.Alpha;
 import javax.media.j3d.AmbientLight;
+import javax.media.j3d.Appearance;
 import javax.media.j3d.BoundingSphere;
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.Canvas3D;
@@ -24,11 +25,23 @@ import com.kreative.polyhedra.Polyhedron;
 import com.sun.j3d.utils.behaviors.mouse.MouseRotate;
 import com.sun.j3d.utils.behaviors.mouse.MouseTranslate;
 import com.sun.j3d.utils.behaviors.mouse.MouseWheelZoom;
-import com.sun.j3d.utils.geometry.ColorCube;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 
 public class Viewer extends JFrame {
 	private static final long serialVersionUID = 1L;
+	
+	private Polyhedron polyhedron;
+	private boolean vertVisible = true;
+	private boolean edgeVisible = true;
+	private boolean faceVisible = true;
+	private float vertRadius = 0.10f;
+	private float edgeRadius = 0.05f;
+	private Appearance vertAppearance = null;
+	private Appearance edgeAppearance = null;
+	private Appearance faceAppearance = null;
+	private Node vertNode;
+	private Node edgeNode;
+	private Node faceNode;
 	
 	private final Group geometryGroup;
 	private final TransformGroup scaleGroup;
@@ -36,7 +49,7 @@ public class Viewer extends JFrame {
 	private final TransformGroup manualRotateGroup;
 	private final TransformGroup panGroup;
 	
-	public Viewer(Node... nodes) {
+	public Viewer(Polyhedron p) {
 		JPanel content = new JPanel(new BorderLayout());
 		GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
 		Canvas3D canvas = new Canvas3D(config);
@@ -48,7 +61,7 @@ public class Viewer extends JFrame {
 		geometryGroup.setCapability(Group.ALLOW_CHILDREN_EXTEND);
 		geometryGroup.setCapability(Group.ALLOW_CHILDREN_READ);
 		geometryGroup.setCapability(Group.ALLOW_CHILDREN_WRITE);
-		for (Node node : nodes) geometryGroup.addChild(node);
+		setPolyhedron(p);
 		
 		autoRotateGroup = new TransformGroup();
 		autoRotateGroup.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
@@ -107,12 +120,41 @@ public class Viewer extends JFrame {
 		setLocationRelativeTo(null);
 	}
 	
-	public Viewer(Polyhedron p) {
-		this(
-			Convert.vertices(p, 0.1f, null),
-			Convert.edges(p, 0.05f, null),
-			Convert.faces(p, null)
-		);
+	public Polyhedron getPolyhedron() { return polyhedron; }
+	public boolean getVerticesVisible() { return vertVisible; }
+	public boolean getEdgesVisible() { return edgeVisible; }
+	public boolean getFacesVisible() { return faceVisible; }
+	public float getVertexRadius() { return vertRadius; }
+	public float getEdgeRadius() { return edgeRadius; }
+	public Appearance getVertexAppearance() { return vertAppearance; }
+	public Appearance getEdgeAppearance() { return edgeAppearance; }
+	public Appearance getFaceAppearance() { return faceAppearance; }
+	
+	public void setPolyhedron(Polyhedron p) { polyhedron = p; build(true, true, true); }
+	public void setVerticesVisible (boolean v) { vertVisible = v; build(false, false, false); }
+	public void setEdgesVisible(boolean v) { edgeVisible = v; build(false, false, false); }
+	public void setFacesVisible(boolean v) { faceVisible = v; build(false, false, false); }
+	public void setVertexRadius(float r) { vertRadius = r; build(true, false, false); }
+	public void setEdgeRadius(float r) { edgeRadius = r; build(false, true, false); }
+	public void setVertexAppearance(Appearance a) { vertAppearance = a; build(true, false, false); }
+	public void setEdgeAppearance(Appearance a) { edgeAppearance = a; build(false, true, false); }
+	public void setFaceAppearance(Appearance a) { faceAppearance = a; build(false, false, true); }
+	
+	private void build(boolean vertices, boolean edges, boolean faces) {
+		if (polyhedron == null) {
+			vertNode = null;
+			edgeNode = null;
+			faceNode = null;
+			geometryGroup.removeAllChildren();
+		} else {
+			if (vertices) vertNode = Convert.vertices(polyhedron, vertRadius, vertAppearance);
+			if (edges) edgeNode = Convert.edges(polyhedron, edgeRadius, edgeAppearance);
+			if (faces) faceNode = Convert.faces(polyhedron, faceAppearance);
+			geometryGroup.removeAllChildren();
+			if (vertVisible) geometryGroup.addChild(vertNode);
+			if (edgeVisible) geometryGroup.addChild(edgeNode);
+			if (faceVisible) geometryGroup.addChild(faceNode);
+		}
 	}
 	
 	public static void main(String[] args) {
