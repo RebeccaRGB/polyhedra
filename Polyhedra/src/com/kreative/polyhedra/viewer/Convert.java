@@ -1,13 +1,55 @@
 package com.kreative.polyhedra.viewer;
 
+import javax.media.j3d.Appearance;
+import javax.media.j3d.Group;
 import javax.media.j3d.Shape3D;
+import javax.media.j3d.Transform3D;
+import javax.media.j3d.TransformGroup;
+import javax.vecmath.AxisAngle4d;
+import javax.vecmath.Vector3d;
+import com.kreative.polyhedra.Point3D;
 import com.kreative.polyhedra.Polyhedron;
+import com.sun.j3d.utils.geometry.Cylinder;
 import com.sun.j3d.utils.geometry.GeometryInfo;
 import com.sun.j3d.utils.geometry.NormalGenerator;
+import com.sun.j3d.utils.geometry.Sphere;
 import com.sun.j3d.utils.geometry.Stripifier;
 
 public class Convert {
-	public static Shape3D faces(Polyhedron p) {
+	public static Group vertices(Polyhedron p, float r, Appearance a) {
+		Group g = new Group();
+		for (Polyhedron.Vertex v : p.vertices) {
+			Point3D pt = v.point;
+			Vector3d vec = new Vector3d(pt.getX(), pt.getY(), pt.getZ());
+			Transform3D tx = new Transform3D(); tx.setTranslation(vec);
+			TransformGroup tg = new TransformGroup(tx);
+			tg.addChild(new Sphere(r, a));
+			g.addChild(tg);
+		}
+		return g;
+	}
+	
+	public static Group edges(Polyhedron p, float r, Appearance a) {
+		Group g = new Group();
+		Vector3d y = new Vector3d(0, 1, 0);
+		for (Polyhedron.Edge e : p.edges) {
+			float h = (float)e.vertex1.point.distance(e.vertex2.point);
+			Point3D m = e.vertex1.point.midpoint(e.vertex2.point);
+			Vector3d t = new Vector3d(m.getX(), m.getY(), m.getZ());
+			Point3D d = e.vertex2.point.subtract(e.vertex1.point);
+			Vector3d v = new Vector3d(d.getX(), d.getY(), d.getZ()); v.normalize();
+			Vector3d x = new Vector3d(); x.cross(y, v);
+			AxisAngle4d aa = new AxisAngle4d(); aa.set(x, Math.acos(y.dot(v)));
+			Transform3D ta = new Transform3D(); ta.set(aa);
+			Transform3D tx = new Transform3D(); tx.setTranslation(t); tx.mul(ta);
+			TransformGroup tg = new TransformGroup(tx);
+			tg.addChild(new Cylinder(r, h, a));
+			g.addChild(tg);
+		}
+		return g;
+	}
+	
+	public static Shape3D faces(Polyhedron p, Appearance a) {
 		int vertexCount = p.vertices.size();
 		double[] coords = new double[vertexCount * 3];
 		{
@@ -60,6 +102,6 @@ public class Convert {
 		gi.setContourCounts(contourCounts);
 		new NormalGenerator().generateNormals(gi);
 		new Stripifier().stripify(gi);
-		return new Shape3D(gi.getGeometryArray());
+		return new Shape3D(gi.getGeometryArray(), a);
 	}
 }
