@@ -1,6 +1,6 @@
 package com.kreative.polyhedra;
 
-public abstract class PolyhedronOp {
+public abstract class PolyhedronOp extends PolyhedronUtils {
 	public abstract Polyhedron op(Polyhedron seed);
 	
 	protected static void main(PolyhedronOp op) {

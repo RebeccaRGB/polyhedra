@@ -109,7 +109,7 @@ public class Polyhedron {
 		this.faces = Collections.unmodifiableList(tmpFaces);
 	}
 	
-	public Polyhedron(Polyhedron seed, AffineTransform3D tx) {
+	public Polyhedron(Polyhedron seed, PointTransform3D tx) {
 		List<Vertex> tmpVertices = new ArrayList<Vertex>();
 		List<Edge> tmpEdges = new ArrayList<Edge>();
 		List<Face> tmpFaces = new ArrayList<Face>();

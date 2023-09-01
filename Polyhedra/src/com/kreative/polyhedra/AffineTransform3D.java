@@ -3,7 +3,7 @@ package com.kreative.polyhedra;
 import java.awt.geom.NoninvertibleTransformException;
 import java.util.Arrays;
 
-public class AffineTransform3D {
+public class AffineTransform3D extends PointTransform3D {
 	public static final AffineTransform3D IDENTITY = new AffineTransform3D(1,0,0,0,1,0,0,0,1,0,0,0);
 	
 	private static int qsin(int numQuadrants) {
