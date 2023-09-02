@@ -18,11 +18,11 @@ bin: src
 ifeq ($(origin JAVACFLAGS), undefined)
 	$(eval JAVACFLAGS = $(shell dep/minJavaVerOpts))
 endif
-	javac $(JAVACFLAGS) -sourcepath src $(SRCFILES) -d bin
+	javac $(JAVACFLAGS) -classpath dep/j3dcore.jar:dep/j3dutils.jar:dep/quickhull3d.jar:dep/vecmath.jar -sourcepath src $(SRCFILES) -d bin
 
 doc: src
 	mkdir -p doc
-	javadoc $(JAVADOCFLAGS) -sourcepath src $(PACKAGES) -d doc
+	javadoc $(JAVADOCFLAGS) -classpath dep/j3dcore.jar:dep/j3dutils.jar:dep/quickhull3d.jar:dep/vecmath.jar -sourcepath src $(PACKAGES) -d doc
 
 polyhedra.jar: bin
 	export COPYFILE_DISABLE=true

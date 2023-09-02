@@ -8,7 +8,15 @@ public class Seed extends PolyhedronOp {
 		return seed;
 	}
 	
+	public static Seed parse(String[] args) {
+		if (args.length > 0) {
+			System.err.println("This operation has no options.");
+			return null;
+		}
+		return new Seed();
+	}
+	
 	public static void main(String[] args) {
-		main(new Seed());
+		main(parse(args));
 	}
 }

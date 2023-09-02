@@ -1,2 +1,4 @@
 Manifest-Version: 1.0
 Created-By: 1.0 (Kreative Software)
+Main-Class: com.kreative.polyhedra.Main
+Class-Path: j3dcore.jar j3dutils.jar quickhull3d.jar vecmath.jar dep/j3dcore.jar dep/j3dutils.jar dep/quickhull3d.jar dep/vecmath.jar

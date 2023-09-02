@@ -6,5 +6,6 @@
 	<classpathentry kind="lib" path="dep/j3dutils.jar"/>
 	<classpathentry kind="lib" path="dep/linux-amd64/lib_j3dcore-ogl_so.jar"/>
 	<classpathentry kind="lib" path="dep/vecmath.jar"/>
+	<classpathentry kind="lib" path="dep/quickhull3d.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

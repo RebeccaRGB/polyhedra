@@ -26,7 +26,15 @@ public class Reflect extends PolyhedronOp {
 		return new Polyhedron(vertices, faces, faceColors);
 	}
 	
+	public static Reflect parse(String[] args) {
+		if (args.length > 0) {
+			System.err.println("This operation has no options.");
+			return null;
+		}
+		return new Reflect();
+	}
+	
 	public static void main(String[] args) {
-		main(new Reflect());
+		main(parse(args));
 	}
 }

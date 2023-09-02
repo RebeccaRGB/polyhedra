@@ -30,12 +30,30 @@ public class Polygon extends PolyhedronGen {
 		public abstract double fromRadius(double radius, int n);
 	}
 	
-	public static void createVertices(List<Point3D> points, int n, double r, double z) {
+	public static void createVertices(List<Point3D> points, int n, double r, double ph, double z) {
 		for (int i = 0; i < n; i++) {
-			double a = i * 2 * Math.PI / n;
+			double a = (i + ph) * 2 * Math.PI / n;
 			double x = r * Math.cos(a);
 			double y = r * Math.sin(a);
 			points.add(new Point3D(x, y, z));
+		}
+	}
+	
+	public static void createFaces(
+		List<List<Integer>> faces, List<Color> faceColors,
+		int n, int m, int firstIndex, boolean reverse, Color color
+	) {
+		List<Integer> face = new ArrayList<Integer>(n);
+		for (int index = 0, i = 0; i < n; i++) {
+			face.add(firstIndex + index);
+			index = (index + m) % n;
+			if (face.contains(firstIndex + index)) {
+				if (reverse) Collections.reverse(face);
+				faces.add(face);
+				faceColors.add(color);
+				face = new ArrayList<Integer>(n);
+				index = (index + 1) % n;
+			}
 		}
 	}
 	
@@ -60,33 +78,13 @@ public class Polygon extends PolyhedronGen {
 		List<Point3D> vertices = new ArrayList<Point3D>(n);
 		List<List<Integer>> faces = new ArrayList<List<Integer>>(2);
 		List<Color> faceColors = new ArrayList<Color>(2);
-		
-		createVertices(vertices, n, r, z);
-		
-		List<Integer> face = new ArrayList<Integer>(n);
-		for (int index = 0, i = 0; i < n; i++) {
-			face.add(index);
-			index = (index + m) % n;
-			if (face.contains(index)) {
-				faces.add(face);
-				faceColors.add(c);
-				face = new ArrayList<Integer>(n);
-				index = (index + 1) % n;
-			}
-		}
-		
-		for (int i = 0, j = faces.size(); i < j; i++) {
-			face = new ArrayList<Integer>(n);
-			face.addAll(faces.get(i));
-			Collections.reverse(face);
-			faces.add(face);
-			faceColors.add(c);
-		}
-		
+		createVertices(vertices, n, r, 0, z);
+		createFaces(faces, faceColors, n, m, 0, false, c);
+		createFaces(faces, faceColors, n, m, 0, true, c);
 		return new Polyhedron(vertices, faces, faceColors);
 	}
 	
-	public static void main(String[] args) {
+	public static Polygon parse(String[] args) {
 		int n = 3;
 		int m = 1;
 		SizeSpecifier spec = SizeSpecifier.RADIUS;
@@ -126,9 +124,13 @@ public class Polygon extends PolyhedronGen {
 				System.err.println("  -a <real>   apothem");
 				System.err.println("  -z <real>   z-coordinate");
 				System.err.println("  -c <color>  color");
-				return;
+				return null;
 			}
 		}
-		main(new Polygon(n, m, spec.toRadius(size, n), z, c));
+		return new Polygon(n, m, spec.toRadius(size, n), z, c);
+	}
+	
+	public static void main(String[] args) {
+		main(parse(args));
 	}
 }

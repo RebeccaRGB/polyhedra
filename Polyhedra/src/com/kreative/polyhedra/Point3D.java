@@ -56,6 +56,44 @@ public class Point3D {
 		return p1.subtract(this).angleRad(p2.subtract(this));
 	}
 	
+	public static Point3D average(Point3D... points) {
+		return average(Arrays.asList(points));
+	}
+	
+	public static Point3D average(Iterable<Point3D> points) {
+		double x = 0;
+		double y = 0;
+		double z = 0;
+		int count = 0;
+		for (Point3D point : points) {
+			if (point != null) {
+				x += point.x;
+				y += point.y;
+				z += point.z;
+				count++;
+			}
+		}
+		if (count == 0) return ZERO;
+		return new Point3D(x / count, y / count, z / count);
+	}
+	
+	public static double averageMagnitude(Point3D... points) {
+		return averageMagnitude(Arrays.asList(points));
+	}
+	
+	public static double averageMagnitude(Iterable<Point3D> points) {
+		double m = 0;
+		int count = 0;
+		for (Point3D point : points) {
+			if (point != null) {
+				m += point.magnitude();
+				count++;
+			}
+		}
+		if (count == 0) return 0;
+		return m / count;
+	}
+	
 	public Point3D crossProduct(double x, double y, double z) {
 		return new Point3D(
 			this.y * z - this.z * y,
