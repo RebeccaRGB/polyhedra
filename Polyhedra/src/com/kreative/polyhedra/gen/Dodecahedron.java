@@ -11,7 +11,7 @@ public class Dodecahedron extends PolyhedronGen {
 	private static final double PHI1 = 0.6180339887498948482; // 1/phi, phi-1
 	private static final double PHI2 = PHI1 * 2; // 2/phi, 2*phi-2, sqrt(5)-1
 	private static final double PHI3 = 1.3763819204711735382; // phi/sqrt(3-phi)
-	private static final double PHI5 = 1.9021130325903071442; // sqrt(5+2*sqrt(5))/phi
+	private static final double PHI5 = 1.9021130325903071442; // sqrt(phi*phi+1)
 	private static final double R3 = Math.sqrt(3);
 	private static final double DR3 = Math.sqrt(3) * 2;
 	

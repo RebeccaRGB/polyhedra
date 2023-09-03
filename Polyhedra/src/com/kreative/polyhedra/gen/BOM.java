@@ -20,6 +20,7 @@ public class BOM {
 			Cube.class,
 			Dodecahedron.class,
 			Frustum.class,
+			Icosahedron.class,
 			Octahedron.class,
 			Polygon.class,
 			Prism.class,
