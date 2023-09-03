@@ -26,6 +26,7 @@ import com.sun.j3d.utils.universe.SimpleUniverse;
 
 public class ViewerPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
+	private static final double DEFAULT_ROTX = Math.PI / 6;
 	private static final double DEFAULT_ZOOM = 0.4;
 	
 	private Polyhedron polyhedron;
@@ -72,6 +73,9 @@ public class ViewerPanel extends JPanel {
 		manualRotateGroup.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
 		manualRotateGroup.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
 		manualRotateGroup.addChild(autoRotateGroup);
+		Transform3D rotate = new Transform3D();
+		rotate.rotX(DEFAULT_ROTX);
+		manualRotateGroup.setTransform(rotate);
 		MouseRotate rotateBehavior = new MouseRotate(canvas);
 		rotateBehavior.setSchedulingBounds(new BoundingSphere());
 		rotateBehavior.setTransformGroup(manualRotateGroup);

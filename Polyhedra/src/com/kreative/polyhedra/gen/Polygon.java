@@ -30,12 +30,21 @@ public class Polygon extends PolyhedronGen {
 		public abstract double fromRadius(double radius, int n);
 	}
 	
-	public static void createVertices(List<Point3D> points, int n, double r, double ph, double z) {
+	public static enum Axis {
+		X {public Point3D createVertex(double x, double y, double z) {return new Point3D(z,x,y);}},
+		Y {public Point3D createVertex(double x, double y, double z) {return new Point3D(y,z,x);}},
+		Z {public Point3D createVertex(double x, double y, double z) {return new Point3D(x,y,z);}};
+		public abstract Point3D createVertex(double x, double y, double z);
+	}
+	
+	public static void createVertices(
+		List<Point3D> points, int n, double r, double ph, Axis axis, double z
+	) {
 		for (int i = 0; i < n; i++) {
 			double a = (i + ph) * 2 * Math.PI / n;
 			double x = r * Math.cos(a);
 			double y = r * Math.sin(a);
-			points.add(new Point3D(x, y, z));
+			points.add(axis.createVertex(x, y, z));
 		}
 	}
 	
@@ -60,16 +69,18 @@ public class Polygon extends PolyhedronGen {
 	private final int n;
 	private final int m;
 	private final double r;
+	private final Axis axis;
 	private final double z;
 	private final Color c;
 	
-	public Polygon(int n, double r, Color c) { this(n, 1, r, 0, c); }
-	public Polygon(int n, int m, double r, Color c) { this(n, m, r, 0, c); }
-	public Polygon(int n, double r, double z, Color c) { this(n, 1, r, z, c); }
-	public Polygon(int n, int m, double r, double z, Color c) {
+	public Polygon(int n, double r, Axis axis, Color c) { this(n, 1, r, axis, 0, c); }
+	public Polygon(int n, int m, double r, Axis axis, Color c) { this(n, m, r, axis, 0, c); }
+	public Polygon(int n, double r, Axis axis, double z, Color c) { this(n, 1, r, axis, z, c); }
+	public Polygon(int n, int m, double r, Axis axis, double z, Color c) {
 		this.n = n;
 		this.m = m;
 		this.r = r;
+		this.axis = axis;
 		this.z = z;
 		this.c = c;
 	}
@@ -78,7 +89,7 @@ public class Polygon extends PolyhedronGen {
 		List<Point3D> vertices = new ArrayList<Point3D>(n);
 		List<List<Integer>> faces = new ArrayList<List<Integer>>(2);
 		List<Color> faceColors = new ArrayList<Color>(2);
-		createVertices(vertices, n, r, 0, z);
+		createVertices(vertices, n, r, 0, axis, z);
 		createFaces(faces, faceColors, n, m, 0, false, c);
 		createFaces(faces, faceColors, n, m, 0, true, c);
 		return new Polyhedron(vertices, faces, faceColors);
@@ -89,6 +100,7 @@ public class Polygon extends PolyhedronGen {
 		int m = 1;
 		SizeSpecifier spec = SizeSpecifier.RADIUS;
 		double size = 1;
+		Axis axis = Axis.Y;
 		double z = 0;
 		Color c = Color.GRAY;
 		int argi = 0;
@@ -110,7 +122,14 @@ public class Polygon extends PolyhedronGen {
 			} else if (arg.equalsIgnoreCase("-a") && argi < args.length) {
 				spec = SizeSpecifier.APOTHEM;
 				size = parseDouble(args[argi++], size);
+			} else if (arg.equalsIgnoreCase("-x") && argi < args.length) {
+				axis = Axis.X;
+				z = parseDouble(args[argi++], z);
+			} else if (arg.equalsIgnoreCase("-y") && argi < args.length) {
+				axis = Axis.Y;
+				z = parseDouble(args[argi++], z);
 			} else if (arg.equalsIgnoreCase("-z") && argi < args.length) {
+				axis = Axis.Z;
 				z = parseDouble(args[argi++], z);
 			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 				c = parseColor(args[argi++], c);
@@ -122,12 +141,14 @@ public class Polygon extends PolyhedronGen {
 				System.err.println("  -d <real>   diameter");
 				System.err.println("  -s <real>   side length");
 				System.err.println("  -a <real>   apothem");
+				System.err.println("  -x <real>   x-coordinate");
+				System.err.println("  -y <real>   y-coordinate");
 				System.err.println("  -z <real>   z-coordinate");
 				System.err.println("  -c <color>  color");
 				return null;
 			}
 		}
-		return new Polygon(n, m, spec.toRadius(size, n), z, c);
+		return new Polygon(n, m, spec.toRadius(size, n), axis, z, c);
 	}
 	
 	public static void main(String[] args) {

@@ -10,40 +10,31 @@ import com.kreative.polyhedra.PolyhedronGen;
 import com.kreative.polyhedra.gen.Polygon.Axis;
 import com.kreative.polyhedra.gen.Polygon.SizeSpecifier;
 
-public class Prism extends PolyhedronGen {
+public class Frustum extends PolyhedronGen {
 	private final int n;
 	private final int m;
+	private final double R;
 	private final double r;
 	private final Axis axis;
 	private final double h;
 	private final Color bc;
 	private final Color jc;
 	
-	public Prism(int n, double r, Axis axis, Color c) {
-		this(n, 1, r, axis, c, c);
+	public Frustum(int n, double R, double r, Axis axis, double h, Color c) {
+		this(n, 1, R, r, axis, h, c, c);
 	}
-	public Prism(int n, int m, double r, Axis axis, Color c) {
-		this(n, m, r, axis, c, c);
+	public Frustum(int n, int m, double R, double r, Axis axis, double h, Color c) {
+		this(n, m, R, r, axis, h, c, c);
 	}
-	public Prism(int n, double r, Axis axis, Color base, Color join) {
-		this(n, 1, r, axis, base, join);
+	public Frustum(int n, double R, double r, Axis axis, double h, Color base, Color join) {
+		this(n, 1, R, r, axis, h, base, join);
 	}
-	public Prism(int n, int m, double r, Axis axis, Color base, Color join) {
-		this(n, m, r, axis, SizeSpecifier.SIDE_LENGTH.fromRadius(r, n), base, join);
-	}
-	
-	public Prism(int n, double r, Axis axis, double h, Color c) {
-		this(n, 1, r, axis, h, c, c);
-	}
-	public Prism(int n, int m, double r, Axis axis, double h, Color c) {
-		this(n, m, r, axis, h, c, c);
-	}
-	public Prism(int n, double r, Axis axis, double h, Color base, Color join) {
-		this(n, 1, r, axis, h, base, join);
-	}
-	public Prism(int n, int m, double r, Axis axis, double h, Color base, Color join) {
+	public Frustum(
+		int n, int m, double R, double r, Axis axis, double h, Color base, Color join
+	) {
 		this.n = n;
 		this.m = m;
+		this.R = R;
 		this.r = r;
 		this.axis = axis;
 		this.h = h;
@@ -56,7 +47,7 @@ public class Prism extends PolyhedronGen {
 		List<List<Integer>> faces = new ArrayList<List<Integer>>(2);
 		List<Color> faceColors = new ArrayList<Color>(2);
 		Polygon.createVertices(vertices, n, r, 0, axis, h/2);
-		Polygon.createVertices(vertices, n, r, 0, axis, -h/2);
+		Polygon.createVertices(vertices, n, R, 0, axis, -h/2);
 		Polygon.createFaces(faces, faceColors, n, m, 0, false, bc);
 		Polygon.createFaces(faces, faceColors, n, m, n, true, bc);
 		for (int i = 0; i < n; i++) {
@@ -67,13 +58,15 @@ public class Prism extends PolyhedronGen {
 		return new Polyhedron(vertices, faces, faceColors);
 	}
 	
-	public static Prism parse(String[] args) {
+	public static Frustum parse(String[] args) {
 		int n = 3;
 		int m = 1;
+		SizeSpecifier Spec = SizeSpecifier.RADIUS;
 		SizeSpecifier spec = SizeSpecifier.RADIUS;
-		double size = 1;
+		double Size = 1;
+		double size = 0.5;
 		Axis axis = Axis.Y;
-		Double h = null;
+		double h = 1;
 		Color c = Color.GRAY;
 		Color bc = null;
 		Color jc = null;
@@ -84,16 +77,28 @@ public class Prism extends PolyhedronGen {
 				if ((n = Math.abs(parseInt(args[argi++], n))) < 3) n = 3;
 			} else if (arg.equalsIgnoreCase("-m") && argi < args.length) {
 				if ((m = Math.abs(parseInt(args[argi++], m))) < 1) m = 1;
-			} else if (arg.equalsIgnoreCase("-r") && argi < args.length) {
+			} else if (arg.equals("-R") && argi < args.length) {
+				Spec = SizeSpecifier.RADIUS;
+				Size = parseDouble(args[argi++], Size);
+			} else if (arg.equals("-D") && argi < args.length) {
+				Spec = SizeSpecifier.DIAMETER;
+				Size = parseDouble(args[argi++], Size);
+			} else if (arg.equals("-S") && argi < args.length) {
+				Spec = SizeSpecifier.SIDE_LENGTH;
+				Size = parseDouble(args[argi++], Size);
+			} else if (arg.equals("-A") && argi < args.length) {
+				Spec = SizeSpecifier.APOTHEM;
+				Size = parseDouble(args[argi++], Size);
+			} else if (arg.equals("-r") && argi < args.length) {
 				spec = SizeSpecifier.RADIUS;
 				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-d") && argi < args.length) {
+			} else if (arg.equals("-d") && argi < args.length) {
 				spec = SizeSpecifier.DIAMETER;
 				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-s") && argi < args.length) {
+			} else if (arg.equals("-s") && argi < args.length) {
 				spec = SizeSpecifier.SIDE_LENGTH;
 				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-a") && argi < args.length) {
+			} else if (arg.equals("-a") && argi < args.length) {
 				spec = SizeSpecifier.APOTHEM;
 				size = parseDouble(args[argi++], size);
 			} else if (arg.equalsIgnoreCase("-x")) {
@@ -103,7 +108,7 @@ public class Prism extends PolyhedronGen {
 			} else if (arg.equalsIgnoreCase("-z")) {
 				axis = Axis.Z;
 			} else if (arg.equalsIgnoreCase("-h") && argi < args.length) {
-				h = parseDouble(args[argi++], ((h == null) ? 1 : h.intValue()));
+				h = parseDouble(args[argi++], h);
 			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 				c = parseColor(args[argi++], c);
 			} else if (arg.equalsIgnoreCase("-b") && argi < args.length) {
@@ -114,10 +119,14 @@ public class Prism extends PolyhedronGen {
 				System.err.println("Options:");
 				System.err.println("  -n <int>    sides");
 				System.err.println("  -m <int>    stellation");
-				System.err.println("  -r <real>   radius");
-				System.err.println("  -d <real>   diameter");
-				System.err.println("  -s <real>   side length");
-				System.err.println("  -a <real>   apothem");
+				System.err.println("  -R <real>   radius of bottom face");
+				System.err.println("  -D <real>   diameter of bottom face");
+				System.err.println("  -S <real>   side length of bottom face");
+				System.err.println("  -A <real>   apothem of bottom face");
+				System.err.println("  -r <real>   radius of top face");
+				System.err.println("  -d <real>   diameter of top face");
+				System.err.println("  -s <real>   side length of top face");
+				System.err.println("  -a <real>   apothem of top face");
 				System.err.println("  -x          align central axis to X axis");
 				System.err.println("  -y          align central axis to Y axis");
 				System.err.println("  -z          align central axis to Z axis");
@@ -128,9 +137,11 @@ public class Prism extends PolyhedronGen {
 				return null;
 			}
 		}
+		double R = Spec.toRadius(Size, n);
 		double r = spec.toRadius(size, n);
-		if (h == null) h = SizeSpecifier.SIDE_LENGTH.fromRadius(r, n);
-		return new Prism(n, m, r, axis, h, ((bc != null) ? bc : c), ((jc != null) ? jc : c));
+		return new Frustum(
+			n, m, R, r, axis, h, ((bc != null) ? bc : c), ((jc != null) ? jc : c)
+		);
 	}
 	
 	public static void main(String[] args) {

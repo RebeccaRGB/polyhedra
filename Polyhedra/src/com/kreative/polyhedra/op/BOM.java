@@ -12,8 +12,8 @@ public class BOM {
 		Arrays.asList(
 			Chain.class,
 			ConvexHull.class,
-			Reflect.class,
-			Seed.class
+			Identity.class,
+			Reflect.class
 		)
 	);
 	

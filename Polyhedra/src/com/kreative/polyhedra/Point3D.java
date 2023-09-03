@@ -179,12 +179,86 @@ public class Point3D {
 		return (x * x + y * y + z * z);
 	}
 	
+	public static Point3D max(Point3D... points) {
+		return max(Arrays.asList(points));
+	}
+	
+	public static Point3D max(Iterable<Point3D> points) {
+		double x = Double.NaN;
+		double y = Double.NaN;
+		double z = Double.NaN;
+		boolean first = true;
+		for (Point3D point : points) {
+			if (point != null) {
+				if (first || point.x > x) x = point.x;
+				if (first || point.y > y) y = point.y;
+				if (first || point.z > z) z = point.z;
+				first = false;
+			}
+		}
+		return new Point3D(x, y, z);
+	}
+	
+	public static double maxMagnitude(Point3D... points) {
+		return maxMagnitude(Arrays.asList(points));
+	}
+	
+	public static double maxMagnitude(Iterable<Point3D> points) {
+		double m = Double.NaN;
+		boolean first = true;
+		for (Point3D point : points) {
+			if (point != null) {
+				double pointm = point.magnitude();
+				if (first || pointm > m) m = pointm;
+				first = false;
+			}
+		}
+		return m;
+	}
+	
 	public Point3D midpoint(double x, double y, double z) {
 		return new Point3D((this.x + x) / 2, (this.y + y) / 2, (this.z + z) / 2);
 	}
 	
 	public Point3D midpoint(Point3D point) {
 		return new Point3D((this.x + point.x) / 2, (this.y + point.y) / 2, (this.z + point.z) / 2);
+	}
+	
+	public static Point3D min(Point3D... points) {
+		return min(Arrays.asList(points));
+	}
+	
+	public static Point3D min(Iterable<Point3D> points) {
+		double x = Double.NaN;
+		double y = Double.NaN;
+		double z = Double.NaN;
+		boolean first = true;
+		for (Point3D point : points) {
+			if (point != null) {
+				if (first || point.x < x) x = point.x;
+				if (first || point.y < y) y = point.y;
+				if (first || point.z < z) z = point.z;
+				first = false;
+			}
+		}
+		return new Point3D(x, y, z);
+	}
+	
+	public static double minMagnitude(Point3D... points) {
+		return minMagnitude(Arrays.asList(points));
+	}
+	
+	public static double minMagnitude(Iterable<Point3D> points) {
+		double m = Double.NaN;
+		boolean first = true;
+		for (Point3D point : points) {
+			if (point != null) {
+				double pointm = point.magnitude();
+				if (first || pointm < m) m = pointm;
+				first = false;
+			}
+		}
+		return m;
 	}
 	
 	public Point3D multiply(double factor) {

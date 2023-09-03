@@ -7,33 +7,38 @@ import com.kreative.polyhedra.Polyhedron;
 import com.kreative.polyhedra.PolyhedronGen;
 
 public class Cube extends PolyhedronGen {
+	private static final double R2 = Math.sqrt(2);
+	private static final double R3 = Math.sqrt(3);
+	private static final double DR2 = Math.sqrt(2) * 2;
+	private static final double DR3 = Math.sqrt(3) * 2;
+	
 	public static enum SizeSpecifier {
-		DISTANCE_TO_FACE {
-			public double toScale(double toFace) { return toFace; }
+		INRADIUS {
+			public double toScale(double radius) { return radius; }
 			public double fromScale(double scale) { return scale; }
 		},
-		SIDE_LENGTH {
-			public double toScale(double sideLength) { return sideLength / 2; }
+		EDGE_LENGTH {
+			public double toScale(double length) { return length / 2; }
 			public double fromScale(double scale) { return scale * 2; }
 		},
-		DISTANCE_TO_EDGE {
-			public double toScale(double toEdge) { return toEdge / Math.sqrt(2); }
-			public double fromScale(double scale) { return scale * Math.sqrt(2); }
+		MIDRADIUS {
+			public double toScale(double radius) { return radius / R2; }
+			public double fromScale(double scale) { return scale * R2; }
 		},
 		FACE_DIAGONAL {
-			public double toScale(double diagonal) { return diagonal / (2 * Math.sqrt(2)); }
-			public double fromScale(double scale) { return scale * (2 * Math.sqrt(2)); }
+			public double toScale(double diagonal) { return diagonal / DR2; }
+			public double fromScale(double scale) { return scale * DR2; }
 		},
-		RADIUS {
-			public double toScale(double radius) { return radius / Math.sqrt(3); }
-			public double fromScale(double scale) { return scale * Math.sqrt(3); }
+		CIRCUMRADIUS {
+			public double toScale(double radius) { return radius / R3; }
+			public double fromScale(double scale) { return scale * R3; }
 		},
-		DIAMETER {
-			public double toScale(double diameter) { return diameter / (2 * Math.sqrt(3)); }
-			public double fromScale(double scale) { return scale * (2 * Math.sqrt(3)); }
+		SPACE_DIAGONAL {
+			public double toScale(double diagonal) { return diagonal / DR3; }
+			public double fromScale(double scale) { return scale * DR3; }
 		};
 		public abstract double toScale(double size);
-		public abstract double fromScale(double hsl);
+		public abstract double fromScale(double scale);
 	}
 	
 	private final double scale;
@@ -64,45 +69,48 @@ public class Cube extends PolyhedronGen {
 				Arrays.asList(0, 1, 5, 4),
 				Arrays.asList(3, 2, 6, 7)
 			),
-			Arrays.asList(color, color, color, color, color, color)
+			Arrays.asList(
+				color, color, color,
+				color, color, color
+			)
 		);
 	}
 	
 	public static Cube parse(String[] args) {
-		SizeSpecifier spec = SizeSpecifier.RADIUS;
+		SizeSpecifier spec = SizeSpecifier.CIRCUMRADIUS;
 		double size = 1;
 		Color c = Color.GRAY;
 		int argi = 0;
 		while (argi < args.length) {
 			String arg = args[argi++];
 			if (arg.equalsIgnoreCase("-r") && argi < args.length) {
-				spec = SizeSpecifier.RADIUS;
+				spec = SizeSpecifier.CIRCUMRADIUS;
+				size = parseDouble(args[argi++], size);
+			} else if (arg.equalsIgnoreCase("-m") && argi < args.length) {
+				spec = SizeSpecifier.MIDRADIUS;
+				size = parseDouble(args[argi++], size);
+			} else if (arg.equalsIgnoreCase("-i") && argi < args.length) {
+				spec = SizeSpecifier.INRADIUS;
 				size = parseDouble(args[argi++], size);
 			} else if (arg.equalsIgnoreCase("-d") && argi < args.length) {
-				spec = SizeSpecifier.DIAMETER;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-e") && argi < args.length) {
-				spec = SizeSpecifier.DISTANCE_TO_EDGE;
+				spec = SizeSpecifier.SPACE_DIAGONAL;
 				size = parseDouble(args[argi++], size);
 			} else if (arg.equalsIgnoreCase("-f") && argi < args.length) {
 				spec = SizeSpecifier.FACE_DIAGONAL;
 				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-s") && argi < args.length) {
-				spec = SizeSpecifier.SIDE_LENGTH;
-				size = parseDouble(args[argi++], size);
 			} else if (arg.equalsIgnoreCase("-a") && argi < args.length) {
-				spec = SizeSpecifier.DISTANCE_TO_FACE;
+				spec = SizeSpecifier.EDGE_LENGTH;
 				size = parseDouble(args[argi++], size);
 			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 				c = parseColor(args[argi++], c);
 			} else {
 				System.err.println("Options:");
-				System.err.println("  -r <real>   radius");
-				System.err.println("  -d <real>   diameter");
-				System.err.println("  -e <real>   distance to edge");
+				System.err.println("  -r <real>   radius of circumscribed sphere");
+				System.err.println("  -m <real>   radius of sphere tangent to edges");
+				System.err.println("  -i <real>   radius of inscribed sphere");
+				System.err.println("  -d <real>   space diagonal");
 				System.err.println("  -f <real>   face diagonal");
-				System.err.println("  -s <real>   side length");
-				System.err.println("  -a <real>   distance to face");
+				System.err.println("  -a <real>   edge length");
 				System.err.println("  -c <color>  color");
 				return null;
 			}

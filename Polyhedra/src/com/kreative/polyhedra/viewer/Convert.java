@@ -1,5 +1,7 @@
 package com.kreative.polyhedra.viewer;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.media.j3d.Appearance;
 import javax.media.j3d.Group;
 import javax.media.j3d.Shape3D;
@@ -17,6 +19,7 @@ import com.sun.j3d.utils.geometry.Stripifier;
 
 public class Convert {
 	public static Group vertices(Polyhedron p, float r, Appearance a) {
+		if (p == null) return null;
 		Group g = new Group();
 		for (Polyhedron.Vertex v : p.vertices) {
 			Point3D pt = v.point;
@@ -30,10 +33,14 @@ public class Convert {
 	}
 	
 	public static Group edges(Polyhedron p, float r, Appearance a) {
+		if (p == null) return null;
 		Group g = new Group();
 		Vector3d y = new Vector3d(0, 1, 0);
 		for (Polyhedron.Edge e : p.edges) {
 			float h = (float)e.vertex1.point.distance(e.vertex2.point);
+			// Java3D blows up at zero-length edges,
+			// so don't even bother to generate them.
+			if (h == 0) continue;
 			Point3D m = e.vertex1.point.midpoint(e.vertex2.point);
 			Vector3d t = new Vector3d(m.getX(), m.getY(), m.getZ());
 			Point3D d = e.vertex2.point.subtract(e.vertex1.point);
@@ -50,7 +57,9 @@ public class Convert {
 	}
 	
 	public static Shape3D faces(Polyhedron p, Appearance a) {
+		if (p == null) return null;
 		int vertexCount = p.vertices.size();
+		if (vertexCount == 0) return null;
 		double[] coords = new double[vertexCount * 3];
 		{
 			int i = 0;
@@ -62,34 +71,36 @@ public class Convert {
 		}
 		
 		int indexCount = 0;
-		int faceCount = p.faces.size();
+		List<Polyhedron.Face> validFaces = new ArrayList<Polyhedron.Face>();
+		for (Polyhedron.Face f : p.faces) {
+			// Java3D blows up at polygons of fewer than 3 vertices,
+			// so don't even bother to generate them.
+			if (f.vertices.size() < 3) continue;
+			indexCount += f.vertices.size();
+			validFaces.add(f);
+		}
+		
+		int faceCount = validFaces.size();
+		if (faceCount == 0) return null;
+		int[] coordIndices = new int[indexCount];
+		int[] colorIndices = new int[indexCount];
 		int[] stripCounts = new int[faceCount];
 		int[] contourCounts = new int[faceCount];
 		float[] colors = new float[faceCount * 3];
 		{
-			int fi = 0;
-			int ci = 0;
-			for (Polyhedron.Face f : p.faces) {
-				indexCount += f.vertices.size();
+			int vi = 0, fi = 0, ci = 0;
+			for (Polyhedron.Face f : validFaces) {
+				for (Polyhedron.Vertex v : f.vertices) {
+					coordIndices[vi] = v.index;
+					colorIndices[vi] = fi;
+					vi++;
+				}
 				stripCounts[fi] = f.vertices.size();
 				contourCounts[fi] = 1;
 				colors[ci++] = f.color.getRed() / 255f;
 				colors[ci++] = f.color.getGreen() / 255f;
 				colors[ci++] = f.color.getBlue() / 255f;
 				fi++;
-			}
-		}
-		
-		int[] coordIndices = new int[indexCount];
-		int[] colorIndices = new int[indexCount];
-		{
-			int i = 0;
-			for (Polyhedron.Face f : p.faces) {
-				for (Polyhedron.Vertex v : f.vertices) {
-					coordIndices[i] = v.index;
-					colorIndices[i] = f.index;
-					i++;
-				}
 			}
 		}
 		

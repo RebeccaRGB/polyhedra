@@ -83,7 +83,7 @@ public class OFFReader {
 			String line = off.nextLine().trim();
 			if (line.length() == 0 || line.startsWith("#")) continue;
 			String[] tokens = line.split("\\s+");
-			if (tokens.length < 4) return null;
+			if (tokens.length <= 1) return null;
 			try {
 				List<Integer> f = new ArrayList<Integer>();
 				for (String t : tokens) f.add(Integer.parseInt(t));

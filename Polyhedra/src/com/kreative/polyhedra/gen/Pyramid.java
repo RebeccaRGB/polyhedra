@@ -10,7 +10,7 @@ import com.kreative.polyhedra.PolyhedronGen;
 import com.kreative.polyhedra.gen.Polygon.Axis;
 import com.kreative.polyhedra.gen.Polygon.SizeSpecifier;
 
-public class Prism extends PolyhedronGen {
+public class Pyramid extends PolyhedronGen {
 	private final int n;
 	private final int m;
 	private final double r;
@@ -19,29 +19,16 @@ public class Prism extends PolyhedronGen {
 	private final Color bc;
 	private final Color jc;
 	
-	public Prism(int n, double r, Axis axis, Color c) {
-		this(n, 1, r, axis, c, c);
-	}
-	public Prism(int n, int m, double r, Axis axis, Color c) {
-		this(n, m, r, axis, c, c);
-	}
-	public Prism(int n, double r, Axis axis, Color base, Color join) {
-		this(n, 1, r, axis, base, join);
-	}
-	public Prism(int n, int m, double r, Axis axis, Color base, Color join) {
-		this(n, m, r, axis, SizeSpecifier.SIDE_LENGTH.fromRadius(r, n), base, join);
-	}
-	
-	public Prism(int n, double r, Axis axis, double h, Color c) {
+	public Pyramid(int n, double r, Axis axis, double h, Color c) {
 		this(n, 1, r, axis, h, c, c);
 	}
-	public Prism(int n, int m, double r, Axis axis, double h, Color c) {
+	public Pyramid(int n, int m, double r, Axis axis, double h, Color c) {
 		this(n, m, r, axis, h, c, c);
 	}
-	public Prism(int n, double r, Axis axis, double h, Color base, Color join) {
+	public Pyramid(int n, double r, Axis axis, double h, Color base, Color join) {
 		this(n, 1, r, axis, h, base, join);
 	}
-	public Prism(int n, int m, double r, Axis axis, double h, Color base, Color join) {
+	public Pyramid(int n, int m, double r, Axis axis, double h, Color base, Color join) {
 		this.n = n;
 		this.m = m;
 		this.r = r;
@@ -55,19 +42,18 @@ public class Prism extends PolyhedronGen {
 		List<Point3D> vertices = new ArrayList<Point3D>(n);
 		List<List<Integer>> faces = new ArrayList<List<Integer>>(2);
 		List<Color> faceColors = new ArrayList<Color>(2);
-		Polygon.createVertices(vertices, n, r, 0, axis, h/2);
 		Polygon.createVertices(vertices, n, r, 0, axis, -h/2);
-		Polygon.createFaces(faces, faceColors, n, m, 0, false, bc);
-		Polygon.createFaces(faces, faceColors, n, m, n, true, bc);
+		vertices.add(axis.createVertex(0, 0, h/2));
+		Polygon.createFaces(faces, faceColors, n, m, 0, true, bc);
 		for (int i = 0; i < n; i++) {
 			int j = (i + m) % n;
-			faces.add(Arrays.asList(j, i, i + n, j + n));
+			faces.add(Arrays.asList(i, j, n));
 			faceColors.add(jc);
 		}
 		return new Polyhedron(vertices, faces, faceColors);
 	}
 	
-	public static Prism parse(String[] args) {
+	public static Pyramid parse(String[] args) {
 		int n = 3;
 		int m = 1;
 		SizeSpecifier spec = SizeSpecifier.RADIUS;
@@ -114,14 +100,14 @@ public class Prism extends PolyhedronGen {
 				System.err.println("Options:");
 				System.err.println("  -n <int>    sides");
 				System.err.println("  -m <int>    stellation");
-				System.err.println("  -r <real>   radius");
-				System.err.println("  -d <real>   diameter");
-				System.err.println("  -s <real>   side length");
-				System.err.println("  -a <real>   apothem");
+				System.err.println("  -r <real>   radius of base");
+				System.err.println("  -d <real>   diameter of base");
+				System.err.println("  -s <real>   side length of base");
+				System.err.println("  -a <real>   apothem of base");
 				System.err.println("  -x          align central axis to X axis");
 				System.err.println("  -y          align central axis to Y axis");
 				System.err.println("  -z          align central axis to Z axis");
-				System.err.println("  -h <real>   height");
+				System.err.println("  -h <real>   height of pyramid");
 				System.err.println("  -c <color>  color");
 				System.err.println("  -b <color>  base color");
 				System.err.println("  -j <color>  join color");
@@ -129,8 +115,8 @@ public class Prism extends PolyhedronGen {
 			}
 		}
 		double r = spec.toRadius(size, n);
-		if (h == null) h = SizeSpecifier.SIDE_LENGTH.fromRadius(r, n);
-		return new Prism(n, m, r, axis, h, ((bc != null) ? bc : c), ((jc != null) ? jc : c));
+		if (h == null) h = r;
+		return new Pyramid(n, m, r, axis, h, ((bc != null) ? bc : c), ((jc != null) ? jc : c));
 	}
 	
 	public static void main(String[] args) {

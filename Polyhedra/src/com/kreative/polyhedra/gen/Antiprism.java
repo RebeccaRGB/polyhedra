@@ -7,6 +7,7 @@ import java.util.List;
 import com.kreative.polyhedra.Point3D;
 import com.kreative.polyhedra.Polyhedron;
 import com.kreative.polyhedra.PolyhedronGen;
+import com.kreative.polyhedra.gen.Polygon.Axis;
 import com.kreative.polyhedra.gen.Polygon.SizeSpecifier;
 
 public class Antiprism extends PolyhedronGen {
@@ -15,39 +16,49 @@ public class Antiprism extends PolyhedronGen {
 	private final int n;
 	private final int m;
 	private final double r;
+	private final Axis axis;
 	private final double h;
 	private final Color bc;
 	private final Color jc;
 	
-	public Antiprism(int n, double r, Color c) { this(n, 1, r, c, c); }
-	public Antiprism(int n, int m, double r, Color c) { this(n, m, r, c, c); }
-	public Antiprism(int n, double r, Color baseColor, Color joinColor) {
-		this(n, 1, r, baseColor, joinColor);
+	public Antiprism(int n, double r, Axis axis, Color c) {
+		this(n, 1, r, axis, c, c);
 	}
-	public Antiprism(int n, int m, double r, Color baseColor, Color joinColor) {
-		this(n, m, r, Polygon.SizeSpecifier.SIDE_LENGTH.fromRadius(r, n) * A, baseColor, joinColor);
+	public Antiprism(int n, int m, double r, Axis axis, Color c) {
+		this(n, m, r, axis, c, c);
+	}
+	public Antiprism(int n, double r, Axis axis, Color base, Color join) {
+		this(n, 1, r, axis, base, join);
+	}
+	public Antiprism(int n, int m, double r, Axis axis, Color base, Color join) {
+		this(n, m, r, axis, SizeSpecifier.SIDE_LENGTH.fromRadius(r, n) * A, base, join);
 	}
 	
-	public Antiprism(int n, double r, double h, Color c) { this(n, 1, r, h, c, c); }
-	public Antiprism(int n, int m, double r, double h, Color c) { this(n, m, r, h, c, c); }
-	public Antiprism(int n, double r, double h, Color baseColor, Color joinColor) {
-		this(n, 1, r, h, baseColor, joinColor);
+	public Antiprism(int n, double r, Axis axis, double h, Color c) {
+		this(n, 1, r, axis, h, c, c);
 	}
-	public Antiprism(int n, int m, double r, double h, Color baseColor, Color joinColor) {
+	public Antiprism(int n, int m, double r, Axis axis, double h, Color c) {
+		this(n, m, r, axis, h, c, c);
+	}
+	public Antiprism(int n, double r, Axis axis, double h, Color base, Color join) {
+		this(n, 1, r, axis, h, base, join);
+	}
+	public Antiprism(int n, int m, double r, Axis axis, double h, Color base, Color join) {
 		this.n = n;
 		this.m = m;
 		this.r = r;
+		this.axis = axis;
 		this.h = h;
-		this.bc = baseColor;
-		this.jc = joinColor;
+		this.bc = base;
+		this.jc = join;
 	}
 	
 	public Polyhedron gen() {
 		List<Point3D> vertices = new ArrayList<Point3D>(n);
 		List<List<Integer>> faces = new ArrayList<List<Integer>>(2);
 		List<Color> faceColors = new ArrayList<Color>(2);
-		Polygon.createVertices(vertices, n, r, 0, h/2);
-		Polygon.createVertices(vertices, n, r, 0.5, -h/2);
+		Polygon.createVertices(vertices, n, r, 0, axis, h/2);
+		Polygon.createVertices(vertices, n, r, 0.5, axis, -h/2);
 		Polygon.createFaces(faces, faceColors, n, m, 0, false, bc);
 		Polygon.createFaces(faces, faceColors, n, m, n, true, bc);
 		for (int i = 0; i < n; i++) {
@@ -65,6 +76,7 @@ public class Antiprism extends PolyhedronGen {
 		int m = 1;
 		SizeSpecifier spec = SizeSpecifier.RADIUS;
 		double size = 1;
+		Axis axis = Axis.Y;
 		Double h = null;
 		Color c = Color.GRAY;
 		Color bc = null;
@@ -88,6 +100,12 @@ public class Antiprism extends PolyhedronGen {
 			} else if (arg.equalsIgnoreCase("-a") && argi < args.length) {
 				spec = SizeSpecifier.APOTHEM;
 				size = parseDouble(args[argi++], size);
+			} else if (arg.equalsIgnoreCase("-x")) {
+				axis = Axis.X;
+			} else if (arg.equalsIgnoreCase("-y")) {
+				axis = Axis.Y;
+			} else if (arg.equalsIgnoreCase("-z")) {
+				axis = Axis.Z;
 			} else if (arg.equalsIgnoreCase("-h") && argi < args.length) {
 				h = parseDouble(args[argi++], ((h == null) ? 1 : h.intValue()));
 			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
@@ -104,6 +122,9 @@ public class Antiprism extends PolyhedronGen {
 				System.err.println("  -d <real>   diameter");
 				System.err.println("  -s <real>   side length");
 				System.err.println("  -a <real>   apothem");
+				System.err.println("  -x          align central axis to X axis");
+				System.err.println("  -y          align central axis to Y axis");
+				System.err.println("  -z          align central axis to Z axis");
 				System.err.println("  -h <real>   height");
 				System.err.println("  -c <color>  color");
 				System.err.println("  -b <color>  base color");
@@ -112,8 +133,8 @@ public class Antiprism extends PolyhedronGen {
 			}
 		}
 		double r = spec.toRadius(size, n);
-		if (h == null) h = Polygon.SizeSpecifier.SIDE_LENGTH.fromRadius(r, n) * A;
-		return new Antiprism(n, m, r, h, ((bc != null) ? bc : c), ((jc != null) ? jc : c));
+		if (h == null) h = SizeSpecifier.SIDE_LENGTH.fromRadius(r, n) * A;
+		return new Antiprism(n, m, r, axis, h, ((bc != null) ? bc : c), ((jc != null) ? jc : c));
 	}
 	
 	public static void main(String[] args) {
