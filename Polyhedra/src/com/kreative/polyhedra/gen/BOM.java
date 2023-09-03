@@ -18,6 +18,7 @@ public class BOM {
 			Constant.class,
 			Construct.class,
 			Cube.class,
+			Dodecahedron.class,
 			Frustum.class,
 			Octahedron.class,
 			Polygon.class,
