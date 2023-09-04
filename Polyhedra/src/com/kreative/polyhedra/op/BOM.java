@@ -10,10 +10,18 @@ import com.kreative.polyhedra.PolyhedronOp;
 public class BOM {
 	public static final List<Class<? extends PolyhedronOp>> BOM = Collections.unmodifiableList(
 		Arrays.asList(
+			AffineTransform.class,
+			Center.class,
 			Chain.class,
 			ConvexHull.class,
+			Dual.class,
 			Identity.class,
-			Reflect.class
+			InsideOut.class,
+			NormalizeVertices.class,
+			Reflect.class,
+			Rotate.class,
+			Scale.class,
+			Translate.class
 		)
 	);
 	

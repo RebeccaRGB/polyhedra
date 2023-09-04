@@ -141,9 +141,9 @@ public class Polygon extends PolyhedronGen {
 				System.err.println("  -d <real>   diameter");
 				System.err.println("  -s <real>   side length");
 				System.err.println("  -a <real>   apothem");
-				System.err.println("  -x <real>   x-coordinate");
-				System.err.println("  -y <real>   y-coordinate");
-				System.err.println("  -z <real>   z-coordinate");
+				System.err.println("  -x <real>   x-coordinate of polygon parallel to yz plane");
+				System.err.println("  -y <real>   y-coordinate of polygon parallel to xz plane");
+				System.err.println("  -z <real>   z-coordinate of polygon parallel to xy plane");
 				System.err.println("  -c <color>  color");
 				return null;
 			}
