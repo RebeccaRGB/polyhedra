@@ -10,8 +10,10 @@ import com.kreative.polyhedra.PolyhedronGen;
 public class BOM {
 	public static final List<Class<? extends PolyhedronGen>> BOM = Collections.unmodifiableList(
 		Arrays.asList(
+			Antibifrustum.class,
 			Antifrustum.class,
 			Antiprism.class,
+			Bifrustum.class,
 			Bipyramid.class,
 			Box.class,
 			Compose.class,

@@ -130,7 +130,7 @@ public class Frustum extends PolyhedronGen {
 				System.err.println("  -x          align central axis to X axis");
 				System.err.println("  -y          align central axis to Y axis");
 				System.err.println("  -z          align central axis to Z axis");
-				System.err.println("  -h <real>   height");
+				System.err.println("  -h <real>   height of frustum");
 				System.err.println("  -c <color>  color");
 				System.err.println("  -b <color>  base color");
 				System.err.println("  -j <color>  join color");

@@ -10,7 +10,7 @@ import com.kreative.polyhedra.PolyhedronGen;
 import com.kreative.polyhedra.gen.Polygon.Axis;
 import com.kreative.polyhedra.gen.Polygon.SizeSpecifier;
 
-public class Antifrustum extends PolyhedronGen {
+public class Antibifrustum extends PolyhedronGen {
 	private final int n;
 	private final int m;
 	private final double R;
@@ -20,16 +20,16 @@ public class Antifrustum extends PolyhedronGen {
 	private final Color bc;
 	private final Color jc;
 	
-	public Antifrustum(int n, double R, double r, Axis axis, double h, Color c) {
+	public Antibifrustum(int n, double R, double r, Axis axis, double h, Color c) {
 		this(n, 1, R, r, axis, h, c, c);
 	}
-	public Antifrustum(int n, int m, double R, double r, Axis axis, double h, Color c) {
+	public Antibifrustum(int n, int m, double R, double r, Axis axis, double h, Color c) {
 		this(n, m, R, r, axis, h, c, c);
 	}
-	public Antifrustum(int n, double R, double r, Axis axis, double h, Color base, Color join) {
+	public Antibifrustum(int n, double R, double r, Axis axis, double h, Color base, Color join) {
 		this(n, 1, R, r, axis, h, base, join);
 	}
-	public Antifrustum(
+	public Antibifrustum(
 		int n, int m, double R, double r, Axis axis, double h, Color base, Color join
 	) {
 		this.n = n;
@@ -46,21 +46,26 @@ public class Antifrustum extends PolyhedronGen {
 		List<Point3D> vertices = new ArrayList<Point3D>(n);
 		List<List<Integer>> faces = new ArrayList<List<Integer>>(2);
 		List<Color> faceColors = new ArrayList<Color>(2);
-		Polygon.createVertices(vertices, n, r, 0, axis, h/2);
-		Polygon.createVertices(vertices, n, R, 0.5, axis, -h/2);
+		Polygon.createVertices(vertices, n, r, 0, axis, h);
+		Polygon.createVertices(vertices, n, R, 0.5, axis, 0);
+		Polygon.createVertices(vertices, n, r, 0, axis, -h);
 		Polygon.createFaces(faces, faceColors, n, m, 0, false, bc);
-		Polygon.createFaces(faces, faceColors, n, m, n, true, bc);
+		Polygon.createFaces(faces, faceColors, n, m, n * 2, true, bc);
 		for (int i = 0; i < n; i++) {
 			int j = (i + m) % n;
 			faces.add(Arrays.asList(j, i, i + n));
 			faces.add(Arrays.asList(j, i + n, j + n));
+			faces.add(Arrays.asList(j + n, i + n, j + n * 2));
+			faces.add(Arrays.asList(i + n, i + n * 2, j + n * 2));
+			faceColors.add(jc);
+			faceColors.add(jc);
 			faceColors.add(jc);
 			faceColors.add(jc);
 		}
 		return new Polyhedron(vertices, faces, faceColors);
 	}
 	
-	public static Antifrustum parse(String[] args) {
+	public static Antibifrustum parse(String[] args) {
 		int n = 3;
 		int m = 1;
 		SizeSpecifier Spec = SizeSpecifier.RADIUS;
@@ -121,14 +126,14 @@ public class Antifrustum extends PolyhedronGen {
 				System.err.println("Options:");
 				System.err.println("  -n <int>    sides");
 				System.err.println("  -m <int>    stellation");
-				System.err.println("  -R <real>   radius of bottom face");
-				System.err.println("  -D <real>   diameter of bottom face");
-				System.err.println("  -S <real>   side length of bottom face");
-				System.err.println("  -A <real>   apothem of bottom face");
-				System.err.println("  -r <real>   radius of top face");
-				System.err.println("  -d <real>   diameter of top face");
-				System.err.println("  -s <real>   side length of top face");
-				System.err.println("  -a <real>   apothem of top face");
+				System.err.println("  -R <real>   radius of center polygon");
+				System.err.println("  -D <real>   diameter of center polygon");
+				System.err.println("  -S <real>   side length of center polygon");
+				System.err.println("  -A <real>   apothem of center polygon");
+				System.err.println("  -r <real>   radius of top and bottom faces");
+				System.err.println("  -d <real>   diameter of top and bottom faces");
+				System.err.println("  -s <real>   side length of top and bottom faces");
+				System.err.println("  -a <real>   apothem of top and bottom faces");
 				System.err.println("  -x          align central axis to X axis");
 				System.err.println("  -y          align central axis to Y axis");
 				System.err.println("  -z          align central axis to Z axis");
@@ -141,7 +146,7 @@ public class Antifrustum extends PolyhedronGen {
 		}
 		double R = Spec.toRadius(Size, n);
 		double r = spec.toRadius(size, n);
-		return new Antifrustum(
+		return new Antibifrustum(
 			n, m, R, r, axis, h, ((bc != null) ? bc : c), ((jc != null) ? jc : c)
 		);
 	}
