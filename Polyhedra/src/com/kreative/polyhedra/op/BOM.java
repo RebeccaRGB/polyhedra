@@ -18,7 +18,9 @@ public class BOM {
 			Identity.class,
 			InsideOut.class,
 			NormalizeVertices.class,
+			Recolor.class,
 			Reflect.class,
+			Resize.class,
 			Rotate.class,
 			Scale.class,
 			Translate.class

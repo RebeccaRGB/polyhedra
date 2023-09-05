@@ -159,6 +159,14 @@ public class Point3D {
 		);
 	}
 	
+	public boolean equals(Point3D point, double epsilon) {
+		return (
+			Math.abs(this.x - point.x) <= epsilon &&
+			Math.abs(this.y - point.y) <= epsilon &&
+			Math.abs(this.z - point.z) <= epsilon
+		);
+	}
+	
 	public double getX() { return x; }
 	public double getY() { return y; }
 	public double getZ() { return z; }

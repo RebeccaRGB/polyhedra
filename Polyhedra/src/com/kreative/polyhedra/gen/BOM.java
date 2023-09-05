@@ -27,7 +27,8 @@ public class BOM {
 			Polygon.class,
 			Prism.class,
 			Pyramid.class,
-			Tetrahedron.class
+			Tetrahedron.class,
+			Trapezohedron.class
 		)
 	);
 	
