@@ -137,4 +137,63 @@ public class Polyhedron {
 		this.edges = Collections.unmodifiableList(tmpEdges);
 		this.faces = Collections.unmodifiableList(tmpFaces);
 	}
+	
+	/** Returns a new list containing the edges which are connected to the specified vertex. */
+	public List<Edge> getEdges(Vertex v) {
+		List<Edge> edges = new ArrayList<Edge>();
+		for (Edge edge : this.edges) {
+			if (edge.vertex1.equals(v) || edge.vertex2.equals(v)) {
+				edges.add(edge);
+			}
+		}
+		return edges;
+	}
+	
+	/** Returns a new list containing the faces which are connected to the specified vertex. */
+	public List<Face> getFaces(Vertex v) {
+		List<Face> faces = new ArrayList<Face>();
+		for (Face face : this.faces) {
+			if (face.vertices.contains(v)) {
+				faces.add(face);
+			}
+		}
+		return faces;
+	}
+	
+	/** Returns a new list containing the faces which are connected to the specified edge. */
+	public List<Face> getFaces(Edge e) {
+		List<Face> faces = new ArrayList<Face>();
+		for (Face face : this.faces) {
+			if (face.edges.contains(e)) {
+				faces.add(face);
+			}
+		}
+		return faces;
+	}
+	
+	public static Edge getNextEdge(List<Face> faces, Edge e, Vertex v) {
+		for (Face f : faces) {
+			int fi = f.edges.indexOf(e);
+			if (fi < 0) continue;
+			int fn = f.edges.size();
+			Edge fpe = f.edges.get((fi + fn - 1) % fn);
+			if (fpe.vertex1.equals(v) || fpe.vertex2.equals(v)) return fpe;
+		}
+		return null;
+	}
+	
+	public static Face getNextFace(List<Face> faces, Face f, Vertex v) {
+		int fi = f.vertices.indexOf(v);
+		if (fi < 0) return null;
+		int fn = f.vertices.size();
+		Vertex fpv = f.vertices.get((fi + fn - 1) % fn);
+		for (Face g : faces) {
+			int gi = g.vertices.indexOf(v);
+			if (gi < 0) continue;
+			int gn = g.vertices.size();
+			Vertex gnv = g.vertices.get((gi + 1) % gn);
+			if (fpv.equals(gnv)) return g;
+		}
+		return null;
+	}
 }

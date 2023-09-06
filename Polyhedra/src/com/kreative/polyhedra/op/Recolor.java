@@ -350,7 +350,7 @@ public class Recolor extends PolyhedronOp {
 	}
 	
 	public Color getFaceColor(Face face, double epsilon) {
-		Color color = Color.GRAY;
+		Color color = face.color;
 		for (Map.Entry<Classifier,Color> e : colorMap.entrySet()) {
 			if (e.getKey().matches(face, epsilon)) {
 				color = e.getValue();

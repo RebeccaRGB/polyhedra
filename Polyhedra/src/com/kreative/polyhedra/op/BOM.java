@@ -11,6 +11,7 @@ public class BOM {
 	public static final List<Class<? extends PolyhedronOp>> BOM = Collections.unmodifiableList(
 		Arrays.asList(
 			AffineTransform.class,
+			Ambo.class,
 			Center.class,
 			Chain.class,
 			ConvexHull.class,

@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import com.kreative.polyhedra.Point3D;
 import com.kreative.polyhedra.Polyhedron;
-import com.kreative.polyhedra.Polyhedron.Face;
-import com.kreative.polyhedra.Polyhedron.Vertex;
 import com.kreative.polyhedra.PolyhedronOp;
 
 public class Dual extends PolyhedronOp {
@@ -18,53 +16,28 @@ public class Dual extends PolyhedronOp {
 		this.color = color;
 	}
 	
-	private static List<Face> getFaces(Polyhedron p, Vertex v) {
-		List<Face> faces = new ArrayList<Face>();
-		for (Face f : p.faces) {
-			if (f.vertices.contains(v)) {
-				faces.add(f);
-			}
-		}
-		return faces;
-	}
-	
-	private static Face getNextFace(List<Face> faces, Face f, Vertex v) {
-		int fi = f.vertices.indexOf(v);
-		if (fi < 0) return null;
-		int fn = f.vertices.size();
-		int fpvi = f.vertices.get((fi + fn - 1) % fn).index;
-		for (Face g : faces) {
-			int gi = g.vertices.indexOf(v);
-			if (gi < 0) continue;
-			int gn = g.vertices.size();
-			int gnvi = g.vertices.get((gi + 1) % gn).index;
-			if (fpvi == gnvi) return g;
-		}
-		return null;
-	}
-	
 	public Polyhedron op(Polyhedron seed) {
 		List<Point3D> vertices = new ArrayList<Point3D>(seed.faces.size());
 		List<List<Integer>> faces = new ArrayList<List<Integer>>(seed.vertices.size());
 		List<Color> faceColors = new ArrayList<Color>(seed.vertices.size());
 		
-		for (Face f : seed.faces) {
+		for (Polyhedron.Face f : seed.faces) {
 			List<Point3D> face = new ArrayList<Point3D>(f.vertices.size());
-			for (Vertex v : f.vertices) face.add(v.point);
+			for (Polyhedron.Vertex v : f.vertices) face.add(v.point);
 			vertices.add(Point3D.average(face));
 		}
 		
-		for (Vertex v : seed.vertices) {
-			List<Face> seedFaces = getFaces(seed, v);
+		for (Polyhedron.Vertex v : seed.vertices) {
+			List<Polyhedron.Face> seedFaces = seed.getFaces(v);
 			while (!seedFaces.isEmpty()) {
 				List<Integer> dualFace = new ArrayList<Integer>();
-				Face seedFace = seedFaces.remove(0);
+				Polyhedron.Face seedFace = seedFaces.remove(0);
 				dualFace.add(seedFace.index);
-				seedFace = getNextFace(seedFaces, seedFace, v);
+				seedFace = Polyhedron.getNextFace(seedFaces, seedFace, v);
 				while (seedFace != null) {
 					seedFaces.remove(seedFace);
 					dualFace.add(seedFace.index);
-					seedFace = getNextFace(seedFaces, seedFace, v);
+					seedFace = Polyhedron.getNextFace(seedFaces, seedFace, v);
 				}
 				faces.add(dualFace);
 				faceColors.add(color);
@@ -73,7 +46,7 @@ public class Dual extends PolyhedronOp {
 		
 		if (rescale) {
 			List<Point3D> seedVertices = new ArrayList<Point3D>(seed.vertices.size());
-			for (Vertex v : seed.vertices) seedVertices.add(v.point);
+			for (Polyhedron.Vertex v : seed.vertices) seedVertices.add(v.point);
 			double seedScale = Point3D.averageMagnitude(seedVertices);
 			double dualScale = Point3D.averageMagnitude(vertices);
 			if (seedScale != 0 && dualScale != 0) {
