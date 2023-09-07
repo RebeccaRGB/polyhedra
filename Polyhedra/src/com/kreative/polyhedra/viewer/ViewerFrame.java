@@ -37,4 +37,8 @@ public class ViewerFrame extends JFrame {
 	public void setVertexAppearance(Appearance a) { viewerPanel.setVertexAppearance(a); }
 	public void setEdgeAppearance(Appearance a) { viewerPanel.setEdgeAppearance(a); }
 	public void setFaceAppearance(Appearance a) { viewerPanel.setFaceAppearance(a); }
+	
+	public boolean isAnimationPaused() { return viewerPanel.isAnimationPaused(); }
+	public void pauseAnimation() { viewerPanel.pauseAnimation(); }
+	public void resumeAnimation() { viewerPanel.resumeAnimation(); }
 }

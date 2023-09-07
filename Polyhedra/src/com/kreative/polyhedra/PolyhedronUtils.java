@@ -16,10 +16,30 @@ public abstract class PolyhedronUtils {
 		catch (NumberFormatException e) { return def; }
 	}
 	
+	public static List<Integer> parseIntList(String s) {
+		if (s == null) return null;
+		List<Integer> ints = new ArrayList<Integer>();
+		for (String str : s.trim().split("(\\s|[.,;:])+")) {
+			try { ints.add(Integer.parseInt(str)); }
+			catch (NumberFormatException e) { continue; }
+		}
+		return ints;
+	}
+	
 	public static double parseDouble(String s, double def) {
 		if (s == null) return def;
 		try { return Double.parseDouble(s.trim()); }
 		catch (NumberFormatException e) { return def; }
+	}
+	
+	public static List<Double> parseDoubleList(String s) {
+		if (s == null) return null;
+		List<Double> doubles = new ArrayList<Double>();
+		for (String str : s.trim().split("(\\s|[;:])+")) {
+			try { doubles.add(Double.parseDouble(str)); }
+			catch (NumberFormatException e) { continue; }
+		}
+		return doubles;
 	}
 	
 	private static final Map<String,Color> namedColors = new NamedColors();

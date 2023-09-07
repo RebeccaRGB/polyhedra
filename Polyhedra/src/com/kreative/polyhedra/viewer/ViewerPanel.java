@@ -43,9 +43,10 @@ public class ViewerPanel extends JPanel {
 	private Node faceNode;
 	
 	private final Group geometryGroup;
-	private final TransformGroup scaleGroup;
 	private final TransformGroup autoRotateGroup;
+	private final Alpha rotationAlpha;
 	private final TransformGroup manualRotateGroup;
+	private final TransformGroup scaleGroup;
 	private final TransformGroup panGroup;
 	
 	public ViewerPanel(Polyhedron p) {
@@ -64,10 +65,13 @@ public class ViewerPanel extends JPanel {
 		autoRotateGroup.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
 		autoRotateGroup.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
 		autoRotateGroup.addChild(geometryGroup);
-		Alpha ra = new Alpha(-1, 4000);
-		RotationInterpolator ri = new RotationInterpolator(ra, autoRotateGroup);
+		rotationAlpha = new Alpha(-1, 4000);
+		RotationInterpolator ri = new RotationInterpolator(rotationAlpha, autoRotateGroup);
 		ri.setSchedulingBounds(new BoundingSphere());
 		autoRotateGroup.addChild(ri);
+		KeyPauseResumeBehavior prb = new KeyPauseResumeBehavior(rotationAlpha);
+		prb.setSchedulingBounds(new BoundingSphere());
+		autoRotateGroup.addChild(prb);
 		
 		manualRotateGroup = new TransformGroup();
 		manualRotateGroup.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
@@ -155,4 +159,8 @@ public class ViewerPanel extends JPanel {
 			if (faceVisible) geometryGroup.addChild(faceNode);
 		}
 	}
+	
+	public boolean isAnimationPaused() { return rotationAlpha.isPaused(); }
+	public void pauseAnimation() { rotationAlpha.pause(); }
+	public void resumeAnimation() { rotationAlpha.resume(); }
 }

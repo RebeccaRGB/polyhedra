@@ -8,10 +8,39 @@ import com.kreative.polyhedra.Polyhedron;
 import com.kreative.polyhedra.PolyhedronOp;
 
 public class Dual extends PolyhedronOp {
-	private final boolean rescale;
+	public static enum RescaleMode {
+		NONE {
+			public void rescale(List<Point3D> seedVertices, List<Point3D> dualVertices) {
+				return; // Do nothing.
+			}
+		},
+		MAX_MAGNITUDE {
+			public void rescale(List<Point3D> seedVertices, List<Point3D> dualVertices) {
+				double seedScale = Point3D.maxMagnitude(seedVertices);
+				double dualScale = Point3D.maxMagnitude(dualVertices);
+				if (seedScale == 0 || dualScale == 0 || seedScale == dualScale) return;
+				for (int i = 0, n = dualVertices.size(); i < n; i++) {
+					dualVertices.set(i, dualVertices.get(i).multiply(seedScale / dualScale));
+				}
+			}
+		},
+		AVERAGE_MAGNITUDE {
+			public void rescale(List<Point3D> seedVertices, List<Point3D> dualVertices) {
+				double seedScale = Point3D.averageMagnitude(seedVertices);
+				double dualScale = Point3D.averageMagnitude(dualVertices);
+				if (seedScale == 0 || dualScale == 0 || seedScale == dualScale) return;
+				for (int i = 0, n = dualVertices.size(); i < n; i++) {
+					dualVertices.set(i, dualVertices.get(i).multiply(seedScale / dualScale));
+				}
+			}
+		};
+		public abstract void rescale(List<Point3D> seedVertices, List<Point3D> dualVertices);
+	}
+	
+	private final RescaleMode rescale;
 	private final Color color;
 	
-	public Dual(boolean rescale, Color color) {
+	public Dual(RescaleMode rescale, Color color) {
 		this.rescale = rescale;
 		this.color = color;
 	}
@@ -44,36 +73,31 @@ public class Dual extends PolyhedronOp {
 			}
 		}
 		
-		if (rescale) {
-			List<Point3D> seedVertices = new ArrayList<Point3D>(seed.vertices.size());
-			for (Polyhedron.Vertex v : seed.vertices) seedVertices.add(v.point);
-			double seedScale = Point3D.averageMagnitude(seedVertices);
-			double dualScale = Point3D.averageMagnitude(vertices);
-			if (seedScale != 0 && dualScale != 0) {
-				for (int i = 0, n = vertices.size(); i < n; i++) {
-					vertices.set(i, vertices.get(i).multiply(seedScale / dualScale));
-				}
-			}
-		}
+		List<Point3D> seedVertices = new ArrayList<Point3D>(seed.vertices.size());
+		for (Polyhedron.Vertex v : seed.vertices) seedVertices.add(v.point);
+		rescale.rescale(seedVertices, vertices);
 		
 		return new Polyhedron(vertices, faces, faceColors);
 	}
 	
 	public static Dual parse(String[] args) {
-		boolean rescale = false;
+		RescaleMode rescale = RescaleMode.MAX_MAGNITUDE;
 		Color color = Color.GRAY;
 		int argi = 0;
 		while (argi < args.length) {
 			String arg = args[argi++];
-			if (arg.equalsIgnoreCase("-r")) {
-				rescale = true;
-			} else if (arg.equalsIgnoreCase("-s")) {
-				rescale = false;
+			if (arg.equalsIgnoreCase("-s")) {
+				rescale = RescaleMode.NONE;
+			} else if (arg.equalsIgnoreCase("-m")) {
+				rescale = RescaleMode.MAX_MAGNITUDE;
+			} else if (arg.equalsIgnoreCase("-a")) {
+				rescale = RescaleMode.AVERAGE_MAGNITUDE;
 			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 				color = parseColor(args[argi++], color);
 			} else {
 				System.err.println("Options:");
-				System.err.println("  -r          rescale dual polyhedron to match original size");
+				System.err.println("  -m          rescale dual polyhedron to match original maximum magnitude");
+				System.err.println("  -a          rescale dual polyhedron to match original average magnitude");
 				System.err.println("  -s          do not rescale dual polyhedron (strict mode)");
 				System.err.println("  -c <color>  color");
 				return null;
