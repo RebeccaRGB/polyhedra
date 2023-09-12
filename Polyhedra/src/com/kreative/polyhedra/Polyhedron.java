@@ -171,6 +171,17 @@ public class Polyhedron {
 		return faces;
 	}
 	
+	/** Given an edge and a vertex on that edge, returns the other vertex on that edge. */
+	public static Vertex getOppositeVertex(Edge e, Vertex v) {
+		if (e.vertex1.equals(v)) return e.vertex2;
+		if (e.vertex2.equals(v)) return e.vertex1;
+		return null;
+	}
+	
+	/** 
+	 * Given a vertex, an edge, and a list of faces connected to the given vertex, returns
+	 * the next edge connected to that vertex as determined by the winding order of the faces.
+	 */
 	public static Edge getNextEdge(List<Face> faces, Edge e, Vertex v) {
 		for (Face f : faces) {
 			int fi = f.edges.indexOf(e);
@@ -182,6 +193,10 @@ public class Polyhedron {
 		return null;
 	}
 	
+	/**
+	 * Given a vertex, a face, and a list of faces connected to the given vertex, returns
+	 * the next face connected to that vertex as determined by the winding order of the faces.
+	 */
 	public static Face getNextFace(List<Face> faces, Face f, Vertex v) {
 		int fi = f.vertices.indexOf(v);
 		if (fi < 0) return null;

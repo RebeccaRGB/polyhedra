@@ -18,13 +18,15 @@ public class BOM {
 			Dual.class,
 			Identity.class,
 			InsideOut.class,
+			Kis.class,
 			NormalizeVertices.class,
 			Recolor.class,
 			Reflect.class,
 			Resize.class,
 			Rotate.class,
 			Scale.class,
-			Translate.class
+			Translate.class,
+			Truncate.class
 		)
 	);
 	
