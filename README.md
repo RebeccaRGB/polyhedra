@@ -36,3 +36,23 @@ Alternatively:
     java -jar polyhedra.jar ambo -c yellow < cube.off > cuboctahedron.off
     java -jar polyhedra.jar view cuboctahedron.off
 
+### Topology vs geometry
+
+Note that most operations will result in a unique *topology* but not a unique *geometry*. Many operations have several options to specify how the geometry is created. Compare the following:
+
+    java -jar polyhedra.jar icosahedron | java -jar polyhedra.jar kis -h 1.3 | java -jar polyhedra.jar view -
+
+    java -jar polyhedra.jar icosahedron | java -jar polyhedra.jar kis -h -0.3 | java -jar polyhedra.jar view -
+
+    java -jar polyhedra.jar icosahedron | java -jar polyhedra.jar kis -s | java -jar polyhedra.jar view -
+
+    java -jar polyhedra.jar icosahedron | java -jar polyhedra.jar kis -e | java -jar polyhedra.jar view -
+
+Furthermore, the result of any operation is not guaranteed to be convex, non-self-intersecting, or planar. Compare the nonplanar faces of:
+
+    java -jar polyhedra.jar antiprism -n 6 | java -jar polyhedra.jar dual | java -jar polyhedra.jar view -
+
+With the planar faces of:
+
+    java -jar polyhedra.jar trapezohedron -n 6 | java -jar polyhedra.jar view -
+
