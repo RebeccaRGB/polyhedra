@@ -110,6 +110,7 @@ public class Polyhedron {
 	}
 	
 	public Polyhedron(Polyhedron seed, PointTransform3D tx) {
+		boolean reverse = (tx != null) && tx.isReflection();
 		List<Vertex> tmpVertices = new ArrayList<Vertex>();
 		List<Edge> tmpEdges = new ArrayList<Edge>();
 		List<Face> tmpFaces = new ArrayList<Face>();
@@ -122,6 +123,10 @@ public class Polyhedron {
 			List<Vertex> faceVertices = new ArrayList<Vertex>();
 			List<Edge> faceEdges = new ArrayList<Edge>();
 			List<Vertex> face = seed.faces.get(i).vertices;
+			if (reverse) {
+				face = new ArrayList<Vertex>(face);
+				Collections.reverse(face);
+			}
 			for (int j = 0, m = face.size(); j < m; j++) {
 				Vertex v1 = tmpVertices.get(face.get(j).index);
 				Vertex v2 = tmpVertices.get(face.get((j + 1) % m).index);

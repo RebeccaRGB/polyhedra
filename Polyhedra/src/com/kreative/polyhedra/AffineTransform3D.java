@@ -316,6 +316,10 @@ public class AffineTransform3D extends PointTransform3D {
 		return equals(IDENTITY, epsilon);
 	}
 	
+	public boolean isReflection() {
+		return getDeterminant() < 0;
+	}
+	
 	public AffineTransform3D preConcatenate(AffineTransform3D tx) {
 		return new AffineTransform3D(
 			tx.m00 * this.m00 + tx.m01 * this.m10 + tx.m02 * this.m20,
