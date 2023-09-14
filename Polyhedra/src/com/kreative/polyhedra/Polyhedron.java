@@ -143,7 +143,7 @@ public class Polyhedron {
 		this.faces = Collections.unmodifiableList(tmpFaces);
 	}
 	
-	/** Returns a new list containing the edges which are connected to the specified vertex. */
+	/** Returns a new list containing the edges adjacent to the specified vertex. */
 	public List<Edge> getEdges(Vertex v) {
 		List<Edge> edges = new ArrayList<Edge>();
 		for (Edge edge : this.edges) {
@@ -154,7 +154,7 @@ public class Polyhedron {
 		return edges;
 	}
 	
-	/** Returns a new list containing the faces which are connected to the specified vertex. */
+	/** Returns a new list containing the faces adjacent to the specified vertex. */
 	public List<Face> getFaces(Vertex v) {
 		List<Face> faces = new ArrayList<Face>();
 		for (Face face : this.faces) {
@@ -165,7 +165,7 @@ public class Polyhedron {
 		return faces;
 	}
 	
-	/** Returns a new list containing the faces which are connected to the specified edge. */
+	/** Returns a new list containing the faces adjacent to the specified edge. */
 	public List<Face> getFaces(Edge e) {
 		List<Face> faces = new ArrayList<Face>();
 		for (Face face : this.faces) {

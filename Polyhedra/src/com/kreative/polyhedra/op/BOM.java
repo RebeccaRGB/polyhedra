@@ -18,6 +18,7 @@ public class BOM {
 			Dual.class,
 			Identity.class,
 			InsideOut.class,
+			Join.class,
 			Kis.class,
 			NormalizeVertices.class,
 			Recolor.class,
