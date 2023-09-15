@@ -20,6 +20,7 @@ public class BOM {
 			InsideOut.class,
 			Join.class,
 			Kis.class,
+			Needle.class,
 			NormalizeVertices.class,
 			Recolor.class,
 			Reflect.class,
