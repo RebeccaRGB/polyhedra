@@ -28,7 +28,8 @@ public class BOM {
 			Rotate.class,
 			Scale.class,
 			Translate.class,
-			Truncate.class
+			Truncate.class,
+			Zip.class
 		)
 	);
 	
