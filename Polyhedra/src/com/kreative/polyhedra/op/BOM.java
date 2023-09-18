@@ -16,6 +16,7 @@ public class BOM {
 			Chain.class,
 			ConvexHull.class,
 			Dual.class,
+			Expand.class,
 			Gyro.class,
 			Identity.class,
 			InsideOut.class,
