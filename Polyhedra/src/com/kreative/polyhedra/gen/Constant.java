@@ -32,6 +32,12 @@ public class Constant extends PolyhedronGen {
 		return new Constant(p);
 	}
 	
+	public static Option[] options() {
+		return new Option[] {
+			new Option(Mult.REPEATED_REQUIRED, Type.TEXT, "polyhedron in OFF format"),
+		};
+	}
+	
 	public static void main(String[] args) {
 		main(parse(args));
 	}

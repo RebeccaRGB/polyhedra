@@ -49,14 +49,19 @@ public class Translate extends PolyhedronOp {
 			} else if (arg.equalsIgnoreCase("-z") && argi < args.length) {
 				tz = parseDouble(args[argi++], tz);
 			} else {
-				System.err.println("Options:");
-				System.err.println("  -x <real>   translate x axis");
-				System.err.println("  -y <real>   translate y axis");
-				System.err.println("  -z <real>   translate z axis");
+				printOptions(options());
 				return null;
 			}
 		}
 		return new Translate(tx, ty, tz);
+	}
+	
+	public static Option[] options() {
+		return new Option[] {
+			new Option("x", Type.REAL, "translate x axis"),
+			new Option("y", Type.REAL, "translate y axis"),
+			new Option("z", Type.REAL, "translate z axis"),
+		};
 	}
 	
 	public static void main(String[] args) {

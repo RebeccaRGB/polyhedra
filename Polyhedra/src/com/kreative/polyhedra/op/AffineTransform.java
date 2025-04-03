@@ -56,6 +56,23 @@ public class AffineTransform extends PolyhedronOp {
 		));
 	}
 	
+	public static Option[] options() {
+		return new Option[] {
+			new Option(Mult.REQUIRED, Type.REAL, "scale X"),
+			new Option(Mult.REQUIRED, Type.REAL, "shear YX"),
+			new Option(Mult.REQUIRED, Type.REAL, "shear ZX"),
+			new Option(Mult.REQUIRED, Type.REAL, "shear XY"),
+			new Option(Mult.REQUIRED, Type.REAL, "scale Y"),
+			new Option(Mult.REQUIRED, Type.REAL, "shear ZY"),
+			new Option(Mult.REQUIRED, Type.REAL, "shear XZ"),
+			new Option(Mult.REQUIRED, Type.REAL, "shear YZ"),
+			new Option(Mult.REQUIRED, Type.REAL, "scale Z"),
+			new Option(Mult.REQUIRED, Type.REAL, "translate X"),
+			new Option(Mult.REQUIRED, Type.REAL, "translate Y"),
+			new Option(Mult.REQUIRED, Type.REAL, "translate Z"),
+		};
+	}
+	
 	public static void main(String[] args) {
 		main(parse(args));
 	}

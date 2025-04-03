@@ -66,14 +66,19 @@ public class Rotate extends PolyhedronOp {
 				rotateArgs.add(Axis.Z);
 				rotateArgs.add(parseDouble(args[argi++], 0));
 			} else {
-				System.err.println("Options:");
-				System.err.println("  -x <real>   rotate x axis");
-				System.err.println("  -y <real>   rotate y axis");
-				System.err.println("  -z <real>   rotate z axis");
+				printOptions(options());
 				return null;
 			}
 		}
 		return new Rotate(rotateArgs.toArray());
+	}
+	
+	public static Option[] options() {
+		return new Option[] {
+			new Option("x", Type.REAL, "rotate x axis"),
+			new Option("y", Type.REAL, "rotate y axis"),
+			new Option("z", Type.REAL, "rotate z axis"),
+		};
 	}
 	
 	public static void main(String[] args) {

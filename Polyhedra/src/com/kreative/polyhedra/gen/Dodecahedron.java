@@ -132,19 +132,24 @@ public class Dodecahedron extends PolyhedronGen {
 			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 				c = parseColor(args[argi++], c);
 			} else {
-				System.err.println("Options:");
-				System.err.println("  -r <real>   radius of circumscribed sphere");
-				System.err.println("  -m <real>   radius of sphere tangent to edges");
-				System.err.println("  -i <real>   radius of inscribed sphere");
-				System.err.println("  -d <real>   space diagonal");
-				System.err.println("  -f <real>   height of pentagonal face");
-				System.err.println("  -w <real>   width/diagonal of pentagonal face");
-				System.err.println("  -a <real>   edge length");
-				System.err.println("  -c <color>  color");
+				printOptions(options());
 				return null;
 			}
 		}
 		return new Dodecahedron(spec, size, c);
+	}
+	
+	public static Option[] options() {
+		return new Option[] {
+			new Option("r", Type.REAL, "radius of circumscribed sphere", "m","i","d","f","w","a"),
+			new Option("m", Type.REAL, "radius of sphere tangent to edges", "r","i","d","f","w","a"),
+			new Option("i", Type.REAL, "radius of inscribed sphere", "r","m","d","f","w","a"),
+			new Option("d", Type.REAL, "space diagonal", "r","m","i","f","w","a"),
+			new Option("f", Type.REAL, "height of pentagonal face", "r","m","i","d","w","a"),
+			new Option("w", Type.REAL, "width/diagonal of pentagonal face", "r","m","i","d","f","a"),
+			new Option("a", Type.REAL, "edge length", "r","m","i","d","f","w"),
+			new Option("c", Type.COLOR, "color"),
+		};
 	}
 	
 	public static void main(String[] args) {

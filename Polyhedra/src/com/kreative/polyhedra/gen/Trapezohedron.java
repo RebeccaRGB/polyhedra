@@ -227,25 +227,30 @@ public class Trapezohedron extends PolyhedronGen {
 			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 				c = parseColor(args[argi++], c);
 			} else {
-				System.err.println("Options:");
-				System.err.println("  -n <int>    sides");
-				System.err.println("  -m <int>    stellation");
-				System.err.println("  -a <real>   short edge length");
-				System.err.println("  -e <real>   long edge length");
-				System.err.println("  -h <real>   (half-)height");
-				System.err.println("  -r <real>   radius of inscribed sphere");
-				System.err.println("  -p <real>   radius of sphere tangent to edges");
-				System.err.println("  -u <real>   radius of center polygon");
-				System.err.println("  -v <real>   distance from origin to plane of center polygon");
-				System.err.println("  -w <real>   distance from origin to apex");
-				System.err.println("  -x          align central axis to X axis");
-				System.err.println("  -y          align central axis to Y axis");
-				System.err.println("  -z          align central axis to Z axis");
-				System.err.println("  -c <color>  color");
+				printOptions(options());
 				return null;
 			}
 		}
 		return new Trapezohedron(n, m, spec, size, axis, c);
+	}
+	
+	public static Option[] options() {
+		return new Option[] {
+			new Option("n", Type.INT, "sides"),
+			new Option("m", Type.INT, "stellation"),
+			new Option("a", Type.REAL, "short edge length", "e","h","r","p","u","v","w"),
+			new Option("e", Type.REAL, "long edge length", "a","h","r","p","u","v","w"),
+			new Option("h", Type.REAL, "(half-)height", "a","e","r","p","u","v","w"),
+			new Option("r", Type.REAL, "radius of inscribed sphere", "a","e","h","p","u","v","w"),
+			new Option("p", Type.REAL, "radius of sphere tangent to edges", "a","e","h","r","u","v","w"),
+			new Option("u", Type.REAL, "radius of center polygon", "a","e","h","r","p","v","w"),
+			new Option("v", Type.REAL, "distance from origin to plane of center polygon", "a","e","h","r","p","u","w"),
+			new Option("w", Type.REAL, "distance from origin to apex", "a","e","h","r","p","u","v"),
+			new Option("x", Type.VOID, "align central axis to X axis", "y","z"),
+			new Option("y", Type.VOID, "align central axis to Y axis", "x","z"),
+			new Option("z", Type.VOID, "align central axis to Z axis", "x","y"),
+			new Option("c", Type.COLOR, "color"),
+		};
 	}
 	
 	public static void main(String[] args) {

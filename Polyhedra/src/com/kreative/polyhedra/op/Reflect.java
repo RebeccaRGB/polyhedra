@@ -28,10 +28,14 @@ public class Reflect extends PolyhedronOp {
 	
 	public static Reflect parse(String[] args) {
 		if (args.length > 0) {
-			System.err.println("This operation has no options.");
+			printOptions(options());
 			return null;
 		}
 		return new Reflect();
+	}
+	
+	public static Option[] options() {
+		return null;
 	}
 	
 	public static void main(String[] args) {

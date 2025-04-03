@@ -33,6 +33,12 @@ public class Chain extends PolyhedronOp {
 		return new Chain(ops);
 	}
 	
+	public static Option[] options() {
+		return new Option[] {
+			new Option(Mult.REPEATED, Type.OP, "operation"),
+		};
+	}
+	
 	public static void main(String[] args) {
 		main(parse(args));
 	}

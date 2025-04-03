@@ -62,12 +62,17 @@ public class Ambo extends PolyhedronOp {
 			if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 				color = parseColor(args[argi++], color);
 			} else {
-				System.err.println("Options:");
-				System.err.println("  -c <color>  color of faces generated from vertices");
+				printOptions(options());
 				return null;
 			}
 		}
 		return new Ambo(color);
+	}
+	
+	public static Option[] options() {
+		return new Option[] {
+			new Option("c", Type.COLOR, "color of faces generated from vertices"),
+		};
 	}
 	
 	public static void main(String[] args) {

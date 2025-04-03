@@ -175,18 +175,23 @@ public class Snub extends PolyhedronOp {
 			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 				color = parseColor(args[argi++], color);
 			} else {
-				System.err.println("Options:");
-				System.err.println("  -h <real>   create new vertices a specified distance from the original faces");
-				System.err.println("  -m <real>   create new vertices relative to the maximum magnitude");
-				System.err.println("  -a <real>   create new vertices relative to the average magnitude");
-				System.err.println("  -e <real>   create new vertices relative to the edge magnitude");
-				System.err.println("  -v <real>   create new vertices relative to the vertex magnitude");
-				System.err.println("  -s          create new vertices along original edges (strict mode)");
-				System.err.println("  -c <color>  color of new faces generated from original vertices");
+				printOptions(options());
 				return null;
 			}
 		}
 		return new Snub(evgen, evsize, color);
+	}
+	
+	public static Option[] options() {
+		return new Option[] {
+			new Option("h", Type.REAL, "create new vertices a specified distance from the original faces", "m","a","e","v","s"),
+			new Option("m", Type.REAL, "create new vertices relative to the maximum magnitude", "h","a","e","v","s"),
+			new Option("a", Type.REAL, "create new vertices relative to the average magnitude", "h","m","e","v","s"),
+			new Option("e", Type.REAL, "create new vertices relative to the edge magnitude", "h","m","a","v","s"),
+			new Option("v", Type.REAL, "create new vertices relative to the vertex magnitude", "h","m","a","e","s"),
+			new Option("s", Type.VOID, "create new vertices along original edges (strict mode)", "h","m","a","e","v"),
+			new Option("c", Type.COLOR, "color of new faces generated from original vertices"),
+		};
 	}
 	
 	public static void main(String[] args) {

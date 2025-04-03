@@ -139,17 +139,22 @@ public class Zip extends PolyhedronOp {
 			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 				color = parseColor(args[argi++], color);
 			} else {
-				System.err.println("Options:");
-				System.err.println("  -a <real>   create vertices at a fixed distance from the original edges");
-				System.err.println("  -A <real>   create vertices at a relative distance from the original edges");
-				System.err.println("  -d <real>   create vertices at a fixed distance from the face center point");
-				System.err.println("  -D <real>   create vertices at a relative distance from the face center point");
-				System.err.println("  -s          create vertices halfway between the center and the original edge");
-				System.err.println("  -c <color>  color of new faces generated between original faces");
+				printOptions(options());
 				return null;
 			}
 		}
 		return new Zip(gen, size, color);
+	}
+	
+	public static Option[] options() {
+		return new Option[] {
+			new Option("a", Type.REAL, "create vertices at a fixed distance from the original edges", "A","d","D","s"),
+			new Option("A", Type.REAL, "create vertices at a relative distance from the original edges", "a","d","D","s"),
+			new Option("d", Type.REAL, "create vertices at a fixed distance from the face center point", "a","A","D","s"),
+			new Option("D", Type.REAL, "create vertices at a relative distance from the face center point", "a","A","d","s"),
+			new Option("s", Type.VOID, "create vertices halfway between the center and the original edge", "a","A","d","D"),
+			new Option("c", Type.COLOR, "color of new faces generated between original faces"),
+		};
 	}
 	
 	public static void main(String[] args) {

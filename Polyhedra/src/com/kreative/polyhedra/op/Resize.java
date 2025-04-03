@@ -163,19 +163,24 @@ public class Resize extends PolyhedronOp {
 				metric = Metric.Z_SIZE;
 				size = parseDouble(args[argi++], size);
 			} else {
-				System.err.println("Options:");
-				System.err.println("  -m <real>   scale uniformly to match the specified maximum magnitude");
-				System.err.println("  -a <real>   scale uniformly to match the specified average magnitude");
-				System.err.println("  -x <real>   scale uniformly to match the specified length along the x axis");
-				System.err.println("  -y <real>   scale uniformly to match the specified length along the y axis");
-				System.err.println("  -z <real>   scale uniformly to match the specified length along the z axis");
-				System.err.println("  -X <real>   scale along the x axis only to match the specified length");
-				System.err.println("  -Y <real>   scale along the y axis only to match the specified length");
-				System.err.println("  -Z <real>   scale along the z axis only to match the specified length");
+				printOptions(options());
 				return null;
 			}
 		}
 		return new Resize(metric, size);
+	}
+	
+	public static Option[] options() {
+		return new Option[] {
+			new Option("m", Type.REAL, "scale uniformly to match the specified maximum magnitude", "a","x","y","z","X","Y","Z"),
+			new Option("a", Type.REAL, "scale uniformly to match the specified average magnitude", "m","x","y","z","X","Y","Z"),
+			new Option("x", Type.REAL, "scale uniformly to match the specified length along the x axis", "m","a","y","z","X","Y","Z"),
+			new Option("y", Type.REAL, "scale uniformly to match the specified length along the y axis", "m","a","x","z","X","Y","Z"),
+			new Option("z", Type.REAL, "scale uniformly to match the specified length along the z axis", "m","a","x","y","X","Y","Z"),
+			new Option("X", Type.REAL, "scale along the x axis only to match the specified length", "m","a","x","y","z"),
+			new Option("Y", Type.REAL, "scale along the y axis only to match the specified length", "m","a","x","y","z"),
+			new Option("Z", Type.REAL, "scale along the z axis only to match the specified length", "m","a","x","y","z"),
+		};
 	}
 	
 	public static void main(String[] args) {

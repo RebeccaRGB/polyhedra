@@ -85,24 +85,29 @@ public class Bipyramid extends PolyhedronGen {
 			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 				c = parseColor(args[argi++], c);
 			} else {
-				System.err.println("Options:");
-				System.err.println("  -n <int>    sides");
-				System.err.println("  -m <int>    stellation");
-				System.err.println("  -r <real>   radius of base");
-				System.err.println("  -d <real>   diameter of base");
-				System.err.println("  -s <real>   side length of base");
-				System.err.println("  -a <real>   apothem of base");
-				System.err.println("  -x          align central axis to X axis");
-				System.err.println("  -y          align central axis to Y axis");
-				System.err.println("  -z          align central axis to Z axis");
-				System.err.println("  -h <real>   height of pyramid");
-				System.err.println("  -c <color>  color");
+				printOptions(options());
 				return null;
 			}
 		}
 		double r = spec.toRadius(size, n);
 		if (h == null) h = r;
 		return new Bipyramid(n, m, r, axis, h, c);
+	}
+	
+	public static Option[] options() {
+		return new Option[] {
+			new Option("n", Type.INT, "sides"),
+			new Option("m", Type.INT, "stellation"),
+			new Option("r", Type.REAL, "radius of base", "d","s","a"),
+			new Option("d", Type.REAL, "diameter of base", "r","s","a"),
+			new Option("s", Type.REAL, "side length of base", "r","d","a"),
+			new Option("a", Type.REAL, "apothem of base", "r","d","s"),
+			new Option("x", Type.VOID, "align central axis to X axis", "y","z"),
+			new Option("y", Type.VOID, "align central axis to Y axis", "x","z"),
+			new Option("z", Type.VOID, "align central axis to Z axis", "x","y"),
+			new Option("h", Type.REAL, "height of pyramid"),
+			new Option("c", Type.COLOR, "color"),
+		};
 	}
 	
 	public static void main(String[] args) {

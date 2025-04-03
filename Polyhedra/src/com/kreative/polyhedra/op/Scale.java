@@ -62,15 +62,20 @@ public class Scale extends PolyhedronOp {
 			} else if (arg.equalsIgnoreCase("-z") && argi < args.length) {
 				sz = parseDouble(args[argi++], sz);
 			} else {
-				System.err.println("Options:");
-				System.err.println("  -s <real>   scale uniformly");
-				System.err.println("  -x <real>   scale x axis");
-				System.err.println("  -y <real>   scale y axis");
-				System.err.println("  -z <real>   scale z axis");
+				printOptions(options());
 				return null;
 			}
 		}
 		return new Scale(sx, sy, sz);
+	}
+	
+	public static Option[] options() {
+		return new Option[] {
+			new Option("s", Type.REAL, "scale uniformly", "x","y","z"),
+			new Option("x", Type.REAL, "scale x axis", "s"),
+			new Option("y", Type.REAL, "scale y axis", "s"),
+			new Option("z", Type.REAL, "scale z axis", "s"),
+		};
 	}
 	
 	public static void main(String[] args) {

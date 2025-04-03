@@ -28,10 +28,14 @@ public class InsideOut extends PolyhedronOp {
 	
 	public static InsideOut parse(String[] args) {
 		if (args.length > 0) {
-			System.err.println("This operation has no options.");
+			printOptions(options());
 			return null;
 		}
 		return new InsideOut();
+	}
+	
+	public static Option[] options() {
+		return null;
 	}
 	
 	public static void main(String[] args) {

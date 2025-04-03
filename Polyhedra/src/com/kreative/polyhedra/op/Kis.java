@@ -199,18 +199,23 @@ public class Kis extends PolyhedronOp {
 				gen = VertexGen.PLANAR;
 				size = 0;
 			} else {
-				System.err.println("Options:");
-				System.err.println("  -n <ints>   only operate on faces with the specified number of edges");
-				System.err.println("  -h <real>   create new vertices a specified distance from the original faces");
-				System.err.println("  -m <real>   create new vertices relative to the maximum magnitude");
-				System.err.println("  -a <real>   create new vertices relative to the average magnitude");
-				System.err.println("  -f <real>   create new vertices relative to the face magnitude");
-				System.err.println("  -e          attempt to create equilateral triangles (not always possible)");
-				System.err.println("  -s          create new vertices at centers of original faces (strict mode)");
+				printOptions(options());
 				return null;
 			}
 		}
 		return new Kis(sides, gen, size);
+	}
+	
+	public static Option[] options() {
+		return new Option[] {
+			new Option("n", Type.INTS, "only operate on faces with the specified number of edges"),
+			new Option("h", Type.REAL, "create new vertices a specified distance from the original faces", "m","a","f","e","s"),
+			new Option("m", Type.REAL, "create new vertices relative to the maximum magnitude", "h","a","f","e","s"),
+			new Option("a", Type.REAL, "create new vertices relative to the average magnitude", "h","m","f","e","s"),
+			new Option("f", Type.REAL, "create new vertices relative to the face magnitude", "h","m","a","e","s"),
+			new Option("e", Type.VOID, "attempt to create equilateral triangles (not always possible)", "h","m","a","f","s"),
+			new Option("s", Type.VOID, "create new vertices at centers of original faces (strict mode)", "h","m","a","f","e"),
+		};
 	}
 	
 	public static void main(String[] args) {

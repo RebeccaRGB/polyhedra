@@ -250,18 +250,23 @@ public class Truncate extends PolyhedronOp {
 			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 				color = parseColor(args[argi++], color);
 			} else {
-				System.err.println("Options:");
-				System.err.println("  -n <ints>   only operate on vertices of the specified degree");
-				System.err.println("  -h <real>   truncate at a fixed distance from the original vertices");
-				System.err.println("  -H <real>   truncate at a relative distance from the original vertices");
-				System.err.println("  -a <real>   truncate at a fixed distance along the original edges");
-				System.err.println("  -A <real>   truncate at a relative distance along the original edges");
-				System.err.println("  -s          truncate at the trisection points of the original edges");
-				System.err.println("  -c <color>  color of faces generated from truncated vertices");
+				printOptions(options());
 				return null;
 			}
 		}
 		return new Truncate(degrees, gen, size, color);
+	}
+	
+	public static Option[] options() {
+		return new Option[] {
+			new Option("n", Type.INTS, "only operate on vertices of the specified degree"),
+			new Option("h", Type.REAL, "truncate at a fixed distance from the original vertices", "H","a","A","s"),
+			new Option("H", Type.REAL, "truncate at a relative distance from the original vertices", "h","a","A","s"),
+			new Option("a", Type.REAL, "truncate at a fixed distance along the original edges", "h","H","A","s"),
+			new Option("A", Type.REAL, "truncate at a relative distance along the original edges", "h","H","a","s"),
+			new Option("s", Type.VOID, "truncate at the trisection points of the original edges", "h","H","a","A"),
+			new Option("c", Type.COLOR, "color of faces generated from truncated vertices"),
+		};
 	}
 	
 	public static void main(String[] args) {

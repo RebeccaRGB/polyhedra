@@ -115,26 +115,31 @@ public class Antiprism extends PolyhedronGen {
 			} else if (arg.equalsIgnoreCase("-j") && argi < args.length) {
 				jc = parseColor(args[argi++], jc);
 			} else {
-				System.err.println("Options:");
-				System.err.println("  -n <int>    sides");
-				System.err.println("  -m <int>    stellation");
-				System.err.println("  -r <real>   radius");
-				System.err.println("  -d <real>   diameter");
-				System.err.println("  -s <real>   side length");
-				System.err.println("  -a <real>   apothem");
-				System.err.println("  -x          align central axis to X axis");
-				System.err.println("  -y          align central axis to Y axis");
-				System.err.println("  -z          align central axis to Z axis");
-				System.err.println("  -h <real>   height");
-				System.err.println("  -c <color>  color");
-				System.err.println("  -b <color>  base color");
-				System.err.println("  -j <color>  join color");
+				printOptions(options());
 				return null;
 			}
 		}
 		double r = spec.toRadius(size, n);
 		if (h == null) h = SizeSpecifier.SIDE_LENGTH.fromRadius(r, n) * A;
 		return new Antiprism(n, m, r, axis, h, ((bc != null) ? bc : c), ((jc != null) ? jc : c));
+	}
+	
+	public static Option[] options() {
+		return new Option[] {
+			new Option("n", Type.INT, "sides"),
+			new Option("m", Type.INT, "stellation"),
+			new Option("r", Type.REAL, "radius", "d","s","a"),
+			new Option("d", Type.REAL, "diameter", "r","s","a"),
+			new Option("s", Type.REAL, "side length", "r","d","a"),
+			new Option("a", Type.REAL, "apothem", "r","d","s"),
+			new Option("x", Type.VOID, "align central axis to X axis", "y","z"),
+			new Option("y", Type.VOID, "align central axis to Y axis", "x","z"),
+			new Option("z", Type.VOID, "align central axis to Z axis", "x","y"),
+			new Option("h", Type.REAL, "height"),
+			new Option("c", Type.COLOR, "color", "b","j"),
+			new Option("b", Type.COLOR, "base color", "c"),
+			new Option("j", Type.COLOR, "join color", "c"),
+		};
 	}
 	
 	public static void main(String[] args) {

@@ -335,6 +335,7 @@ public class Recolor extends PolyhedronOp {
 		};
 		public abstract boolean matches(Face face, double epsilon);
 		private final String nname = name().toLowerCase().replaceAll("[^A-Za-z0-9]", "");
+		private final String dname = name().toLowerCase().replaceAll("[^A-Za-z0-9]", " ");
 		public static Classifier forString(String name) {
 			String nname = name.toLowerCase().replaceAll("[^A-Za-z0-9]", "");
 			for (Classifier cl : values()) if (cl.nname.equals(nname)) return cl;
@@ -383,14 +384,19 @@ public class Recolor extends PolyhedronOp {
 				Color c = parseColor(args[argi++], Color.GRAY);
 				colorMap.put(cl, c);
 			} else {
-				System.err.println("Options:");
-				for (Classifier c1 : Classifier.values()) {
-					System.err.println("  -" + c1.nname + " <color>");
-				}
+				printOptions(options());
 				return null;
 			}
 		}
 		return new Recolor(colorMap);
+	}
+	
+	public static Option[] options() {
+		ArrayList<Option> options = new ArrayList<Option>();
+		for (Classifier c : Classifier.values()) {
+			options.add(new Option(c.nname, Type.COLOR, "color for " + c.dname));
+		}
+		return options.toArray(new Option[options.size()]);
 	}
 	
 	public static void main(String[] args) {

@@ -66,18 +66,23 @@ public class Box extends PolyhedronGen {
 			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 				c = parseColor(args[argi++], c);
 			} else {
-				System.err.println("Options:");
-				System.err.println("  -X <real>   x-axis side length");
-				System.err.println("  -Y <real>   y-axis side length");
-				System.err.println("  -Z <real>   z-axis side length");
-				System.err.println("  -x <real>   x-axis distance");
-				System.err.println("  -y <real>   y-axis distance");
-				System.err.println("  -z <real>   z-axis distance");
-				System.err.println("  -c <color>  color");
+				printOptions(options());
 				return null;
 			}
 		}
 		return new Box(sx, sy, sz, c);
+	}
+	
+	public static Option[] options() {
+		return new Option[] {
+			new Option("X", Type.REAL, "x-axis side length", "x"),
+			new Option("Y", Type.REAL, "y-axis side length", "y"),
+			new Option("Z", Type.REAL, "z-axis side length", "z"),
+			new Option("x", Type.REAL, "x-axis distance", "X"),
+			new Option("y", Type.REAL, "y-axis distance", "Y"),
+			new Option("z", Type.REAL, "z-axis distance", "Z"),
+			new Option("c", Type.COLOR, "color"),
+		};
 	}
 	
 	public static void main(String[] args) {

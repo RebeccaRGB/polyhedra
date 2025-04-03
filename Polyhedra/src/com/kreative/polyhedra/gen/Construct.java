@@ -42,6 +42,13 @@ public class Construct extends PolyhedronGen {
 		return new Construct(op, gen);
 	}
 	
+	public static Option[] options() {
+		return new Option[] {
+			new Option(Mult.REPEATED, Type.OP, "operation"),
+			new Option(Mult.REQUIRED, Type.GEN, "generator"),
+		};
+	}
+	
 	public static void main(String[] args) {
 		main(parse(args));
 	}

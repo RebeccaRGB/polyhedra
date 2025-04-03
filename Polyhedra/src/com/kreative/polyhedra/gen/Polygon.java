@@ -134,21 +134,26 @@ public class Polygon extends PolyhedronGen {
 			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 				c = parseColor(args[argi++], c);
 			} else {
-				System.err.println("Options:");
-				System.err.println("  -n <int>    sides");
-				System.err.println("  -m <int>    stellation");
-				System.err.println("  -r <real>   radius");
-				System.err.println("  -d <real>   diameter");
-				System.err.println("  -s <real>   side length");
-				System.err.println("  -a <real>   apothem");
-				System.err.println("  -x <real>   x-coordinate of polygon parallel to yz plane");
-				System.err.println("  -y <real>   y-coordinate of polygon parallel to xz plane");
-				System.err.println("  -z <real>   z-coordinate of polygon parallel to xy plane");
-				System.err.println("  -c <color>  color");
+				printOptions(options());
 				return null;
 			}
 		}
 		return new Polygon(n, m, spec.toRadius(size, n), axis, z, c);
+	}
+	
+	public static Option[] options() {
+		return new Option[] {
+			new Option("n", Type.INT, "sides"),
+			new Option("m", Type.INT, "stellation"),
+			new Option("r", Type.REAL, "radius", "d","s","a"),
+			new Option("d", Type.REAL, "diameter", "r","s","a"),
+			new Option("s", Type.REAL, "side length", "r","d","a"),
+			new Option("a", Type.REAL, "apothem", "r","d","s"),
+			new Option("x", Type.REAL, "x-coordinate of polygon parallel to yz plane", "y","z"),
+			new Option("y", Type.REAL, "y-coordinate of polygon parallel to xz plane", "x","z"),
+			new Option("z", Type.REAL, "z-coordinate of polygon parallel to xy plane", "x","y"),
+			new Option("c", Type.COLOR, "color"),
+		};
 	}
 	
 	public static void main(String[] args) {

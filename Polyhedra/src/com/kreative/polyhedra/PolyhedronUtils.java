@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -263,6 +264,64 @@ public abstract class PolyhedronUtils {
 		} catch (Exception e) {
 			System.err.println("Error invoking generator " + args[0] + ": " + e);
 			return null;
+		}
+	}
+	
+	public static enum Mult { OPTIONAL, REQUIRED, REPEATED, REPEATED_REQUIRED }
+	public static enum Type { VOID, INT, INTS, REAL, REALS, COLOR, TEXT, OP, GEN }
+	
+	public static class Option {
+		public final String flag;
+		public final Mult multiplicity;
+		public final Type dataType;
+		public final String description;
+		public final List<String> mutex;
+		public Option(String flag, Type dataType, String description, String... mutex) {
+			this.flag = flag;
+			this.multiplicity = Mult.OPTIONAL;
+			this.dataType = dataType;
+			this.description = description;
+			this.mutex = Collections.unmodifiableList(Arrays.asList(mutex));
+		}
+		public Option(Mult multiplicity, Type dataType, String description) {
+			this.flag = null;
+			this.multiplicity = multiplicity;
+			this.dataType = dataType;
+			this.description = description;
+			this.mutex = Collections.unmodifiableList(Arrays.asList(new String[0]));
+		}
+	}
+	
+	public static void printOptions(Option[] options) {
+		if (options == null || options.length == 0) {
+			System.err.println("This operation has no options.");
+		} else {
+			StringBuffer[] lines = new StringBuffer[options.length];
+			int maxLength = 0;
+			for (int i = 0; i < options.length; i++) {
+				lines[i] = new StringBuffer();
+				if (options[i].flag == null) {
+					lines[i].append("  ");
+				} else {
+					lines[i].append("  -");
+					lines[i].append(options[i].flag);
+					lines[i].append(" ");
+				}
+				int length = lines[i].length();
+				if (length > maxLength) maxLength = length;
+			}
+			for (int i = 0; i < options.length; i++) {
+				while (lines[i].length() < maxLength) lines[i].append(" ");
+				if (options[i].dataType != Type.VOID) {
+					lines[i].append("<");
+					lines[i].append(options[i].dataType.name().toLowerCase());
+					lines[i].append(">");
+				}
+				while (lines[i].length() < maxLength + 9) lines[i].append(" ");
+				lines[i].append(options[i].description);
+			}
+			System.err.println("Options:");
+			for (StringBuffer line : lines) System.err.println(line.toString());
 		}
 	}
 }

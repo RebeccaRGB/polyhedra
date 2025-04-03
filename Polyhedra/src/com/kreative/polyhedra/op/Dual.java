@@ -95,15 +95,20 @@ public class Dual extends PolyhedronOp {
 			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 				color = parseColor(args[argi++], color);
 			} else {
-				System.err.println("Options:");
-				System.err.println("  -m          rescale dual polyhedron to match original maximum magnitude");
-				System.err.println("  -a          rescale dual polyhedron to match original average magnitude");
-				System.err.println("  -s          do not rescale dual polyhedron (strict mode)");
-				System.err.println("  -c <color>  color");
+				printOptions(options());
 				return null;
 			}
 		}
 		return new Dual(rescale, color);
+	}
+	
+	public static Option[] options() {
+		return new Option[] {
+			new Option("m", Type.VOID, "rescale dual polyhedron to match original maximum magnitude", "a","s"),
+			new Option("a", Type.VOID, "rescale dual polyhedron to match original average magnitude", "m","s"),
+			new Option("s", Type.VOID, "do not rescale dual polyhedron (strict mode)", "m","a"),
+			new Option("c", Type.COLOR, "color"),
+		};
 	}
 	
 	public static void main(String[] args) {

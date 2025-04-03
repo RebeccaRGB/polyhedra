@@ -50,12 +50,17 @@ public class ConvexHull extends PolyhedronOp {
 			if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 				color = parseColor(args[argi++], color);
 			} else {
-				System.err.println("Options:");
-				System.err.println("  -c <color>  color");
+				printOptions(options());
 				return null;
 			}
 		}
 		return new ConvexHull(color);
+	}
+	
+	public static Option[] options() {
+		return new Option[] {
+			new Option("c", Type.COLOR, "color"),
+		};
 	}
 	
 	public static void main(String[] args) {

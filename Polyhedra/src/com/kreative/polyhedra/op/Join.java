@@ -184,18 +184,23 @@ public class Join extends PolyhedronOp {
 			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 				color = parseColor(args[argi++], color);
 			} else {
-				System.err.println("Options:");
-				System.err.println("  -h <real>   create new vertices a specified distance from the original faces");
-				System.err.println("  -m <real>   create new vertices relative to the maximum magnitude");
-				System.err.println("  -a <real>   create new vertices relative to the average magnitude");
-				System.err.println("  -f <real>   create new vertices relative to the face magnitude");
-				System.err.println("  -p          attempt to create planar faces (not always possible)");
-				System.err.println("  -s          create new vertices at centers of original faces (strict mode)");
-				System.err.println("  -c <color>  color");
+				printOptions(options());
 				return null;
 			}
 		}
 		return new Join(gen, size, color);
+	}
+	
+	public static Option[] options() {
+		return new Option[] {
+			new Option("h", Type.REAL, "create new vertices a specified distance from the original faces", "m","a","f","p","s"),
+			new Option("m", Type.REAL, "create new vertices relative to the maximum magnitude", "h","a","f","p","s"),
+			new Option("a", Type.REAL, "create new vertices relative to the average magnitude", "h","m","f","p","s"),
+			new Option("f", Type.REAL, "create new vertices relative to the face magnitude", "h","m","a","p","s"),
+			new Option("p", Type.VOID, "attempt to create planar faces (not always possible)", "h","m","a","f","s"),
+			new Option("s", Type.VOID, "create new vertices at centers of original faces (strict mode)", "h","m","a","f","p"),
+			new Option("c", Type.COLOR, "color"),
+		};
 	}
 	
 	public static void main(String[] args) {

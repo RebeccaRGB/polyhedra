@@ -50,6 +50,12 @@ public class Compose extends PolyhedronGen {
 		return new Compose(gens);
 	}
 	
+	public static Option[] options() {
+		return new Option[] {
+			new Option(Mult.REPEATED_REQUIRED, Type.GEN, "generator"),
+		};
+	}
+	
 	public static void main(String[] args) {
 		main(parse(args));
 	}

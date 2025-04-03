@@ -118,21 +118,26 @@ public class Tetrahedron extends PolyhedronGen {
 			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 				c = parseColor(args[argi++], c);
 			} else {
-				System.err.println("Options:");
-				System.err.println("  -r <real>   radius of circumscribed sphere");
-				System.err.println("  -m <real>   radius of sphere tangent to edges");
-				System.err.println("  -i <real>   radius of inscribed sphere");
-				System.err.println("  -e <real>   radius of exspheres");
-				System.err.println("  -d <real>   diameter of circumscribed sphere");
-				System.err.println("  -h <real>   distance from face to opposite vertex, height of pyramid");
-				System.err.println("  -l <real>   distance from edge to opposite edge");
-				System.err.println("  -f <real>   height of triangular face");
-				System.err.println("  -a <real>   edge length");
-				System.err.println("  -c <color>  color");
+				printOptions(options());
 				return null;
 			}
 		}
 		return new Tetrahedron(spec, size, c);
+	}
+	
+	public static Option[] options() {
+		return new Option[] {
+			new Option("r", Type.REAL, "radius of circumscribed sphere", "m","i","e","d","h","l","f","a"),
+			new Option("m", Type.REAL, "radius of sphere tangent to edges", "r","i","e","d","h","l","f","a"),
+			new Option("i", Type.REAL, "radius of inscribed sphere", "r","m","e","d","h","l","f","a"),
+			new Option("e", Type.REAL, "radius of exspheres", "r","m","i","d","h","l","f","a"),
+			new Option("d", Type.REAL, "diameter of circumscribed sphere", "r","m","i","e","h","l","f","a"),
+			new Option("h", Type.REAL, "distance from face to opposite vertex, height of pyramid", "r","m","i","e","d","l","f","a"),
+			new Option("l", Type.REAL, "distance from edge to opposite edge", "r","m","i","e","d","h","f","a"),
+			new Option("f", Type.REAL, "height of triangular face", "r","m","i","e","d","h","l","a"),
+			new Option("a", Type.REAL, "edge length", "r","m","i","e","d","h","l","f"),
+			new Option("c", Type.COLOR, "color"),
+		};
 	}
 	
 	public static void main(String[] args) {

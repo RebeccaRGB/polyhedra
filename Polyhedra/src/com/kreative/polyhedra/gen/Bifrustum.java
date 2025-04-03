@@ -119,24 +119,7 @@ public class Bifrustum extends PolyhedronGen {
 			} else if (arg.equalsIgnoreCase("-j") && argi < args.length) {
 				jc = parseColor(args[argi++], jc);
 			} else {
-				System.err.println("Options:");
-				System.err.println("  -n <int>    sides");
-				System.err.println("  -m <int>    stellation");
-				System.err.println("  -R <real>   radius of center polygon");
-				System.err.println("  -D <real>   diameter of center polygon");
-				System.err.println("  -S <real>   side length of center polygon");
-				System.err.println("  -A <real>   apothem of center polygon");
-				System.err.println("  -r <real>   radius of top and bottom faces");
-				System.err.println("  -d <real>   diameter of top and bottom faces");
-				System.err.println("  -s <real>   side length of top and bottom faces");
-				System.err.println("  -a <real>   apothem of top and bottom faces");
-				System.err.println("  -x          align central axis to X axis");
-				System.err.println("  -y          align central axis to Y axis");
-				System.err.println("  -z          align central axis to Z axis");
-				System.err.println("  -h <real>   height of frustum");
-				System.err.println("  -c <color>  color");
-				System.err.println("  -b <color>  base color");
-				System.err.println("  -j <color>  join color");
+				printOptions(options());
 				return null;
 			}
 		}
@@ -145,6 +128,28 @@ public class Bifrustum extends PolyhedronGen {
 		return new Bifrustum(
 			n, m, R, r, axis, h, ((bc != null) ? bc : c), ((jc != null) ? jc : c)
 		);
+	}
+	
+	public static Option[] options() {
+		return new Option[] {
+			new Option("n", Type.INT, "sides"),
+			new Option("m", Type.INT, "stellation"),
+			new Option("R", Type.REAL, "radius of center polygon", "D","S","A"),
+			new Option("D", Type.REAL, "diameter of center polygon", "R","S","A"),
+			new Option("S", Type.REAL, "side length of center polygon", "R","D","A"),
+			new Option("A", Type.REAL, "apothem of center polygon", "R","D","S"),
+			new Option("r", Type.REAL, "radius of top and bottom faces", "d","s","a"),
+			new Option("d", Type.REAL, "diameter of top and bottom faces", "r","s","a"),
+			new Option("s", Type.REAL, "side length of top and bottom faces", "r","d","a"),
+			new Option("a", Type.REAL, "apothem of top and bottom faces", "r","d","s"),
+			new Option("x", Type.VOID, "align central axis to X axis", "y","z"),
+			new Option("y", Type.VOID, "align central axis to Y axis", "x","z"),
+			new Option("z", Type.VOID, "align central axis to Z axis", "x","y"),
+			new Option("h", Type.REAL, "height of frustum"),
+			new Option("c", Type.COLOR, "color", "b","j"),
+			new Option("b", Type.COLOR, "base color", "c"),
+			new Option("j", Type.COLOR, "join color", "c"),
+		};
 	}
 	
 	public static void main(String[] args) {

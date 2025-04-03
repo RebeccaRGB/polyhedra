@@ -229,21 +229,26 @@ public class Gyro extends PolyhedronOp {
 				evgen = EdgeVertexGen.VERTEX_MAGNITUDE_OFFSET;
 				evsize = parseDouble(args[argi++], evsize);
 			} else {
-				System.err.println("Options:");
-				System.err.println("  -H <real>   create new vertices from faces normal to the original face");
-				System.err.println("  -M <real>   create new vertices from faces relative to the maximum magnitude");
-				System.err.println("  -A <real>   create new vertices from faces relative to the average magnitude");
-				System.err.println("  -F <real>   create new vertices from faces relative to the face magnitude");
-				System.err.println("  -h <real>   create new vertices from edges normal to the original face");
-				System.err.println("  -m <real>   create new vertices from edges relative to the maximum magnitude");
-				System.err.println("  -a <real>   create new vertices from edges relative to the average magnitude");
-				System.err.println("  -e <real>   create new vertices from edges relative to the edge magnitude");
-				System.err.println("  -v <real>   create new vertices from edges relative to the vertex magnitude");
-				System.err.println("  -s          create new vertices at centers of original faces (strict mode)");
+				printOptions(options());
 				return null;
 			}
 		}
 		return new Gyro(fvgen, fvsize, evgen, evsize);
+	}
+	
+	public static Option[] options() {
+		return new Option[] {
+			new Option("H", Type.REAL, "create new vertices from faces normal to the original face", "M","A","F","s"),
+			new Option("M", Type.REAL, "create new vertices from faces relative to the maximum magnitude", "H","A","F","s"),
+			new Option("A", Type.REAL, "create new vertices from faces relative to the average magnitude", "H","M","F","s"),
+			new Option("F", Type.REAL, "create new vertices from faces relative to the face magnitude", "H","M","A","s"),
+			new Option("h", Type.REAL, "create new vertices from edges normal to the original face", "m","a","e","v","s"),
+			new Option("m", Type.REAL, "create new vertices from edges relative to the maximum magnitude", "h","a","e","v","s"),
+			new Option("a", Type.REAL, "create new vertices from edges relative to the average magnitude", "h","m","e","v","s"),
+			new Option("e", Type.REAL, "create new vertices from edges relative to the edge magnitude", "h","m","a","v","s"),
+			new Option("v", Type.REAL, "create new vertices from edges relative to the vertex magnitude", "h","m","a","e","s"),
+			new Option("s", Type.VOID, "create new vertices at centers of original faces (strict mode)", "H","M","A","F","h","m","a","e","v"),
+		};
 	}
 	
 	public static void main(String[] args) {
