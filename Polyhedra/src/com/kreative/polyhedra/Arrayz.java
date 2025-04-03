@@ -18,9 +18,9 @@ public final class Arrayz {
 	}
 	
 	@SafeVarargs
-	public static final <K,V> Map<K,V> asMap(MapEntry<K,V>... entries) {
+	public static final <K,V> Map<K,V> asMap(MapEntry<? extends K, ? extends V>... entries) {
 		HashMap<K,V> map = new HashMap<K,V>();
-		for (MapEntry<K,V> e : entries) map.put(e.k, e.v);
+		for (MapEntry<? extends K, ? extends V> e : entries) map.put(e.k, e.v);
 		return map;
 	}
 	
