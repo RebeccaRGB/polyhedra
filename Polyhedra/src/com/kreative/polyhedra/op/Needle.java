@@ -67,18 +67,14 @@ public class Needle extends PolyhedronOp {
 				Point3D c = Point3D.average(fv);
 				if (fv.size() > 5) return c;
 				double heights = 0;
-				List<Point3D> normals = new ArrayList<Point3D>(fv.size());
 				for (int i = 0, n = fv.size(); i < n; i++) {
 					Point3D v1 = fv.get(i);
 					Point3D v2 = fv.get((i + 1) % n);
 					Point3D m = v1.midpoint(v2);
 					double h2 = v1.distanceSq(v2) * 0.75 - m.distanceSq(c);
 					if (h2 > 0) heights += Math.sqrt(h2);
-					Point3D vec1 = v1.subtract(c);
-					Point3D vec2 = v2.subtract(c);
-					normals.add(vec1.crossProduct(vec2).normalize());
 				}
-				return c.add(Point3D.average(normals).multiply(heights / fv.size()));
+				return c.add(c.normal(fv).multiply(heights / fv.size()));
 			}
 		},
 		PLANAR {
@@ -103,13 +99,7 @@ public class Needle extends PolyhedronOp {
 					double d = m.distance(c), ad = m.distance(ac);
 					heights += d / Math.tan(m.angleRad(c, ac) * d / (d + ad));
 				}
-				List<Point3D> normals = new ArrayList<Point3D>(fv.size());
-				for (int i = 0, n = fv.size(); i < n; i++) {
-					Point3D vec1 = fv.get(i).subtract(c);
-					Point3D vec2 = fv.get((i + 1) % n).subtract(c);
-					normals.add(vec1.crossProduct(vec2).normalize());
-				}
-				return c.add(Point3D.average(normals).multiply(heights / f.edges.size()));
+				return c.add(c.normal(fv).multiply(heights / f.edges.size()));
 			}
 		};
 		public abstract Point3D createVertex(
