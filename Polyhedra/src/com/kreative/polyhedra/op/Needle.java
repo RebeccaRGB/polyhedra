@@ -20,13 +20,7 @@ public class Needle extends PolyhedronOp {
 			) {
 				Point3D c = Point3D.average(fv);
 				if (size == 0) return c;
-				List<Point3D> normals = new ArrayList<Point3D>(fv.size());
-				for (int i = 0, n = fv.size(); i < n; i++) {
-					Point3D vec1 = fv.get(i).subtract(c);
-					Point3D vec2 = fv.get((i + 1) % n).subtract(c);
-					normals.add(vec1.crossProduct(vec2).normalize());
-				}
-				return c.add(Point3D.average(normals).multiply(size));
+				return c.add(c.normal(fv).multiply(size));
 			}
 		},
 		MAX_MAGNITUDE_OFFSET {

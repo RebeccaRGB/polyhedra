@@ -31,6 +31,7 @@ public class BOM {
 			Resize.class,
 			Rotate.class,
 			Scale.class,
+			Snub.class,
 			Translate.class,
 			Truncate.class,
 			Zip.class

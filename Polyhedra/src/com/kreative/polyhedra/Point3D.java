@@ -1,5 +1,6 @@
 package com.kreative.polyhedra;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Point3D {
@@ -275,6 +276,25 @@ public class Point3D {
 	
 	public Point3D negate() {
 		return new Point3D(-x, -y, -z);
+	}
+	
+	public Point3D normal(Point3D... points) {
+		return normal(Arrays.asList(points));
+	}
+	
+	public Point3D normal(Iterable<Point3D> points) {
+		ArrayList<Point3D> vectors = new ArrayList<Point3D>();
+		for (Point3D point : points) vectors.add(point.subtract(this));
+		ArrayList<Point3D> normals = new ArrayList<Point3D>();
+		for (int i = 0, n = vectors.size(); i < n; i++) {
+			Point3D vec1 = vectors.get(i);
+			if (vec1.magnitude() == 0) continue;
+			Point3D vec2 = vectors.get((i + 1) % n);
+			if (vec2.magnitude() == 0) continue;
+			normals.add(vec1.crossProduct(vec2).normalize());
+		}
+		if (normals.isEmpty()) return ZERO;
+		return average(normals).normalize();
 	}
 	
 	public Point3D normalize() {
