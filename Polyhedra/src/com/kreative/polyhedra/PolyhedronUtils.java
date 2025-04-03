@@ -228,11 +228,14 @@ public abstract class PolyhedronUtils {
 	public static PolyhedronOp parseOp(String s) {
 		String[] args = parseArgs(s);
 		if (args.length == 0) return null;
-		String opName = args[0].toLowerCase();
-		Class<? extends PolyhedronOp> opClass = com.kreative.polyhedra.op.BOM.MAP.get(opName);
+		Class<? extends PolyhedronOp> opClass;
+		opClass = com.kreative.polyhedra.op.BOM.MAP.get(args[0]);
 		if (opClass == null) {
-			System.err.println("Unknown operation " + args[0]);
-			return null;
+			opClass = com.kreative.polyhedra.op.BOM.MAP.get(args[0].toLowerCase());
+			if (opClass == null) {
+				System.err.println("Unknown operation " + args[0]);
+				return null;
+			}
 		}
 		try {
 			Method parse = opClass.getMethod("parse", String[].class);
@@ -249,11 +252,14 @@ public abstract class PolyhedronUtils {
 	public static PolyhedronGen parseGen(String s) {
 		String[] args = parseArgs(s);
 		if (args.length == 0) return null;
-		String genName = args[0].toLowerCase();
-		Class<? extends PolyhedronGen> genClass = com.kreative.polyhedra.gen.BOM.MAP.get(genName);
+		Class<? extends PolyhedronGen> genClass;
+		genClass = com.kreative.polyhedra.gen.BOM.MAP.get(args[0]);
 		if (genClass == null) {
-			System.err.println("Unknown generator " + args[0]);
-			return null;
+			genClass = com.kreative.polyhedra.gen.BOM.MAP.get(args[0].toLowerCase());
+			if (genClass == null) {
+				System.err.println("Unknown generator " + args[0]);
+				return null;
+			}
 		}
 		try {
 			Method parse = genClass.getMethod("parse", String[].class);
