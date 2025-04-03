@@ -37,28 +37,32 @@ public class Main {
 			return;
 		}
 		
-		Class<? extends PolyhedronOp> opClass = com.kreative.polyhedra.op.BOM.MAP.get(command);
-		if (opClass != null) {
-			try {
-				Method main = opClass.getMethod("main", String[].class);
-				main.invoke(null, (Object)cargs);
-				return;
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+		Class<? extends PolyhedronOp> opClass;
+		Class<? extends PolyhedronGen> genClass;
 		
-		Class<? extends PolyhedronGen> genClass = com.kreative.polyhedra.gen.BOM.MAP.get(command);
-		if (genClass != null) {
-			try {
-				Method main = genClass.getMethod("main", String[].class);
-				main.invoke(null, (Object)cargs);
-				return;
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+		opClass = com.kreative.polyhedra.op.BOM.MAP.get(args[0]);
+		if (opClass != null && invokeMain(opClass, cargs)) return;
+		
+		genClass = com.kreative.polyhedra.gen.BOM.MAP.get(args[0]);
+		if (genClass != null && invokeMain(genClass, cargs)) return;
+		
+		opClass = com.kreative.polyhedra.op.BOM.MAP.get(command);
+		if (opClass != null && invokeMain(opClass, cargs)) return;
+		
+		genClass = com.kreative.polyhedra.gen.BOM.MAP.get(command);
+		if (genClass != null && invokeMain(genClass, cargs)) return;
 		
 		Viewer.main(args);
+	}
+	
+	private static boolean invokeMain(Class<?> cls, String[] args) {
+		try {
+			Method main = cls.getMethod("main", String[].class);
+			main.invoke(null, (Object)args);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 }
