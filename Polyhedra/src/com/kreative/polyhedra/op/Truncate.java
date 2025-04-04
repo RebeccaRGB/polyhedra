@@ -129,6 +129,31 @@ public class Truncate extends PolyhedronOp {
 				}
 				return tvs;
 			}
+		},
+		REGULAR {
+			public List<TruncatedVertex> createVertices(
+				List<Edge> seedEdges,
+				Vertex seedVertex,
+				double size
+			) {
+				List<TruncatedVertex> tvs = new ArrayList<TruncatedVertex>(seedEdges.size());
+				for (int i = 0, n = seedEdges.size(); i < n; i++) {
+					Vertex cv = Polyhedron.getOppositeVertex(seedEdges.get(i), seedVertex);
+					if (cv == null) continue;
+					Vertex pv = Polyhedron.getOppositeVertex(seedEdges.get((i + n - 1) % n), seedVertex);
+					Vertex nv = Polyhedron.getOppositeVertex(seedEdges.get((i + 1) % n), seedVertex);
+					double pa = (pv != null) ? seedVertex.point.angleRad(pv.point, cv.point) : 0;
+					double na = (nv != null) ? seedVertex.point.angleRad(nv.point, cv.point) : 0;
+					double ps = (pv != null) ? (1 / (2 + 2 * Math.sin(pa / 2))) : 0;
+					double ns = (nv != null) ? (1 / (2 + 2 * Math.sin(na / 2))) : 0;
+					size = (ps == 0) ? ns : (ns == 0) ? ps : ((ps + ns) / 2);
+					Point3D seedEdgeVector = cv.point.subtract(seedVertex.point);
+					Point3D truncatedEdgeVector = seedEdgeVector.multiply(size);
+					Point3D truncatedVertex = truncatedEdgeVector.add(seedVertex.point);
+					tvs.add(new TruncatedVertex(seedVertex, seedEdges.get(i), truncatedVertex));
+				}
+				return tvs;
+			}
 		};
 		public abstract List<TruncatedVertex> createVertices(
 			List<Edge> seedEdges,
@@ -224,8 +249,8 @@ public class Truncate extends PolyhedronOp {
 	
 	public static Truncate parse(String[] args) {
 		List<Integer> degrees = null;
-		TruncatedVertexGen gen = TruncatedVertexGen.RELATIVE_DISTANCE_ALONG_EDGE;
-		double size = (double)1 / (double)3;
+		TruncatedVertexGen gen = TruncatedVertexGen.REGULAR;
+		double size = 0;
 		Color color = Color.GRAY;
 		int argi = 0;
 		while (argi < args.length) {
@@ -235,18 +260,21 @@ public class Truncate extends PolyhedronOp {
 			} else if (arg.equalsIgnoreCase("-s")) {
 				gen = TruncatedVertexGen.RELATIVE_DISTANCE_ALONG_EDGE;
 				size = (double)1 / (double)3;
-			} else if (arg.equalsIgnoreCase("-A")) {
+			} else if (arg.equals("-A") && argi < args.length) {
 				gen = TruncatedVertexGen.RELATIVE_DISTANCE_ALONG_EDGE;
 				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-a") && argi < args.length) {
+			} else if (arg.equals("-a") && argi < args.length) {
 				gen = TruncatedVertexGen.FIXED_DISTANCE_ALONG_EDGE;
 				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-H") && argi < args.length) {
+			} else if (arg.equals("-H") && argi < args.length) {
 				gen = TruncatedVertexGen.RELATIVE_DISTANCE_FROM_VERTEX;
 				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-h") && argi < args.length) {
+			} else if (arg.equals("-h") && argi < args.length) {
 				gen = TruncatedVertexGen.FIXED_DISTANCE_FROM_VERTEX;
 				size = parseDouble(args[argi++], size);
+			} else if (arg.equalsIgnoreCase("-r")) {
+				gen = TruncatedVertexGen.REGULAR;
+				size = 0;
 			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 				color = parseColor(args[argi++], color);
 			} else {
@@ -260,11 +288,12 @@ public class Truncate extends PolyhedronOp {
 	public static Option[] options() {
 		return new Option[] {
 			new Option("n", Type.INTS, "only operate on vertices of the specified degree"),
-			new Option("h", Type.REAL, "truncate at a fixed distance from the original vertices", "H","a","A","s"),
-			new Option("H", Type.REAL, "truncate at a relative distance from the original vertices", "h","a","A","s"),
-			new Option("a", Type.REAL, "truncate at a fixed distance along the original edges", "h","H","A","s"),
-			new Option("A", Type.REAL, "truncate at a relative distance along the original edges", "h","H","a","s"),
-			new Option("s", Type.VOID, "truncate at the trisection points of the original edges", "h","H","a","A"),
+			new Option("h", Type.REAL, "truncate at a fixed distance from the original vertices", "H","a","A","r","s"),
+			new Option("H", Type.REAL, "truncate at a relative distance from the original vertices", "h","a","A","r","s"),
+			new Option("a", Type.REAL, "truncate at a fixed distance along the original edges", "h","H","A","r","s"),
+			new Option("A", Type.REAL, "truncate at a relative distance along the original edges", "h","H","a","r","s"),
+			new Option("r", Type.VOID, "attempt to create regular faces (not always possible)", "h","H","a","A","s"),
+			new Option("s", Type.VOID, "truncate at the trisection points of the original edges", "h","H","a","A","r"),
 			new Option("c", Type.COLOR, "color of faces generated from truncated vertices"),
 		};
 	}
