@@ -124,16 +124,16 @@ public class Zip extends PolyhedronOp {
 			if (arg.equalsIgnoreCase("-s")) {
 				gen = ZippedFaceGen.RELATIVE_DISTANCE_FROM_EDGE;
 				size = 0.5;
-			} else if (arg.equalsIgnoreCase("-A")) {
+			} else if (arg.equals("-A") && argi < args.length) {
 				gen = ZippedFaceGen.RELATIVE_DISTANCE_FROM_EDGE;
 				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-a") && argi < args.length) {
+			} else if (arg.equals("-a") && argi < args.length) {
 				gen = ZippedFaceGen.FIXED_DISTANCE_FROM_EDGE;
 				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-D") && argi < args.length) {
+			} else if (arg.equals("-D") && argi < args.length) {
 				gen = ZippedFaceGen.RELATIVE_DISTANCE_FROM_CENTER;
 				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-d") && argi < args.length) {
+			} else if (arg.equals("-d") && argi < args.length) {
 				gen = ZippedFaceGen.FIXED_DISTANCE_FROM_CENTER;
 				size = parseDouble(args[argi++], size);
 			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
