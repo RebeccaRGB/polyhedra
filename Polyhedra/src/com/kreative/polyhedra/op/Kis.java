@@ -11,123 +11,25 @@ import com.kreative.polyhedra.Polyhedron;
 import com.kreative.polyhedra.PolyhedronOp;
 
 public class Kis extends PolyhedronOp {
-	public static enum VertexGen {
-		FACE_OFFSET {
-			public Point3D createVertex(
-				Polyhedron s, List<Point3D> sv,
-				Polyhedron.Face f, List<Point3D> fv,
-				double size
-			) {
-				Point3D c = Point3D.average(fv);
-				if (size == 0) return c;
-				return c.add(c.normal(fv).multiply(size));
-			}
-		},
-		MAX_MAGNITUDE_OFFSET {
-			public Point3D createVertex(
-				Polyhedron s, List<Point3D> sv,
-				Polyhedron.Face f, List<Point3D> fv,
-				double size
-			) {
-				Point3D c = Point3D.average(fv);
-				double m = Point3D.maxMagnitude(sv) + size;
-				return c.multiply(m / c.magnitude());
-			}
-		},
-		AVERAGE_MAGNITUDE_OFFSET {
-			public Point3D createVertex(
-				Polyhedron s, List<Point3D> sv,
-				Polyhedron.Face f, List<Point3D> fv,
-				double size
-			) {
-				Point3D c = Point3D.average(fv);
-				double m = Point3D.averageMagnitude(sv) + size;
-				return c.multiply(m / c.magnitude());
-			}
-		},
-		FACE_MAGNITUDE_OFFSET {
-			public Point3D createVertex(
-				Polyhedron s, List<Point3D> sv,
-				Polyhedron.Face f, List<Point3D> fv,
-				double size
-			) {
-				Point3D c = Point3D.average(fv);
-				if (size == 0) return c;
-				double cm = c.magnitude();
-				double m = cm + size;
-				return c.multiply(m / cm);
-			}
-		},
-		EQUILATERAL {
-			public Point3D createVertex(
-				Polyhedron s, List<Point3D> sv,
-				Polyhedron.Face f, List<Point3D> fv,
-				double size
-			) {
-				Point3D c = Point3D.average(fv);
-				if (fv.size() > 5) return c;
-				double heights = 0;
-				for (int i = 0, n = fv.size(); i < n; i++) {
-					Point3D v1 = fv.get(i);
-					Point3D v2 = fv.get((i + 1) % n);
-					Point3D m = v1.midpoint(v2);
-					double h2 = v1.distanceSq(v2) * 0.75 - m.distanceSq(c);
-					if (h2 > 0) heights += Math.sqrt(h2);
-				}
-				return c.add(c.normal(fv).multiply(heights / fv.size()));
-			}
-		},
-		PLANAR {
-			public Point3D createVertex(
-				Polyhedron s, List<Point3D> sv,
-				Polyhedron.Face f, List<Point3D> fv,
-				double size
-			) {
-				Point3D c = Point3D.average(fv);
-				double heights = 0;
-				for (Polyhedron.Edge e : f.edges) {
-					List<Point3D> avs = new ArrayList<Point3D>();
-					for (Polyhedron.Face af : s.getFaces(e)) {
-						if (!af.equals(f)) {
-							for (Polyhedron.Vertex av : af.vertices) {
-								avs.add(av.point);
-							}
-						}
-					}
-					Point3D ac = Point3D.average(avs);
-					Point3D m = e.vertex1.point.midpoint(e.vertex2.point);
-					double d = m.distance(c), ad = m.distance(ac);
-					heights += d / Math.tan(m.angleRad(c, ac) * d / (d + ad));
-				}
-				return c.add(c.normal(fv).multiply(heights / f.edges.size()));
-			}
-		};
-		public abstract Point3D createVertex(
-			Polyhedron seed, List<Point3D> seedVertices,
-			Polyhedron.Face face, List<Point3D> faceVertices,
-			double size
-		);
-	}
-	
 	private final Set<Integer> sides;
-	private final VertexGen gen;
+	private final FaceVertexGen gen;
 	private final double size;
 	
-	public Kis(int[] sides, VertexGen gen, double size) {
+	public Kis(int[] sides, FaceVertexGen gen, double size) {
 		this.sides = new HashSet<Integer>();
 		if (sides != null) for (int i : sides) this.sides.add(i);
 		this.gen = gen;
 		this.size = size;
 	}
 	
-	public Kis(Integer[] sides, VertexGen gen, double size) {
+	public Kis(Integer[] sides, FaceVertexGen gen, double size) {
 		this.sides = new HashSet<Integer>();
 		if (sides != null) for (int i : sides) this.sides.add(i);
 		this.gen = gen;
 		this.size = size;
 	}
 	
-	public Kis(Iterable<? extends Integer> sides, VertexGen gen, double size) {
+	public Kis(Iterable<? extends Integer> sides, FaceVertexGen gen, double size) {
 		this.sides = new HashSet<Integer>();
 		if (sides != null) for (int i : sides) this.sides.add(i);
 		this.gen = gen;
@@ -170,34 +72,20 @@ public class Kis extends PolyhedronOp {
 	
 	public static Kis parse(String[] args) {
 		List<Integer> sides = null;
-		VertexGen gen = VertexGen.EQUILATERAL;
+		FaceVertexGen gen = FaceVertexGen.EQUILATERAL;
 		double size = 0;
+		FaceVertexGen tmp;
 		int argi = 0;
 		while (argi < args.length) {
 			String arg = args[argi++];
 			if (arg.equalsIgnoreCase("-n") && argi < args.length) {
 				sides = parseIntList(args[argi++]);
 			} else if (arg.equalsIgnoreCase("-s")) {
-				gen = VertexGen.FACE_OFFSET;
+				gen = FaceVertexGen.FACE_OFFSET;
 				size = 0;
-			} else if (arg.equalsIgnoreCase("-h") && argi < args.length) {
-				gen = VertexGen.FACE_OFFSET;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-m") && argi < args.length) {
-				gen = VertexGen.MAX_MAGNITUDE_OFFSET;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-a") && argi < args.length) {
-				gen = VertexGen.AVERAGE_MAGNITUDE_OFFSET;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-f") && argi < args.length) {
-				gen = VertexGen.FACE_MAGNITUDE_OFFSET;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-e")) {
-				gen = VertexGen.EQUILATERAL;
-				size = 0;
-			} else if (arg.equalsIgnoreCase("-p")) {
-				gen = VertexGen.PLANAR;
-				size = 0;
+			} else if ((tmp = FaceVertexGen.forFlagIgnoreCase(arg)) != null && (tmp.isVoidType() || argi < args.length)) {
+				gen = tmp;
+				size = tmp.isVoidType() ? 0 : parseDouble(args[argi++], size);
 			} else {
 				printOptions(options());
 				return null;
@@ -209,12 +97,12 @@ public class Kis extends PolyhedronOp {
 	public static Option[] options() {
 		return new Option[] {
 			new Option("n", Type.INTS, "only operate on faces with the specified number of edges"),
-			new Option("h", Type.REAL, "create new vertices a specified distance from the original faces", "m","a","f","e","s"),
-			new Option("m", Type.REAL, "create new vertices relative to the maximum magnitude", "h","a","f","e","s"),
-			new Option("a", Type.REAL, "create new vertices relative to the average magnitude", "h","m","f","e","s"),
-			new Option("f", Type.REAL, "create new vertices relative to the face magnitude", "h","m","a","e","s"),
-			new Option("e", Type.VOID, "attempt to create equilateral triangles (not always possible)", "h","m","a","f","s"),
-			new Option("s", Type.VOID, "create new vertices at centers of original faces (strict mode)", "h","m","a","f","e"),
+			FaceVertexGen.FACE_OFFSET.option("s"),
+			FaceVertexGen.MAX_MAGNITUDE_OFFSET.option("s"),
+			FaceVertexGen.AVERAGE_MAGNITUDE_OFFSET.option("s"),
+			FaceVertexGen.FACE_MAGNITUDE_OFFSET.option("s"),
+			FaceVertexGen.EQUILATERAL.option("s"),
+			new Option("s", Type.VOID, "create new vertices at centers of original faces (strict mode)", FaceVertexGen.allOptionMutexes()),
 		};
 	}
 	

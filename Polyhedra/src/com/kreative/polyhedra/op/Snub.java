@@ -11,78 +11,13 @@ import com.kreative.polyhedra.Polyhedron;
 import com.kreative.polyhedra.PolyhedronOp;
 
 public class Snub extends PolyhedronOp {
-	public static enum EdgeVertexGen {
-		FACE_OFFSET {
-			public Point3D createVertex(
-				Polyhedron seed, List<Point3D> sv,
-				Polyhedron.Face face, List<Point3D> fv,
-				Polyhedron.Edge edge, double size
-			) {
-				Point3D c = edge.vertex1.point.multiply(2).add(edge.vertex2.point).divide(3);
-				if (size == 0) return c;
-				return c.add(c.normal(fv).multiply(size));
-			}
-		},
-		MAX_MAGNITUDE_OFFSET {
-			public Point3D createVertex(
-				Polyhedron seed, List<Point3D> sv,
-				Polyhedron.Face face, List<Point3D> fv,
-				Polyhedron.Edge edge, double size
-			) {
-				Point3D c = edge.vertex1.point.multiply(2).add(edge.vertex2.point).divide(3);
-				double m = Point3D.maxMagnitude(sv) + size;
-				return c.multiply(m / c.magnitude());
-			}
-		},
-		AVERAGE_MAGNITUDE_OFFSET {
-			public Point3D createVertex(
-				Polyhedron seed, List<Point3D> sv,
-				Polyhedron.Face face, List<Point3D> fv,
-				Polyhedron.Edge edge, double size
-			) {
-				Point3D c = edge.vertex1.point.multiply(2).add(edge.vertex2.point).divide(3);
-				double m = Point3D.averageMagnitude(sv) + size;
-				return c.multiply(m / c.magnitude());
-			}
-		},
-		EDGE_MAGNITUDE_OFFSET {
-			public Point3D createVertex(
-				Polyhedron seed, List<Point3D> sv,
-				Polyhedron.Face face, List<Point3D> fv,
-				Polyhedron.Edge edge, double size
-			) {
-				Point3D c = edge.vertex1.point.multiply(2).add(edge.vertex2.point).divide(3);
-				double m = edge.vertex1.point.midpoint(edge.vertex2.point).magnitude() + size;
-				return c.multiply(m / c.magnitude());
-			}
-		},
-		VERTEX_MAGNITUDE_OFFSET {
-			public Point3D createVertex(
-				Polyhedron seed, List<Point3D> sv,
-				Polyhedron.Face face, List<Point3D> fv,
-				Polyhedron.Edge edge, double size
-			) {
-				Point3D c = edge.vertex1.point.multiply(2).add(edge.vertex2.point).divide(3);
-				if (size == 0) return c;
-				double cm = c.magnitude();
-				double m = cm + size;
-				return c.multiply(m / cm);
-			}
-		};
-		public abstract Point3D createVertex(
-			Polyhedron seed, List<Point3D> seedVertices,
-			Polyhedron.Face face, List<Point3D> faceVertices,
-			Polyhedron.Edge edge, double size
-		);
-	}
-	
-	private final EdgeVertexGen evgen;
-	private final double evsize;
+	private final EdgeVertexGen gen;
+	private final double size;
 	private final Color color;
 	
-	public Snub(EdgeVertexGen evgen, double evsize, Color color) {
-		this.evgen = evgen;
-		this.evsize = evsize;
+	public Snub(EdgeVertexGen gen, double size, Color color) {
+		this.gen = gen;
+		this.size = size;
 		this.color = color;
 	}
 	
@@ -104,7 +39,7 @@ public class Snub extends PolyhedronOp {
 			List<Integer> faceVertexIndices = new ArrayList<Integer>(f.edges.size());
 			for (Polyhedron.Edge e : f.edges) {
 				faceVertexIndices.add(vertices.size());
-				vertices.add(evgen.createVertex(seed, seedVertices, f, faceVertices, e, evsize));
+				vertices.add(gen.createVertex(seed, seedVertices, f, faceVertices, e, 2, 1, size));
 			}
 			faces.add(faceVertexIndices);
 			faceColors.add(f.color);
@@ -148,30 +83,19 @@ public class Snub extends PolyhedronOp {
 	}
 	
 	public static Snub parse(String[] args) {
-		EdgeVertexGen evgen = EdgeVertexGen.AVERAGE_MAGNITUDE_OFFSET;
-		double evsize = 0;
+		EdgeVertexGen gen = EdgeVertexGen.AVERAGE_MAGNITUDE_OFFSET;
+		double size = 0;
 		Color color = Color.GRAY;
+		EdgeVertexGen tmp;
 		int argi = 0;
 		while (argi < args.length) {
 			String arg = args[argi++];
 			if (arg.equalsIgnoreCase("-s")) {
-				evgen = EdgeVertexGen.FACE_OFFSET;
-				evsize = 0;
-			} else if (arg.equalsIgnoreCase("-h") && argi < args.length) {
-				evgen = EdgeVertexGen.FACE_OFFSET;
-				evsize = parseDouble(args[argi++], evsize);
-			} else if (arg.equalsIgnoreCase("-m") && argi < args.length) {
-				evgen = EdgeVertexGen.MAX_MAGNITUDE_OFFSET;
-				evsize = parseDouble(args[argi++], evsize);
-			} else if (arg.equalsIgnoreCase("-a") && argi < args.length) {
-				evgen = EdgeVertexGen.AVERAGE_MAGNITUDE_OFFSET;
-				evsize = parseDouble(args[argi++], evsize);
-			} else if (arg.equalsIgnoreCase("-e") && argi < args.length) {
-				evgen = EdgeVertexGen.EDGE_MAGNITUDE_OFFSET;
-				evsize = parseDouble(args[argi++], evsize);
-			} else if (arg.equalsIgnoreCase("-v") && argi < args.length) {
-				evgen = EdgeVertexGen.VERTEX_MAGNITUDE_OFFSET;
-				evsize = parseDouble(args[argi++], evsize);
+				gen = EdgeVertexGen.FACE_OFFSET;
+				size = 0;
+			} else if ((tmp = EdgeVertexGen.forFlagIgnoreCase(arg)) != null && (tmp.isVoidType() || argi < args.length)) {
+				gen = tmp;
+				size = tmp.isVoidType() ? 0 : parseDouble(args[argi++], size);
 			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 				color = parseColor(args[argi++], color);
 			} else {
@@ -179,17 +103,17 @@ public class Snub extends PolyhedronOp {
 				return null;
 			}
 		}
-		return new Snub(evgen, evsize, color);
+		return new Snub(gen, size, color);
 	}
 	
 	public static Option[] options() {
 		return new Option[] {
-			new Option("h", Type.REAL, "create new vertices a specified distance from the original faces", "m","a","e","v","s"),
-			new Option("m", Type.REAL, "create new vertices relative to the maximum magnitude", "h","a","e","v","s"),
-			new Option("a", Type.REAL, "create new vertices relative to the average magnitude", "h","m","e","v","s"),
-			new Option("e", Type.REAL, "create new vertices relative to the edge magnitude", "h","m","a","v","s"),
-			new Option("v", Type.REAL, "create new vertices relative to the vertex magnitude", "h","m","a","e","s"),
-			new Option("s", Type.VOID, "create new vertices along original edges (strict mode)", "h","m","a","e","v"),
+			EdgeVertexGen.FACE_OFFSET.option("s"),
+			EdgeVertexGen.MAX_MAGNITUDE_OFFSET.option("s"),
+			EdgeVertexGen.AVERAGE_MAGNITUDE_OFFSET.option("s"),
+			EdgeVertexGen.EDGE_MAGNITUDE_OFFSET.option("s"),
+			EdgeVertexGen.VERTEX_MAGNITUDE_OFFSET.option("s"),
+			new Option("s", Type.VOID, "create new vertices along original edges (strict mode)", EdgeVertexGen.allOptionMutexes()),
 			new Option("c", Type.COLOR, "color of new faces generated from original vertices"),
 		};
 	}

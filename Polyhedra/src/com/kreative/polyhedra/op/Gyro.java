@@ -11,125 +11,6 @@ import com.kreative.polyhedra.Polyhedron;
 import com.kreative.polyhedra.PolyhedronOp;
 
 public class Gyro extends PolyhedronOp {
-	public static enum FaceVertexGen {
-		FACE_OFFSET {
-			public Point3D createVertex(
-				Polyhedron s, List<Point3D> sv,
-				Polyhedron.Face f, List<Point3D> fv,
-				double size
-			) {
-				Point3D c = Point3D.average(fv);
-				if (size == 0) return c;
-				return c.add(c.normal(fv).multiply(size));
-			}
-		},
-		MAX_MAGNITUDE_OFFSET {
-			public Point3D createVertex(
-				Polyhedron s, List<Point3D> sv,
-				Polyhedron.Face f, List<Point3D> fv,
-				double size
-			) {
-				Point3D c = Point3D.average(fv);
-				double m = Point3D.maxMagnitude(sv) + size;
-				return c.multiply(m / c.magnitude());
-			}
-		},
-		AVERAGE_MAGNITUDE_OFFSET {
-			public Point3D createVertex(
-				Polyhedron s, List<Point3D> sv,
-				Polyhedron.Face f, List<Point3D> fv,
-				double size
-			) {
-				Point3D c = Point3D.average(fv);
-				double m = Point3D.averageMagnitude(sv) + size;
-				return c.multiply(m / c.magnitude());
-			}
-		},
-		FACE_MAGNITUDE_OFFSET {
-			public Point3D createVertex(
-				Polyhedron s, List<Point3D> sv,
-				Polyhedron.Face f, List<Point3D> fv,
-				double size
-			) {
-				Point3D c = Point3D.average(fv);
-				if (size == 0) return c;
-				double cm = c.magnitude();
-				double m = cm + size;
-				return c.multiply(m / cm);
-			}
-		};
-		public abstract Point3D createVertex(
-			Polyhedron seed, List<Point3D> seedVertices,
-			Polyhedron.Face face, List<Point3D> faceVertices,
-			double size
-		);
-	}
-	
-	public static enum EdgeVertexGen {
-		FACE_OFFSET {
-			public Point3D createVertex(
-				Polyhedron seed, List<Point3D> sv,
-				Polyhedron.Face face, List<Point3D> fv,
-				Polyhedron.Edge edge, double size
-			) {
-				Point3D c = edge.vertex1.point.add(edge.vertex2.point.multiply(2)).divide(3);
-				if (size == 0) return c;
-				return c.add(c.normal(fv).multiply(size));
-			}
-		},
-		MAX_MAGNITUDE_OFFSET {
-			public Point3D createVertex(
-				Polyhedron seed, List<Point3D> sv,
-				Polyhedron.Face face, List<Point3D> fv,
-				Polyhedron.Edge edge, double size
-			) {
-				Point3D c = edge.vertex1.point.add(edge.vertex2.point.multiply(2)).divide(3);
-				double m = Point3D.maxMagnitude(sv) + size;
-				return c.multiply(m / c.magnitude());
-			}
-		},
-		AVERAGE_MAGNITUDE_OFFSET {
-			public Point3D createVertex(
-				Polyhedron seed, List<Point3D> sv,
-				Polyhedron.Face face, List<Point3D> fv,
-				Polyhedron.Edge edge, double size
-			) {
-				Point3D c = edge.vertex1.point.add(edge.vertex2.point.multiply(2)).divide(3);
-				double m = Point3D.averageMagnitude(sv) + size;
-				return c.multiply(m / c.magnitude());
-			}
-		},
-		EDGE_MAGNITUDE_OFFSET {
-			public Point3D createVertex(
-				Polyhedron seed, List<Point3D> sv,
-				Polyhedron.Face face, List<Point3D> fv,
-				Polyhedron.Edge edge, double size
-			) {
-				Point3D c = edge.vertex1.point.add(edge.vertex2.point.multiply(2)).divide(3);
-				double m = edge.vertex1.point.midpoint(edge.vertex2.point).magnitude() + size;
-				return c.multiply(m / c.magnitude());
-			}
-		},
-		VERTEX_MAGNITUDE_OFFSET {
-			public Point3D createVertex(
-				Polyhedron seed, List<Point3D> sv,
-				Polyhedron.Face face, List<Point3D> fv,
-				Polyhedron.Edge edge, double size
-			) {
-				Point3D c = edge.vertex1.point.add(edge.vertex2.point.multiply(2)).divide(3);
-				if (size == 0) return c;
-				double cm = c.magnitude();
-				double m = cm + size;
-				return c.multiply(m / cm);
-			}
-		};
-		public abstract Point3D createVertex(
-			Polyhedron seed, List<Point3D> seedVertices,
-			Polyhedron.Face face, List<Point3D> faceVertices,
-			Polyhedron.Edge edge, double size
-		);
-	}
-	
 	private final FaceVertexGen fvgen;
 	private final double fvsize;
 	private final EdgeVertexGen evgen;
@@ -159,7 +40,7 @@ public class Gyro extends PolyhedronOp {
 			for (Polyhedron.Vertex v : f.vertices) faceVertices.add(v.point);
 			faceVertexMap.put(f.index, faceVertices);
 			for (Polyhedron.Edge e : f.edges) {
-				vertices.add(evgen.createVertex(seed, seedVertices, f, faceVertices, e, evsize));
+				vertices.add(evgen.createVertex(seed, seedVertices, f, faceVertices, e, 1, 2, evsize));
 			}
 		}
 		
@@ -193,6 +74,8 @@ public class Gyro extends PolyhedronOp {
 		double fvsize = 0;
 		EdgeVertexGen evgen = EdgeVertexGen.AVERAGE_MAGNITUDE_OFFSET;
 		double evsize = 0;
+		FaceVertexGen fvtmp;
+		EdgeVertexGen evtmp;
 		int argi = 0;
 		while (argi < args.length) {
 			String arg = args[argi++];
@@ -201,33 +84,12 @@ public class Gyro extends PolyhedronOp {
 				fvsize = 0;
 				evgen = EdgeVertexGen.FACE_OFFSET;
 				evsize = 0;
-			} else if (arg.equals("-H") && argi < args.length) {
-				fvgen = FaceVertexGen.FACE_OFFSET;
-				fvsize = parseDouble(args[argi++], fvsize);
-			} else if (arg.equals("-M") && argi < args.length) {
-				fvgen = FaceVertexGen.MAX_MAGNITUDE_OFFSET;
-				fvsize = parseDouble(args[argi++], fvsize);
-			} else if (arg.equals("-A") && argi < args.length) {
-				fvgen = FaceVertexGen.AVERAGE_MAGNITUDE_OFFSET;
-				fvsize = parseDouble(args[argi++], fvsize);
-			} else if (arg.equals("-F") && argi < args.length) {
-				fvgen = FaceVertexGen.FACE_MAGNITUDE_OFFSET;
-				fvsize = parseDouble(args[argi++], fvsize);
-			} else if (arg.equals("-h") && argi < args.length) {
-				evgen = EdgeVertexGen.FACE_OFFSET;
-				evsize = parseDouble(args[argi++], evsize);
-			} else if (arg.equals("-m") && argi < args.length) {
-				evgen = EdgeVertexGen.MAX_MAGNITUDE_OFFSET;
-				evsize = parseDouble(args[argi++], evsize);
-			} else if (arg.equals("-a") && argi < args.length) {
-				evgen = EdgeVertexGen.AVERAGE_MAGNITUDE_OFFSET;
-				evsize = parseDouble(args[argi++], evsize);
-			} else if (arg.equals("-e") && argi < args.length) {
-				evgen = EdgeVertexGen.EDGE_MAGNITUDE_OFFSET;
-				evsize = parseDouble(args[argi++], evsize);
-			} else if (arg.equals("-v") && argi < args.length) {
-				evgen = EdgeVertexGen.VERTEX_MAGNITUDE_OFFSET;
-				evsize = parseDouble(args[argi++], evsize);
+			} else if ((fvtmp = FaceVertexGen.forFlag(arg)) != null && (fvtmp.isVoidType() || argi < args.length)) {
+				fvgen = fvtmp;
+				fvsize = fvtmp.isVoidType() ? 0 : parseDouble(args[argi++], fvsize);
+			} else if ((evtmp = EdgeVertexGen.forFlag(arg)) != null && (evtmp.isVoidType() || argi < args.length)) {
+				evgen = evtmp;
+				evsize = evtmp.isVoidType() ? 0 : parseDouble(args[argi++], evsize);
 			} else {
 				printOptions(options());
 				return null;
@@ -238,16 +100,16 @@ public class Gyro extends PolyhedronOp {
 	
 	public static Option[] options() {
 		return new Option[] {
-			new Option("H", Type.REAL, "create new vertices from faces normal to the original face", "M","A","F","s"),
-			new Option("M", Type.REAL, "create new vertices from faces relative to the maximum magnitude", "H","A","F","s"),
-			new Option("A", Type.REAL, "create new vertices from faces relative to the average magnitude", "H","M","F","s"),
-			new Option("F", Type.REAL, "create new vertices from faces relative to the face magnitude", "H","M","A","s"),
-			new Option("h", Type.REAL, "create new vertices from edges normal to the original face", "m","a","e","v","s"),
-			new Option("m", Type.REAL, "create new vertices from edges relative to the maximum magnitude", "h","a","e","v","s"),
-			new Option("a", Type.REAL, "create new vertices from edges relative to the average magnitude", "h","m","e","v","s"),
-			new Option("e", Type.REAL, "create new vertices from edges relative to the edge magnitude", "h","m","a","v","s"),
-			new Option("v", Type.REAL, "create new vertices from edges relative to the vertex magnitude", "h","m","a","e","s"),
-			new Option("s", Type.VOID, "create new vertices at centers of original faces (strict mode)", "H","M","A","F","h","m","a","e","v"),
+			FaceVertexGen.FACE_OFFSET.option("s"),
+			FaceVertexGen.MAX_MAGNITUDE_OFFSET.option("s"),
+			FaceVertexGen.AVERAGE_MAGNITUDE_OFFSET.option("s"),
+			FaceVertexGen.FACE_MAGNITUDE_OFFSET.option("s"),
+			EdgeVertexGen.FACE_OFFSET.option("s"),
+			EdgeVertexGen.MAX_MAGNITUDE_OFFSET.option("s"),
+			EdgeVertexGen.AVERAGE_MAGNITUDE_OFFSET.option("s"),
+			EdgeVertexGen.EDGE_MAGNITUDE_OFFSET.option("s"),
+			EdgeVertexGen.VERTEX_MAGNITUDE_OFFSET.option("s"),
+			new Option("s", Type.VOID, "create new vertices at centers of original faces (strict mode)", FaceVertexGen.allOptionMutexes(EdgeVertexGen.allOptionMutexes())),
 		};
 	}
 	
