@@ -50,16 +50,15 @@ public class Truncate extends PolyhedronOp {
 					Vertex v = Polyhedron.getOppositeVertex(seedEdge, seedVertex);
 					if (v != null) points.add(v.point);
 				}
-				Point3D vertexVector = Point3D.average(points).subtract(seedVertex.point);
-				vertexVector = vertexVector.multiply(size / vertexVector.magnitude());
+				Point3D vertexVector = Point3D.average(points).subtract(seedVertex.point).normalize(size);
 				List<TruncatedVertex> tvs = new ArrayList<TruncatedVertex>(seedEdges.size());
 				for (Edge seedEdge : seedEdges) {
 					Vertex v = Polyhedron.getOppositeVertex(seedEdge, seedVertex);
 					if (v == null) continue;
 					Point3D seedEdgeVector = v.point.subtract(seedVertex.point);
-					double n = vertexVector.magnitude() * vertexVector.distance(seedEdgeVector);
-					double d = seedEdgeVector.magnitude() * vertexVector.dotProduct(seedEdgeVector);
-					Point3D truncatedEdgeVector = seedEdgeVector.multiply(n / d);
+					double a = vertexVector.angleRad(seedEdgeVector);
+					double h = vertexVector.magnitude() / Math.cos(a);
+					Point3D truncatedEdgeVector = seedEdgeVector.normalize(h);
 					Point3D truncatedVertex = truncatedEdgeVector.add(seedVertex.point);
 					tvs.add(new TruncatedVertex(seedVertex, seedEdge, truncatedVertex));
 				}
@@ -77,16 +76,15 @@ public class Truncate extends PolyhedronOp {
 					Vertex v = Polyhedron.getOppositeVertex(seedEdge, seedVertex);
 					if (v != null) points.add(v.point);
 				}
-				Point3D vertexVector = Point3D.average(points).subtract(seedVertex.point);
-				vertexVector = vertexVector.multiply(size);
+				Point3D vertexVector = Point3D.average(points).subtract(seedVertex.point).multiply(size);
 				List<TruncatedVertex> tvs = new ArrayList<TruncatedVertex>(seedEdges.size());
 				for (Edge seedEdge : seedEdges) {
 					Vertex v = Polyhedron.getOppositeVertex(seedEdge, seedVertex);
 					if (v == null) continue;
 					Point3D seedEdgeVector = v.point.subtract(seedVertex.point);
-					double n = vertexVector.magnitude() * vertexVector.distance(seedEdgeVector);
-					double d = seedEdgeVector.magnitude() * vertexVector.dotProduct(seedEdgeVector);
-					Point3D truncatedEdgeVector = seedEdgeVector.multiply(n / d);
+					double a = vertexVector.angleRad(seedEdgeVector);
+					double h = vertexVector.magnitude() / Math.cos(a);
+					Point3D truncatedEdgeVector = seedEdgeVector.normalize(h);
 					Point3D truncatedVertex = truncatedEdgeVector.add(seedVertex.point);
 					tvs.add(new TruncatedVertex(seedVertex, seedEdge, truncatedVertex));
 				}
@@ -104,8 +102,7 @@ public class Truncate extends PolyhedronOp {
 					Vertex v = Polyhedron.getOppositeVertex(seedEdge, seedVertex);
 					if (v == null) continue;
 					Point3D seedEdgeVector = v.point.subtract(seedVertex.point);
-					double m = size / seedEdgeVector.magnitude();
-					Point3D truncatedEdgeVector = seedEdgeVector.multiply(m);
+					Point3D truncatedEdgeVector = seedEdgeVector.normalize(size);
 					Point3D truncatedVertex = truncatedEdgeVector.add(seedVertex.point);
 					tvs.add(new TruncatedVertex(seedVertex, seedEdge, truncatedVertex));
 				}

@@ -28,7 +28,7 @@ public enum FaceVertexGen {
 		) {
 			Point3D c = Point3D.average(fv);
 			double m = Point3D.maxMagnitude(sv) + size;
-			return c.multiply(m / c.magnitude());
+			return c.normalize(m);
 		}
 	},
 	AVERAGE_MAGNITUDE_OFFSET("A", Type.REAL, "create new vertices from faces relative to the average magnitude") {
@@ -39,7 +39,7 @@ public enum FaceVertexGen {
 		) {
 			Point3D c = Point3D.average(fv);
 			double m = Point3D.averageMagnitude(sv) + size;
-			return c.multiply(m / c.magnitude());
+			return c.normalize(m);
 		}
 	},
 	FACE_MAGNITUDE_OFFSET("F", Type.REAL, "create new vertices from faces relative to the face magnitude") {
@@ -50,9 +50,7 @@ public enum FaceVertexGen {
 		) {
 			Point3D c = Point3D.average(fv);
 			if (size == 0) return c;
-			double cm = c.magnitude();
-			double m = cm + size;
-			return c.multiply(m / cm);
+			return c.normalize(c.magnitude() + size);
 		}
 	},
 	EQUILATERAL("E", Type.VOID, "attempt to create equilateral faces (not always possible)") {
@@ -91,8 +89,7 @@ public enum FaceVertexGen {
 						}
 					}
 				}
-				Point3D ac = Point3D.average(avs);
-				Point3D m = e.vertex1.point.midpoint(e.vertex2.point);
+				Point3D ac = Point3D.average(avs), m = e.midpoint();
 				double d = m.distance(c), ad = m.distance(ac);
 				heights += d / Math.tan(m.angleRad(c, ac) * d / (d + ad));
 			}

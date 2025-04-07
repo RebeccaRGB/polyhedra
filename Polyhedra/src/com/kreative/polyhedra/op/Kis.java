@@ -41,14 +41,12 @@ public class Kis extends PolyhedronOp {
 		List<List<Integer>> faces = new ArrayList<List<Integer>>(seed.faces.size());
 		List<Color> faceColors = new ArrayList<Color>(seed.faces.size());
 		
-		for (Polyhedron.Vertex v : seed.vertices) vertices.add(v.point);
-		List<Point3D> seedVertices = new ArrayList<Point3D>(vertices);
+		List<Point3D> seedVertices = seed.points();
+		vertices.addAll(seedVertices);
 		
 		for (Polyhedron.Face f : seed.faces) {
 			if (sides.isEmpty() || sides.contains(f.vertices.size())) {
-				List<Point3D> faceVertices = new ArrayList<Point3D>(f.vertices.size());
-				for (Polyhedron.Vertex v : f.vertices) faceVertices.add(v.point);
-				Point3D newVertex = gen.createVertex(seed, seedVertices, f, faceVertices, size);
+				Point3D newVertex = gen.createVertex(seed, seedVertices, f, f.points(), size);
 				if (newVertex != null) {
 					int i0 = vertices.size();
 					vertices.add(newVertex);

@@ -41,6 +41,32 @@ public class Point3D {
 		return p1.subtract(this).angle(p2.subtract(this));
 	}
 	
+	public Point3D angleBisector(double x, double y, double z) {
+		double m1 = Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+		double m2 = Math.sqrt(x * x + y * y + z * z);
+		x = ((m1 == 0) ? 0 : (this.x / m1)) + ((m2 == 0) ? 0 : (x / m2));
+		y = ((m1 == 0) ? 0 : (this.y / m1)) + ((m2 == 0) ? 0 : (y / m2));
+		z = ((m1 == 0) ? 0 : (this.z / m1)) + ((m2 == 0) ? 0 : (z / m2));
+		double m = Math.sqrt(x * x + y * y + z * z);
+		return (m == 0) ? ZERO : new Point3D(x / m, y / m, z / m);
+	}
+	
+	public Point3D angleBisector(Point3D point) {
+		double m1 = Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+		double m2 = Math.sqrt(point.x * point.x + point.y * point.y + point.z * point.z);
+		double x = ((m1 == 0) ? 0 : (this.x / m1)) + ((m2 == 0) ? 0 : (point.x / m2));
+		double y = ((m1 == 0) ? 0 : (this.y / m1)) + ((m2 == 0) ? 0 : (point.y / m2));
+		double z = ((m1 == 0) ? 0 : (this.z / m1)) + ((m2 == 0) ? 0 : (point.z / m2));
+		double m = Math.sqrt(x * x + y * y + z * z);
+		return (m == 0) ? ZERO : new Point3D(x / m, y / m, z / m);
+	}
+	
+	public Point3D angleBisector(Point3D p1, Point3D p2, double magnitude) {
+		if (magnitude == 0) return this;
+		Point3D b = p1.subtract(this).angleBisector(p2.subtract(this));
+		return this.add(b.multiply(magnitude));
+	}
+	
 	public double angleRad(double x, double y, double z) {
 		double n = this.dotProduct(x, y, z);
 		double d = Math.sqrt(this.magnitudeSq() * (x * x + y * y + z * z));
@@ -300,6 +326,32 @@ public class Point3D {
 	public Point3D normalize() {
 		double m = Math.sqrt(x * x + y * y + z * z);
 		return (m == 0) ? this : new Point3D(x / m, y / m, z / m);
+	}
+	
+	public Point3D normalize(double magnitude) {
+		if (magnitude == 0) return ZERO;
+		double m = Math.sqrt(x * x + y * y + z * z);
+		return (m == 0) ? this : new Point3D(x * magnitude / m, y * magnitude / m, z * magnitude / m);
+	}
+	
+	public Point3D partition(double x, double y, double z, double a, double b) {
+		if (a == b) return midpoint(x, y, z);
+		if (a == 0) return this;
+		if (b == 0) return new Point3D(x, y, z);
+		x = (this.x * b + x * a) / (b + a);
+		y = (this.y * b + y * a) / (b + a);
+		z = (this.z * b + z * a) / (b + a);
+		return new Point3D(x, y, z);
+	}
+	
+	public Point3D partition(Point3D point, double a, double b) {
+		if (a == b) return midpoint(point);
+		if (a == 0) return this;
+		if (b == 0) return point;
+		double x = (this.x * b + point.x * a) / (b + a);
+		double y = (this.y * b + point.y * a) / (b + a);
+		double z = (this.z * b + point.z * a) / (b + a);
+		return new Point3D(x, y, z);
 	}
 	
 	public Point3D subtract(double x, double y, double z) {

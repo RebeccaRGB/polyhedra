@@ -26,7 +26,7 @@ public enum EdgeVertexGen {
 			Polyhedron.Edge edge, Point3D c, double size
 		) {
 			double m = Point3D.maxMagnitude(sv) + size;
-			return c.multiply(m / c.magnitude());
+			return c.normalize(m);
 		}
 	},
 	AVERAGE_MAGNITUDE_OFFSET("a", Type.REAL, "create new vertices from edges relative to the average magnitude") {
@@ -36,7 +36,7 @@ public enum EdgeVertexGen {
 			Polyhedron.Edge edge, Point3D c, double size
 		) {
 			double m = Point3D.averageMagnitude(sv) + size;
-			return c.multiply(m / c.magnitude());
+			return c.normalize(m);
 		}
 	},
 	EDGE_MAGNITUDE_OFFSET("e", Type.REAL, "create new vertices from edges relative to the edge magnitude") {
@@ -45,8 +45,8 @@ public enum EdgeVertexGen {
 			Polyhedron.Face face, List<Point3D> fv,
 			Polyhedron.Edge edge, Point3D c, double size
 		) {
-			double m = edge.vertex1.point.midpoint(edge.vertex2.point).magnitude() + size;
-			return c.multiply(m / c.magnitude());
+			double m = edge.midpoint().magnitude() + size;
+			return c.normalize(m);
 		}
 	},
 	VERTEX_MAGNITUDE_OFFSET("v", Type.REAL, "create new vertices from edges relative to the vertex magnitude") {
@@ -56,9 +56,7 @@ public enum EdgeVertexGen {
 			Polyhedron.Edge edge, Point3D c, double size
 		) {
 			if (size == 0) return c;
-			double cm = c.magnitude();
-			double m = cm + size;
-			return c.multiply(m / cm);
+			return c.normalize(c.magnitude() + size);
 		}
 	};
 	
@@ -79,21 +77,6 @@ public enum EdgeVertexGen {
 		Polyhedron.Face face, List<Point3D> faceVertices,
 		Polyhedron.Edge edge, Point3D vertex, double size
 	);
-	
-	public final Point3D createVertex(
-		Polyhedron seed, List<Point3D> seedVertices,
-		Polyhedron.Face face, List<Point3D> faceVertices,
-		Polyhedron.Edge edge, double a, double b, double size
-	) {
-		Point3D vertex = (
-			(a == b) ? edge.vertex1.point.midpoint(edge.vertex2.point) :
-			(a == 0) ? edge.vertex2.point : (b == 0) ? edge.vertex1.point :
-			(a == 1) ? edge.vertex1.point.add(edge.vertex2.point.multiply(b)).divide(b + 1) :
-			(b == 1) ? edge.vertex1.point.multiply(a).add(edge.vertex2.point).divide(a + 1) :
-			edge.vertex1.point.multiply(a).add(edge.vertex2.point.multiply(b)).divide(a + b)
-		);
-		return createVertex(seed, seedVertices, face, faceVertices, edge, vertex, size);
-	}
 	
 	public final boolean isVoidType() {
 		return sizeDataType == Type.VOID;

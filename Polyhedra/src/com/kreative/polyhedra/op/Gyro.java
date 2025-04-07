@@ -29,18 +29,17 @@ public class Gyro extends PolyhedronOp {
 		List<List<Integer>> faces = new ArrayList<List<Integer>>();
 		List<Color> faceColors = new ArrayList<Color>();
 		
-		for (Polyhedron.Vertex v : seed.vertices) vertices.add(v.point);
-		List<Point3D> seedVertices = new ArrayList<Point3D>(vertices);
+		List<Point3D> seedVertices = seed.points();
+		vertices.addAll(seedVertices);
 		
 		Map<Integer,Integer> edgeStartIndexMap = new HashMap<Integer,Integer>();
 		Map<Integer,List<Point3D>> faceVertexMap = new HashMap<Integer,List<Point3D>>();
 		for (Polyhedron.Face f : seed.faces) {
 			edgeStartIndexMap.put(f.index, vertices.size());
-			List<Point3D> faceVertices = new ArrayList<Point3D>(f.vertices.size());
-			for (Polyhedron.Vertex v : f.vertices) faceVertices.add(v.point);
-			faceVertexMap.put(f.index, faceVertices);
+			List<Point3D> fv = f.points();
+			faceVertexMap.put(f.index, fv);
 			for (Polyhedron.Edge e : f.edges) {
-				vertices.add(evgen.createVertex(seed, seedVertices, f, faceVertices, e, 1, 2, evsize));
+				vertices.add(evgen.createVertex(seed, seedVertices, f, fv, e, e.partition(2, 1), evsize));
 			}
 		}
 		

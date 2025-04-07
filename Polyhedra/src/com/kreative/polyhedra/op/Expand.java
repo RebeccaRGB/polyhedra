@@ -15,9 +15,7 @@ public class Expand extends PolyhedronOp {
 			public List<Point3D> createFace(Polyhedron.Face face, Point3D center, double size) {
 				List<Point3D> vertices = new ArrayList<Point3D>();
 				for (Polyhedron.Vertex vertex : face.vertices) {
-					Point3D z = center.subtract(vertex.point);
-					z = z.multiply(size / z.magnitude());
-					vertices.add(z.add(vertex.point));
+					vertices.add(center.subtract(vertex.point).normalize(size).add(vertex.point));
 				}
 				return vertices;
 			}
@@ -26,9 +24,7 @@ public class Expand extends PolyhedronOp {
 			public List<Point3D> createFace(Polyhedron.Face face, Point3D center, double size) {
 				List<Point3D> vertices = new ArrayList<Point3D>();
 				for (Polyhedron.Vertex vertex : face.vertices) {
-					Point3D z = vertex.point.subtract(center);
-					z = z.multiply(size / z.magnitude());
-					vertices.add(z.add(center));
+					vertices.add(vertex.point.subtract(center).normalize(size).add(center));
 				}
 				return vertices;
 			}
@@ -76,12 +72,8 @@ public class Expand extends PolyhedronOp {
 		for (Polyhedron.Face face : seed.faces) {
 			int startIndex = vertices.size();
 			faceStartIndexMap.put(face, startIndex);
-			List<Point3D> seedVertices = new ArrayList<Point3D>();
-			for (Polyhedron.Vertex v : face.vertices) seedVertices.add(v.point);
-			Point3D center = Point3D.average(seedVertices);
-			List<Point3D> expandedVertices = gen.createFace(face, center, size);
-			vertices.addAll(expandedVertices);
-			int n = expandedVertices.size();
+			vertices.addAll(gen.createFace(face, face.center(), size));
+			int n = vertices.size() - startIndex;
 			List<Integer> expandedFace = new ArrayList<Integer>(n);
 			for (int i = 0; i < n; i++) expandedFace.add(startIndex++);
 			faces.add(expandedFace);

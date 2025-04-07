@@ -24,10 +24,7 @@ public class Bevel extends PolyhedronOp {
 				double a = vertex.angleRad(center, midpoint);
 				double s = Math.cos((Math.PI - a * 2) / 4);
 				double t = size / s;
-				Point3D mv = midpoint.subtract(center).normalize();
-				Point3D vv = vertex.subtract(center).normalize();
-				Point3D rv = mv.midpoint(vv).normalize();
-				return center.add(rv.multiply(t));
+				return center.angleBisector(midpoint, vertex, t);
 			}
 		},
 		RELATIVE_DISTANCE_FROM_CENTER_ALONG_APOTHEM {
@@ -40,10 +37,7 @@ public class Bevel extends PolyhedronOp {
 				double a = vertex.angleRad(center, midpoint);
 				double s = Math.cos((Math.PI - a * 2) / 4);
 				double t = midpoint.distance(center) * size / s;
-				Point3D mv = midpoint.subtract(center).normalize();
-				Point3D vv = vertex.subtract(center).normalize();
-				Point3D rv = mv.midpoint(vv).normalize();
-				return center.add(rv.multiply(t));
+				return center.angleBisector(midpoint, vertex, t);
 			}
 		},
 		FIXED_DISTANCE_FROM_EDGE_ALONG_APOTHEM {
@@ -56,10 +50,7 @@ public class Bevel extends PolyhedronOp {
 				double a = vertex.angleRad(center, midpoint);
 				double s = Math.cos((Math.PI - a * 2) / 4);
 				double t = (midpoint.distance(center) - size) / s;
-				Point3D mv = midpoint.subtract(center).normalize();
-				Point3D vv = vertex.subtract(center).normalize();
-				Point3D rv = mv.midpoint(vv).normalize();
-				return center.add(rv.multiply(t));
+				return center.angleBisector(midpoint, vertex, t);
 			}
 		},
 		RELATIVE_DISTANCE_FROM_EDGE_ALONG_APOTHEM {
@@ -72,10 +63,7 @@ public class Bevel extends PolyhedronOp {
 				double a = vertex.angleRad(center, midpoint);
 				double s = Math.cos((Math.PI - a * 2) / 4);
 				double t = midpoint.distance(center) * (1 - size) / s;
-				Point3D mv = midpoint.subtract(center).normalize();
-				Point3D vv = vertex.subtract(center).normalize();
-				Point3D rv = mv.midpoint(vv).normalize();
-				return center.add(rv.multiply(t));
+				return center.angleBisector(midpoint, vertex, t);
 			}
 		},
 		REGULAR {
@@ -89,20 +77,14 @@ public class Bevel extends PolyhedronOp {
 				faces.remove(face);
 				double fa = 0;
 				for (Face f : faces) {
-					List<Point3D> ov = new ArrayList<Point3D>();
-					for (Vertex v : f.vertices) ov.add(v.point);
-					Point3D c = Point3D.average(ov);
-					double a = midpoint.angleRad(center, c);
+					double a = midpoint.angleRad(center, f.center());
 					if (a > fa) fa = a;
 				}
 				double ea = vertex.angleRad(center, midpoint);
 				double s1 = Math.cos((Math.PI - ea * 2) / 4);
 				double s2 = Math.tan((Math.PI - ea * 2) / 4) / Math.sin(fa / 2);
 				double t = midpoint.distance(center) / (s1 + s1 * s2);
-				Point3D mv = midpoint.subtract(center).normalize();
-				Point3D vv = vertex.subtract(center).normalize();
-				Point3D rv = mv.midpoint(vv).normalize();
-				return center.add(rv.multiply(t));
+				return center.angleBisector(midpoint, vertex, t);
 			}
 		};
 		public abstract Point3D createVertex(
@@ -135,14 +117,12 @@ public class Bevel extends PolyhedronOp {
 		for (Face f : seed.faces) {
 			int startIndex = vertices.size();
 			faceStartIndexMap.put(f, startIndex);
-			List<Point3D> seedVertices = new ArrayList<Point3D>();
-			for (Vertex v : f.vertices) seedVertices.add(v.point);
-			Point3D center = Point3D.average(seedVertices);
+			Point3D c = f.center();
 			List<Integer> beveledFace = new ArrayList<Integer>();
 			for (Edge e : f.edges) {
-				Point3D midpoint = e.vertex1.point.midpoint(e.vertex2.point);
-				vertices.add(gen.createVertex(seed, f, center, e, midpoint, e.vertex1.point, size));
-				vertices.add(gen.createVertex(seed, f, center, e, midpoint, e.vertex2.point, size));
+				Point3D m = e.midpoint();
+				vertices.add(gen.createVertex(seed, f, c, e, m, e.vertex1.point, size));
+				vertices.add(gen.createVertex(seed, f, c, e, m, e.vertex2.point, size));
 				beveledFace.add(startIndex++);
 				beveledFace.add(startIndex++);
 			}

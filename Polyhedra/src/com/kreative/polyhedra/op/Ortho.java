@@ -27,19 +27,17 @@ public class Ortho extends PolyhedronOp {
 		List<List<Integer>> faces = new ArrayList<List<Integer>>();
 		List<Color> faceColors = new ArrayList<Color>();
 		
-		for (Polyhedron.Vertex v : seed.vertices) vertices.add(v.point);
-		List<Point3D> seedVertices = new ArrayList<Point3D>(vertices);
+		List<Point3D> seedVertices = seed.points();
+		vertices.addAll(seedVertices);
 		
 		int edgeStartIndex = vertices.size();
 		for (Polyhedron.Edge e : seed.edges) {
-			vertices.add(evgen.createVertex(seed, seedVertices, null, null, e, 1, 1, evsize));
+			vertices.add(evgen.createVertex(seed, seedVertices, null, null, e, e.midpoint(), evsize));
 		}
 		
 		int faceStartIndex = vertices.size();
 		for (Polyhedron.Face f : seed.faces) {
-			List<Point3D> faceVertices = new ArrayList<Point3D>(f.vertices.size());
-			for (Polyhedron.Vertex v : f.vertices) faceVertices.add(v.point);
-			vertices.add(fvgen.createVertex(seed, seedVertices, f, faceVertices, fvsize));
+			vertices.add(fvgen.createVertex(seed, seedVertices, f, f.points(), fvsize));
 			int fi = faceStartIndex + f.index;
 			for (int i = 0, n = f.vertices.size(); i < n; i++) {
 				int vi = f.vertices.get(i).index;

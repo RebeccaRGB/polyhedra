@@ -41,7 +41,7 @@ public class Convert {
 			// Java3D blows up at zero-length edges,
 			// so don't even bother to generate them.
 			if (h == 0) continue;
-			Point3D m = e.vertex1.point.midpoint(e.vertex2.point);
+			Point3D m = e.midpoint();
 			Vector3d t = new Vector3d(m.getX(), m.getY(), m.getZ());
 			Point3D d = e.vertex2.point.subtract(e.vertex1.point);
 			Vector3d v = new Vector3d(d.getX(), d.getY(), d.getZ()); v.normalize();

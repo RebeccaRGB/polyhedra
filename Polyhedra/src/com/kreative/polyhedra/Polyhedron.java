@@ -47,6 +47,12 @@ public class Polyhedron {
 		public int hashCode() {
 			return vertex1.index + vertex2.index;
 		}
+		public Point3D midpoint() {
+			return vertex1.point.midpoint(vertex2.point);
+		}
+		public Point3D partition(double a, double b) {
+			return vertex1.point.partition(vertex2.point, a, b);
+		}
 	}
 	
 	public static final class Face {
@@ -62,6 +68,9 @@ public class Polyhedron {
 			this.color = color;
 			this.index = index;
 		}
+		public Point3D center() {
+			return Point3D.average(points());
+		}
 		public boolean equals(Object obj) {
 			return (
 				(obj instanceof Face)
@@ -71,6 +80,11 @@ public class Polyhedron {
 		}
 		public int hashCode() {
 			return vertices.hashCode();
+		}
+		public List<Point3D> points() {
+			List<Point3D> points = new ArrayList<Point3D>(vertices.size());
+			for (Vertex v : vertices) points.add(v.point);
+			return points;
 		}
 	}
 	
@@ -141,6 +155,16 @@ public class Polyhedron {
 		this.vertices = Collections.unmodifiableList(tmpVertices);
 		this.edges = Collections.unmodifiableList(tmpEdges);
 		this.faces = Collections.unmodifiableList(tmpFaces);
+	}
+	
+	public Point3D center() {
+		return Point3D.average(points());
+	}
+	
+	public List<Point3D> points() {
+		List<Point3D> points = new ArrayList<Point3D>(vertices.size());
+		for (Vertex v : vertices) points.add(v.point);
+		return points;
 	}
 	
 	/** Returns a new list containing the edges adjacent to the specified vertex. */

@@ -20,9 +20,7 @@ public class Ambo extends PolyhedronOp {
 		List<List<Integer>> faces = new ArrayList<List<Integer>>(vfSize);
 		List<Color> faceColors = new ArrayList<Color>(vfSize);
 		
-		for (Polyhedron.Edge edge : seed.edges) {
-			vertices.add(edge.vertex1.point.midpoint(edge.vertex2.point));
-		}
+		for (Polyhedron.Edge edge : seed.edges) vertices.add(edge.midpoint());
 		
 		for (Polyhedron.Vertex vertex : seed.vertices) {
 			List<Polyhedron.Face> seedFaces = seed.getFaces(vertex);

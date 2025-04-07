@@ -15,10 +15,8 @@ public class Zip extends PolyhedronOp {
 			public List<Point3D> createFace(Polyhedron.Face face, Point3D center, double size) {
 				List<Point3D> vertices = new ArrayList<Point3D>();
 				for (Polyhedron.Edge edge : face.edges) {
-					Point3D m = edge.vertex1.point.midpoint(edge.vertex2.point);
-					Point3D z = center.subtract(m);
-					z = z.multiply(size / z.magnitude());
-					vertices.add(z.add(m));
+					Point3D m = edge.midpoint();
+					vertices.add(center.subtract(m).normalize(size).add(m));
 				}
 				return vertices;
 			}
@@ -27,10 +25,8 @@ public class Zip extends PolyhedronOp {
 			public List<Point3D> createFace(Polyhedron.Face face, Point3D center, double size) {
 				List<Point3D> vertices = new ArrayList<Point3D>();
 				for (Polyhedron.Edge edge : face.edges) {
-					Point3D m = edge.vertex1.point.midpoint(edge.vertex2.point);
-					Point3D z = m.subtract(center);
-					z = z.multiply(size / z.magnitude());
-					vertices.add(z.add(center));
+					Point3D m = edge.midpoint();
+					vertices.add(m.subtract(center).normalize(size).add(center));
 				}
 				return vertices;
 			}
@@ -39,7 +35,7 @@ public class Zip extends PolyhedronOp {
 			public List<Point3D> createFace(Polyhedron.Face face, Point3D center, double size) {
 				List<Point3D> vertices = new ArrayList<Point3D>();
 				for (Polyhedron.Edge edge : face.edges) {
-					Point3D m = edge.vertex1.point.midpoint(edge.vertex2.point);
+					Point3D m = edge.midpoint();
 					vertices.add(center.subtract(m).multiply(size).add(m));
 				}
 				return vertices;
@@ -49,7 +45,7 @@ public class Zip extends PolyhedronOp {
 			public List<Point3D> createFace(Polyhedron.Face face, Point3D center, double size) {
 				List<Point3D> vertices = new ArrayList<Point3D>();
 				for (Polyhedron.Edge edge : face.edges) {
-					Point3D m = edge.vertex1.point.midpoint(edge.vertex2.point);
+					Point3D m = edge.midpoint();
 					vertices.add(m.subtract(center).multiply(size).add(center));
 				}
 				return vertices;
@@ -78,12 +74,8 @@ public class Zip extends PolyhedronOp {
 		for (Polyhedron.Face face : seed.faces) {
 			int startIndex = vertices.size();
 			faceStartIndexMap.put(face, startIndex);
-			List<Point3D> seedVertices = new ArrayList<Point3D>();
-			for (Polyhedron.Vertex v : face.vertices) seedVertices.add(v.point);
-			Point3D center = Point3D.average(seedVertices);
-			List<Point3D> zippedVertices = gen.createFace(face, center, size);
-			vertices.addAll(zippedVertices);
-			int n = zippedVertices.size();
+			vertices.addAll(gen.createFace(face, face.center(), size));
+			int n = vertices.size() - startIndex;
 			List<Integer> zippedFace = new ArrayList<Integer>(n);
 			for (int i = 0; i < n; i++) zippedFace.add(startIndex++);
 			faces.add(zippedFace);
