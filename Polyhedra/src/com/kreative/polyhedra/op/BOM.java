@@ -13,6 +13,7 @@ public class BOM {
 		Arrays.asList(
 			AffineTransform.class,
 			Ambo.class,
+			Bevel.class,
 			Center.class,
 			Chain.class,
 			ConvexHull.class,
@@ -47,7 +48,7 @@ public class BOM {
 			// Arrayz.mapEntry("L0", JoinLace.class),
 			// Arrayz.mapEntry("X", Cross.class),
 			Arrayz.mapEntry("a", Ambo.class),
-			// Arrayz.mapEntry("b", Bevel.class),
+			Arrayz.mapEntry("b", Bevel.class),
 			// Arrayz.mapEntry("c", Chamfer.class),
 			Arrayz.mapEntry("d", Dual.class),
 			Arrayz.mapEntry("e", Expand.class),
