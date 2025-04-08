@@ -54,9 +54,7 @@ public class Gyro extends PolyhedronOp {
 				int nei = edgeStartIndex + i;
 				int pei = edgeStartIndex + ((i + n - 1) % n);
 				Polyhedron.Edge nextEdge = f.edges.get(i);
-				List<Polyhedron.Face> adjacentFaces = seed.getFaces(nextEdge);
-				adjacentFaces.remove(f);
-				for (Polyhedron.Face af : adjacentFaces) {
+				for (Polyhedron.Face af : seed.getOppositeFaces(nextEdge, f)) {
 					int afesi = edgeStartIndexMap.get(af.index);
 					int afei = afesi + af.edges.indexOf(nextEdge);
 					faces.add(Arrays.asList(fi, pei, vi, afei, nei));

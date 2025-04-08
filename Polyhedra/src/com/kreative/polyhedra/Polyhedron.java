@@ -50,6 +50,9 @@ public class Polyhedron {
 		public Point3D midpoint() {
 			return vertex1.point.midpoint(vertex2.point);
 		}
+		public Vertex oppositeVertex(Vertex v) {
+			return getOppositeVertex(this, v);
+		}
 		public Point3D partition(double a, double b) {
 			return vertex1.point.partition(vertex2.point, a, b);
 		}
@@ -198,6 +201,55 @@ public class Polyhedron {
 			}
 		}
 		return faces;
+	}
+	
+	/**
+	 * Returns a new list containing the faces adjacent to the specified edge
+	 * but excluding the specified face. Under normal circumstances the size of
+	 * the returned list will be 1. Degenerate polyhedra may result in a list of
+	 * size other than 1.
+	 */
+	public List<Face> getOppositeFaces(Edge e, Face f) {
+		List<Face> faces = new ArrayList<Face>();
+		for (Face face : this.faces) {
+			if (face.equals(f)) continue;
+			if (face.edges.contains(e)) faces.add(face);
+		}
+		return faces;
+	}
+	
+	/**
+	 * Returns a new list containing the edges adjacent to the specified vertex
+	 * in order as determined by the winding order of the specified faces.
+	 * If <code>edges</code> is null, a new list as created by <code>getEdges(v)</code> is used.
+	 * If <code>faces</code> is null, a new list as created by <code>getFaces(v)</code> is used.
+	 */
+	public List<Edge> getOrderedEdges(Vertex v, List<Edge> edges, List<Face> faces) {
+		if (faces == null) faces = getFaces(v);
+		if (edges == null) edges = getEdges(v);
+		List<Edge> orderedEdges = new ArrayList<Edge>();
+		Edge currentEdge = edges.isEmpty() ? null : edges.get(0);
+		while (currentEdge != null && !orderedEdges.contains(currentEdge)) {
+			orderedEdges.add(currentEdge);
+			currentEdge = getNextEdge(faces, currentEdge, v);
+		}
+		return orderedEdges;
+	}
+	
+	/**
+	 * Returns a new list containing the faces adjacent to the specified vertex
+	 * in order as determined by the winding order of the specified faces.
+	 * If <code>faces</code> is null, a new list as created by <code>getFaces(v)</code> is used.
+	 */
+	public List<Face> getOrderedFaces(Vertex v, List<Face> faces) {
+		if (faces == null) faces = getFaces(v);
+		List<Face> orderedFaces = new ArrayList<Face>();
+		Face currentFace = faces.isEmpty() ? null : faces.get(0);
+		while (currentFace != null && !orderedFaces.contains(currentFace)) {
+			orderedFaces.add(currentFace);
+			currentFace = getNextFace(faces, currentFace, v);
+		}
+		return orderedFaces;
 	}
 	
 	/** Given an edge and a vertex on that edge, returns the other vertex on that edge. */

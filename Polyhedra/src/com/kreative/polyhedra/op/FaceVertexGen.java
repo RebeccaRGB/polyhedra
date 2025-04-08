@@ -82,11 +82,9 @@ public enum FaceVertexGen {
 			double heights = 0;
 			for (Polyhedron.Edge e : f.edges) {
 				List<Point3D> avs = new ArrayList<Point3D>();
-				for (Polyhedron.Face af : s.getFaces(e)) {
-					if (!af.equals(f)) {
-						for (Polyhedron.Vertex av : af.vertices) {
-							avs.add(av.point);
-						}
+				for (Polyhedron.Face af : s.getOppositeFaces(e, f)) {
+					for (Polyhedron.Vertex av : af.vertices) {
+						avs.add(av.point);
 					}
 				}
 				Point3D ac = Point3D.average(avs), m = e.midpoint();

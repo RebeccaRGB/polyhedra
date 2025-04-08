@@ -49,28 +49,20 @@ public class Dual extends PolyhedronOp {
 		List<Point3D> vertices = new ArrayList<Point3D>(seed.faces.size());
 		List<List<Integer>> faces = new ArrayList<List<Integer>>(seed.vertices.size());
 		List<Color> faceColors = new ArrayList<Color>(seed.vertices.size());
-		
 		for (Polyhedron.Face f : seed.faces) vertices.add(f.center());
-		
 		for (Polyhedron.Vertex v : seed.vertices) {
 			List<Polyhedron.Face> seedFaces = seed.getFaces(v);
 			while (!seedFaces.isEmpty()) {
 				List<Integer> dualFace = new ArrayList<Integer>();
-				Polyhedron.Face seedFace = seedFaces.remove(0);
-				dualFace.add(seedFace.index);
-				seedFace = Polyhedron.getNextFace(seedFaces, seedFace, v);
-				while (seedFace != null) {
-					seedFaces.remove(seedFace);
+				for (Polyhedron.Face seedFace : seed.getOrderedFaces(v, seedFaces)) {
 					dualFace.add(seedFace.index);
-					seedFace = Polyhedron.getNextFace(seedFaces, seedFace, v);
+					seedFaces.remove(seedFace);
 				}
 				faces.add(dualFace);
 				faceColors.add(color);
 			}
 		}
-		
 		rescale.rescale(seed.points(), vertices);
-		
 		return new Polyhedron(vertices, faces, faceColors);
 	}
 	

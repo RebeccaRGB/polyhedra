@@ -27,7 +27,6 @@ public class Snub extends PolyhedronOp {
 		List<Color> faceColors = new ArrayList<Color>();
 		
 		List<Point3D> seedVertices = seed.points();
-		
 		Map<Integer,Integer> edgeStartIndexMap = new HashMap<Integer,Integer>();
 		Map<Integer,List<Point3D>> faceVertexMap = new HashMap<Integer,List<Point3D>>();
 		for (Polyhedron.Face f : seed.faces) {
@@ -49,9 +48,7 @@ public class Snub extends PolyhedronOp {
 				int nei = edgeStartIndex + i;
 				int pei = edgeStartIndex + ((i + n - 1) % n);
 				Polyhedron.Edge prevEdge = f.edges.get((i + n - 1) % n);
-				List<Polyhedron.Face> adjacentFaces = seed.getFaces(prevEdge);
-				adjacentFaces.remove(f);
-				for (Polyhedron.Face af : adjacentFaces) {
+				for (Polyhedron.Face af : seed.getOppositeFaces(prevEdge, f)) {
 					int afesi = edgeStartIndexMap.get(af.index);
 					int afei = afesi + af.edges.indexOf(prevEdge);
 					faces.add(Arrays.asList(pei, afei, nei));
@@ -64,13 +61,11 @@ public class Snub extends PolyhedronOp {
 			List<Polyhedron.Face> seedFaces = seed.getFaces(vertex);
 			while (!seedFaces.isEmpty()) {
 				List<Integer> truncatedFace = new ArrayList<Integer>();
-				Polyhedron.Face seedFace = seedFaces.get(0);
-				while (seedFace != null) {
-					seedFaces.remove(seedFace);
+				for (Polyhedron.Face seedFace : seed.getOrderedFaces(vertex, seedFaces)) {
 					int sfesi = edgeStartIndexMap.get(seedFace.index);
 					int sfei = sfesi + seedFace.vertices.indexOf(vertex);
 					truncatedFace.add(sfei);
-					seedFace = Polyhedron.getNextFace(seedFaces, seedFace, vertex);
+					seedFaces.remove(seedFace);
 				}
 				faces.add(truncatedFace);
 				faceColors.add(color);

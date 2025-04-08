@@ -47,14 +47,13 @@ public class Truncate extends PolyhedronOp {
 			) {
 				List<Point3D> points = new ArrayList<Point3D>(seedEdges.size());
 				for (Edge seedEdge : seedEdges) {
-					Vertex v = Polyhedron.getOppositeVertex(seedEdge, seedVertex);
+					Vertex v = seedEdge.oppositeVertex(seedVertex);
 					if (v != null) points.add(v.point);
 				}
 				Point3D vertexVector = Point3D.average(points).subtract(seedVertex.point).normalize(size);
 				List<TruncatedVertex> tvs = new ArrayList<TruncatedVertex>(seedEdges.size());
 				for (Edge seedEdge : seedEdges) {
-					Vertex v = Polyhedron.getOppositeVertex(seedEdge, seedVertex);
-					if (v == null) continue;
+					Vertex v = seedEdge.oppositeVertex(seedVertex); if (v == null) continue;
 					Point3D seedEdgeVector = v.point.subtract(seedVertex.point);
 					double a = vertexVector.angleRad(seedEdgeVector);
 					double h = vertexVector.magnitude() / Math.cos(a);
@@ -73,14 +72,13 @@ public class Truncate extends PolyhedronOp {
 			) {
 				List<Point3D> points = new ArrayList<Point3D>(seedEdges.size());
 				for (Edge seedEdge : seedEdges) {
-					Vertex v = Polyhedron.getOppositeVertex(seedEdge, seedVertex);
+					Vertex v = seedEdge.oppositeVertex(seedVertex);
 					if (v != null) points.add(v.point);
 				}
 				Point3D vertexVector = Point3D.average(points).subtract(seedVertex.point).multiply(size);
 				List<TruncatedVertex> tvs = new ArrayList<TruncatedVertex>(seedEdges.size());
 				for (Edge seedEdge : seedEdges) {
-					Vertex v = Polyhedron.getOppositeVertex(seedEdge, seedVertex);
-					if (v == null) continue;
+					Vertex v = seedEdge.oppositeVertex(seedVertex); if (v == null) continue;
 					Point3D seedEdgeVector = v.point.subtract(seedVertex.point);
 					double a = vertexVector.angleRad(seedEdgeVector);
 					double h = vertexVector.magnitude() / Math.cos(a);
@@ -99,8 +97,7 @@ public class Truncate extends PolyhedronOp {
 			) {
 				List<TruncatedVertex> tvs = new ArrayList<TruncatedVertex>(seedEdges.size());
 				for (Edge seedEdge : seedEdges) {
-					Vertex v = Polyhedron.getOppositeVertex(seedEdge, seedVertex);
-					if (v == null) continue;
+					Vertex v = seedEdge.oppositeVertex(seedVertex); if (v == null) continue;
 					Point3D seedEdgeVector = v.point.subtract(seedVertex.point);
 					Point3D truncatedEdgeVector = seedEdgeVector.normalize(size);
 					Point3D truncatedVertex = truncatedEdgeVector.add(seedVertex.point);
@@ -117,8 +114,7 @@ public class Truncate extends PolyhedronOp {
 			) {
 				List<TruncatedVertex> tvs = new ArrayList<TruncatedVertex>(seedEdges.size());
 				for (Edge seedEdge : seedEdges) {
-					Vertex v = Polyhedron.getOppositeVertex(seedEdge, seedVertex);
-					if (v == null) continue;
+					Vertex v = seedEdge.oppositeVertex(seedVertex); if (v == null) continue;
 					Point3D seedEdgeVector = v.point.subtract(seedVertex.point);
 					Point3D truncatedEdgeVector = seedEdgeVector.multiply(size);
 					Point3D truncatedVertex = truncatedEdgeVector.add(seedVertex.point);
@@ -135,10 +131,9 @@ public class Truncate extends PolyhedronOp {
 			) {
 				List<TruncatedVertex> tvs = new ArrayList<TruncatedVertex>(seedEdges.size());
 				for (int i = 0, n = seedEdges.size(); i < n; i++) {
-					Vertex cv = Polyhedron.getOppositeVertex(seedEdges.get(i), seedVertex);
-					if (cv == null) continue;
-					Vertex pv = Polyhedron.getOppositeVertex(seedEdges.get((i + n - 1) % n), seedVertex);
-					Vertex nv = Polyhedron.getOppositeVertex(seedEdges.get((i + 1) % n), seedVertex);
+					Vertex cv = seedEdges.get(i).oppositeVertex(seedVertex); if (cv == null) continue;
+					Vertex pv = seedEdges.get((i + n - 1) % n).oppositeVertex(seedVertex);
+					Vertex nv = seedEdges.get((i + 1) % n).oppositeVertex(seedVertex);
 					double pa = (pv != null) ? seedVertex.point.angleRad(pv.point, cv.point) : 0;
 					double na = (nv != null) ? seedVertex.point.angleRad(nv.point, cv.point) : 0;
 					double ps = (pv != null) ? (1 / (2 + 2 * Math.sin(pa / 2))) : 0;
@@ -209,13 +204,9 @@ public class Truncate extends PolyhedronOp {
 				vertexEdgeMap.put(vertex, edgeMap);
 				while (!seedEdges.isEmpty()) {
 					List<Integer> truncatedFace = new ArrayList<Integer>();
-					Edge seedEdge = seedEdges.remove(0);
-					truncatedFace.add(edgeMap.get(seedEdge));
-					seedEdge = Polyhedron.getNextEdge(seedFaces, seedEdge, vertex);
-					while (seedEdges.contains(seedEdge)) {
-						seedEdges.remove(seedEdge);
+					for (Polyhedron.Edge seedEdge : seed.getOrderedEdges(vertex, seedEdges, seedFaces)) {
 						truncatedFace.add(edgeMap.get(seedEdge));
-						seedEdge = Polyhedron.getNextEdge(seedFaces, seedEdge, vertex);
+						seedEdges.remove(seedEdge);
 					}
 					faces.add(truncatedFace);
 					faceColors.add(color);

@@ -86,17 +86,11 @@ public class Zip extends PolyhedronOp {
 			List<Polyhedron.Face> seedFaces = seed.getFaces(vertex);
 			while (!seedFaces.isEmpty()) {
 				List<Integer> zippedFace = new ArrayList<Integer>();
-				Polyhedron.Face seedFace = seedFaces.remove(0);
-				int i = faceStartIndexMap.get(seedFace), n = seedFace.vertices.size();
-				zippedFace.add(i + seedFace.vertices.indexOf(vertex));
-				zippedFace.add(i + (seedFace.vertices.indexOf(vertex) + n - 1) % n);
-				seedFace = Polyhedron.getNextFace(seedFaces, seedFace, vertex);
-				while (seedFace != null) {
-					seedFaces.remove(seedFace);
-					i = faceStartIndexMap.get(seedFace); n = seedFace.vertices.size();
+				for (Polyhedron.Face seedFace : seed.getOrderedFaces(vertex, seedFaces)) {
+					int i = faceStartIndexMap.get(seedFace), n = seedFace.vertices.size();
 					zippedFace.add(i + seedFace.vertices.indexOf(vertex));
 					zippedFace.add(i + (seedFace.vertices.indexOf(vertex) + n - 1) % n);
-					seedFace = Polyhedron.getNextFace(seedFaces, seedFace, vertex);
+					seedFaces.remove(seedFace);
 				}
 				faces.add(zippedFace);
 				faceColors.add(color);

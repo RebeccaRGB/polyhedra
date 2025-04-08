@@ -73,10 +73,8 @@ public class Bevel extends PolyhedronOp {
 				Edge edge, Point3D midpoint,
 				Point3D vertex, double size
 			) {
-				List<Face> faces = seed.getFaces(edge);
-				faces.remove(face);
 				double fa = 0;
-				for (Face f : faces) {
+				for (Face f : seed.getOppositeFaces(edge, face)) {
 					double a = midpoint.angleRad(center, f.center());
 					if (a > fa) fa = a;
 				}
@@ -145,19 +143,12 @@ public class Bevel extends PolyhedronOp {
 			List<Face> seedFaces = seed.getFaces(v);
 			while (!seedFaces.isEmpty()) {
 				List<Integer> beveledFace = new ArrayList<Integer>();
-				Face seedFace = seedFaces.remove(0);
-				int i = faceStartIndexMap.get(seedFace);
-				int n = seedFace.edges.size() * 2;
-				beveledFace.add(i + seedFace.vertices.indexOf(v) * 2);
-				beveledFace.add(i + (seedFace.vertices.indexOf(v) * 2 + n - 1) % n);
-				seedFace = Polyhedron.getNextFace(seedFaces, seedFace, v);
-				while (seedFace != null) {
-					seedFaces.remove(seedFace);
-					i = faceStartIndexMap.get(seedFace);
-					n = seedFace.edges.size() * 2;
+				for (Face seedFace : seed.getOrderedFaces(v, seedFaces)) {
+					int i = faceStartIndexMap.get(seedFace);
+					int n = seedFace.edges.size() * 2;
 					beveledFace.add(i + seedFace.vertices.indexOf(v) * 2);
 					beveledFace.add(i + (seedFace.vertices.indexOf(v) * 2 + n - 1) % n);
-					seedFace = Polyhedron.getNextFace(seedFaces, seedFace, v);
+					seedFaces.remove(seedFace);
 				}
 				faces.add(beveledFace);
 				faceColors.add(vertexColor);

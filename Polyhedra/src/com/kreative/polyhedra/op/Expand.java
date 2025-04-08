@@ -95,15 +95,10 @@ public class Expand extends PolyhedronOp {
 			List<Polyhedron.Face> seedFaces = seed.getFaces(vertex);
 			while (!seedFaces.isEmpty()) {
 				List<Integer> expandedFace = new ArrayList<Integer>();
-				Polyhedron.Face seedFace = seedFaces.remove(0);
-				int i = faceStartIndexMap.get(seedFace);
-				expandedFace.add(i + seedFace.vertices.indexOf(vertex));
-				seedFace = Polyhedron.getNextFace(seedFaces, seedFace, vertex);
-				while (seedFace != null) {
-					seedFaces.remove(seedFace);
-					i = faceStartIndexMap.get(seedFace);
+				for (Polyhedron.Face seedFace : seed.getOrderedFaces(vertex, seedFaces)) {
+					int i = faceStartIndexMap.get(seedFace);
 					expandedFace.add(i + seedFace.vertices.indexOf(vertex));
-					seedFace = Polyhedron.getNextFace(seedFaces, seedFace, vertex);
+					seedFaces.remove(seedFace);
 				}
 				faces.add(expandedFace);
 				faceColors.add(vertexColor);

@@ -27,13 +27,9 @@ public class Ambo extends PolyhedronOp {
 			List<Polyhedron.Edge> seedEdges = seed.getEdges(vertex);
 			while (!seedEdges.isEmpty()) {
 				List<Integer> amboFace = new ArrayList<Integer>();
-				Polyhedron.Edge seedEdge = seedEdges.remove(0);
-				amboFace.add(seed.edges.indexOf(seedEdge));
-				seedEdge = Polyhedron.getNextEdge(seedFaces, seedEdge, vertex);
-				while (seedEdges.contains(seedEdge)) {
-					seedEdges.remove(seedEdge);
+				for (Polyhedron.Edge seedEdge : seed.getOrderedEdges(vertex, seedEdges, seedFaces)) {
 					amboFace.add(seed.edges.indexOf(seedEdge));
-					seedEdge = Polyhedron.getNextEdge(seedFaces, seedEdge, vertex);
+					seedEdges.remove(seedEdge);
 				}
 				faces.add(amboFace);
 				faceColors.add(color);
