@@ -45,6 +45,9 @@ public class ConwayNotationParser {
 			} else if (Character.isLetter((cp = s.codePointAt(si)))) {
 				si += Character.charCount(cp);
 				className.append(Character.toChars(cp));
+				if (si < sn && s.charAt(si) == '*') {
+					className.append(s.charAt(si++));
+				}
 			}
 			if (className.length() == 0) {
 				throw new IllegalArgumentException(s);
@@ -142,10 +145,15 @@ public class ConwayNotationParser {
 		String[] stringArgs = stringArguments.get(index);
 		Class<? extends PolyhedronGen> genClass;
 		
-		genClass = com.kreative.polyhedra.gen.BOM.MAP.get(className + numericArg);
-		if (genClass != null) return instantiateGen(genClass, stringArgs);
-		
-		if (numericArg.length() > 0) stringArgs = mergeArgs(numericArg, stringArgs);
+		if (numericArg.length() > 0) {
+			genClass = com.kreative.polyhedra.gen.BOM.MAP.get(className + numericArg);
+			if (genClass != null) return instantiateGen(genClass, stringArgs);
+			
+			stringArgs = mergeArgs(numericArg, stringArgs);
+			
+			genClass = com.kreative.polyhedra.gen.BOM.MAP.get(className + "#");
+			if (genClass != null) return instantiateGen(genClass, stringArgs);
+		}
 		
 		genClass = com.kreative.polyhedra.gen.BOM.MAP.get(className);
 		if (genClass != null) return instantiateGen(genClass, stringArgs);
@@ -162,14 +170,23 @@ public class ConwayNotationParser {
 		String[] stringArgs = stringArguments.get(index);
 		Class<? extends PolyhedronOp> opClass;
 		
-		opClass = com.kreative.polyhedra.op.BOM.MAP.get(className + numericArg);
-		if (opClass != null) return instantiateOp(opClass, stringArgs);
+		if (numericArg.length() > 0) {
+			opClass = com.kreative.polyhedra.op.BOM.MAP.get(className + numericArg);
+			if (opClass != null) return instantiateOp(opClass, stringArgs);
+			
+			opClass = com.kreative.polyhedra.op.BOM.MAP.get(className + "#");
+			if (opClass != null) return instantiateOp(opClass, mergeArgs(numericArg, stringArgs));
+		}
 		
 		opClass = com.kreative.polyhedra.op.BOM.MAP.get(className);
 		if (opClass != null) {
 			if (numericArg.length() > 0) {
-				int repeat = PolyhedronUtils.parseInt(numericArg, 0);
-				if (repeat > 0 && !hasNFlag(opClass)) return new Repeater(instantiateOp(opClass, stringArgs), repeat);
+				try {
+					int repeat = PolyhedronUtils.parseInt(numericArg, 0);
+					if (repeat > 0 && !hasNFlag(opClass)) {
+						return new Repeater(instantiateOp(opClass, stringArgs), repeat);
+					}
+				} catch (NumberFormatException e) {}
 				stringArgs = mergeArgs(numericArg, stringArgs);
 			}
 			return instantiateOp(opClass, stringArgs);
@@ -178,8 +195,12 @@ public class ConwayNotationParser {
 		opClass = com.kreative.polyhedra.op.BOM.MAP.get(className.toLowerCase());
 		if (opClass != null) {
 			if (numericArg.length() > 0) {
-				int repeat = PolyhedronUtils.parseInt(numericArg, 0);
-				if (repeat > 0 && !hasNFlag(opClass)) return new Repeater(instantiateOp(opClass, stringArgs), repeat);
+				try {
+					int repeat = PolyhedronUtils.parseInt(numericArg, 0);
+					if (repeat > 0 && !hasNFlag(opClass)) {
+						return new Repeater(instantiateOp(opClass, stringArgs), repeat);
+					}
+				} catch (NumberFormatException e) {}
 				stringArgs = mergeArgs(numericArg, stringArgs);
 			}
 			return instantiateOp(opClass, stringArgs);
