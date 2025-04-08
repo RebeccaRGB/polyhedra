@@ -11,6 +11,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class PolyhedronUtils {
+	public static Integer parseInt(String s) {
+		if (s == null) return null;
+		try { return Integer.parseInt(s.trim()); }
+		catch (NumberFormatException e) { return null; }
+	}
+	
 	public static int parseInt(String s, int def) {
 		if (s == null) return def;
 		try { return Integer.parseInt(s.trim()); }
@@ -25,6 +31,12 @@ public abstract class PolyhedronUtils {
 			catch (NumberFormatException e) { continue; }
 		}
 		return ints;
+	}
+	
+	public static Double parseDouble(String s) {
+		if (s == null) return null;
+		try { return Double.parseDouble(s.trim()); }
+		catch (NumberFormatException e) { return null; }
 	}
 	
 	public static double parseDouble(String s, double def) {
@@ -274,7 +286,18 @@ public abstract class PolyhedronUtils {
 	}
 	
 	public static enum Mult { OPTIONAL, REQUIRED, REPEATED, REPEATED_REQUIRED }
-	public static enum Type { VOID, INT, INTS, REAL, REALS, COLOR, TEXT, OP, GEN }
+	public static enum Type {
+		VOID { public Object parse(String s) { return null; } },
+		INT { public Integer parse(String s) { return parseInt(s); } },
+		INTS { public List<Integer> parse(String s) { return parseIntList(s); } },
+		REAL { public Double parse(String s) { return parseDouble(s); } },
+		REALS { public List<Double> parse(String s) { return parseDoubleList(s); } },
+		COLOR { public Color parse(String s) { return parseColor(s, null); } },
+		TEXT { public String parse(String s) { return s; } },
+		OP { public PolyhedronOp parse(String s) { return parseOp(s); } },
+		GEN { public PolyhedronGen parse(String s) { return parseGen(s); } };
+		public abstract Object parse(String s);
+	}
 	
 	public static class Option {
 		public final String flag;

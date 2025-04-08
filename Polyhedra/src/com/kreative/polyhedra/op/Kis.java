@@ -12,28 +12,28 @@ import com.kreative.polyhedra.PolyhedronOp;
 
 public class Kis extends PolyhedronOp {
 	private final Set<Integer> sides;
-	private final FaceVertexGen gen;
-	private final double size;
+	private final FaceVertexGen fvgen;
+	private final Object fvarg;
 	
-	public Kis(int[] sides, FaceVertexGen gen, double size) {
+	public Kis(int[] sides, FaceVertexGen fvgen, Object fvarg) {
 		this.sides = new HashSet<Integer>();
 		if (sides != null) for (int i : sides) this.sides.add(i);
-		this.gen = gen;
-		this.size = size;
+		this.fvgen = fvgen;
+		this.fvarg = fvarg;
 	}
 	
-	public Kis(Integer[] sides, FaceVertexGen gen, double size) {
+	public Kis(Integer[] sides, FaceVertexGen fvgen, Object fvarg) {
 		this.sides = new HashSet<Integer>();
 		if (sides != null) for (int i : sides) this.sides.add(i);
-		this.gen = gen;
-		this.size = size;
+		this.fvgen = fvgen;
+		this.fvarg = fvarg;
 	}
 	
-	public Kis(Iterable<? extends Integer> sides, FaceVertexGen gen, double size) {
+	public Kis(Iterable<? extends Integer> sides, FaceVertexGen fvgen, Object fvarg) {
 		this.sides = new HashSet<Integer>();
 		if (sides != null) for (int i : sides) this.sides.add(i);
-		this.gen = gen;
-		this.size = size;
+		this.fvgen = fvgen;
+		this.fvarg = fvarg;
 	}
 	
 	public Polyhedron op(Polyhedron seed) {
@@ -46,7 +46,7 @@ public class Kis extends PolyhedronOp {
 		
 		for (Polyhedron.Face f : seed.faces) {
 			if (sides.isEmpty() || sides.contains(f.vertices.size())) {
-				Point3D newVertex = gen.createVertex(seed, seedVertices, f, f.points(), size);
+				Point3D newVertex = fvgen.createVertex(seed, seedVertices, f, f.points(), fvarg);
 				if (newVertex != null) {
 					int i0 = vertices.size();
 					vertices.add(newVertex);
@@ -70,26 +70,26 @@ public class Kis extends PolyhedronOp {
 	
 	public static Kis parse(String[] args) {
 		List<Integer> sides = null;
-		FaceVertexGen gen = FaceVertexGen.EQUILATERAL;
-		double size = 0;
-		FaceVertexGen tmp;
+		FaceVertexGen fvgen = FaceVertexGen.EQUILATERAL;
+		FaceVertexGen fvtmp;
+		Object fvarg = 0;
 		int argi = 0;
 		while (argi < args.length) {
 			String arg = args[argi++];
 			if (arg.equalsIgnoreCase("-n") && argi < args.length) {
 				sides = parseIntList(args[argi++]);
 			} else if (arg.equalsIgnoreCase("-s")) {
-				gen = FaceVertexGen.FACE_OFFSET;
-				size = 0;
-			} else if ((tmp = FaceVertexGen.forFlagIgnoreCase(arg)) != null && (tmp.isVoidType() || argi < args.length)) {
-				gen = tmp;
-				size = tmp.isVoidType() ? 0 : parseDouble(args[argi++], size);
+				fvgen = FaceVertexGen.FACE_OFFSET;
+				fvarg = 0;
+			} else if ((fvtmp = FaceVertexGen.forFlagIgnoreCase(arg)) != null && (fvtmp.isVoidType() || argi < args.length)) {
+				fvgen = fvtmp;
+				fvarg = fvtmp.isVoidType() ? null : fvtmp.parseArgument(args[argi++]);
 			} else {
 				printOptions(options());
 				return null;
 			}
 		}
-		return new Kis(sides, gen, size);
+		return new Kis(sides, fvgen, fvarg);
 	}
 	
 	public static Option[] options() {

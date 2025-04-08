@@ -11,13 +11,13 @@ import com.kreative.polyhedra.Polyhedron;
 import com.kreative.polyhedra.PolyhedronOp;
 
 public class Needle extends PolyhedronOp {
-	private final FaceVertexGen gen;
-	private final double size;
+	private final FaceVertexGen fvgen;
+	private final Object fvarg;
 	private final Color color;
 	
-	public Needle(FaceVertexGen gen, double size, Color color) {
-		this.gen = gen;
-		this.size = size;
+	public Needle(FaceVertexGen fvgen, Object fvarg, Color color) {
+		this.fvgen = fvgen;
+		this.fvarg = fvarg;
 		this.color = color;
 	}
 	
@@ -32,7 +32,7 @@ public class Needle extends PolyhedronOp {
 		
 		Map<Polyhedron.Edge,Integer> edgeVertexMap = new HashMap<Polyhedron.Edge,Integer>();
 		for (Polyhedron.Face f : seed.faces) {
-			Point3D newVertex = gen.createVertex(seed, seedVertices, f, f.points(), size);
+			Point3D newVertex = fvgen.createVertex(seed, seedVertices, f, f.points(), fvarg);
 			if (newVertex != null) {
 				int i0 = vertices.size();
 				vertices.add(newVertex);
@@ -56,19 +56,19 @@ public class Needle extends PolyhedronOp {
 	}
 	
 	public static Needle parse(String[] args) {
-		FaceVertexGen gen = FaceVertexGen.FACE_OFFSET;
-		double size = 0;
+		FaceVertexGen fvgen = FaceVertexGen.FACE_OFFSET;
+		FaceVertexGen fvtmp;
+		Object fvarg = 0;
 		Color color = Color.GRAY;
-		FaceVertexGen tmp;
 		int argi = 0;
 		while (argi < args.length) {
 			String arg = args[argi++];
 			if (arg.equalsIgnoreCase("-s")) {
-				gen = FaceVertexGen.FACE_OFFSET;
-				size = 0;
-			} else if ((tmp = FaceVertexGen.forFlagIgnoreCase(arg)) != null && (tmp.isVoidType() || argi < args.length)) {
-				gen = tmp;
-				size = tmp.isVoidType() ? 0 : parseDouble(args[argi++], size);
+				fvgen = FaceVertexGen.FACE_OFFSET;
+				fvarg = 0;
+			} else if ((fvtmp = FaceVertexGen.forFlagIgnoreCase(arg)) != null && (fvtmp.isVoidType() || argi < args.length)) {
+				fvgen = fvtmp;
+				fvarg = fvtmp.isVoidType() ? null : fvtmp.parseArgument(args[argi++]);
 			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 				color = parseColor(args[argi++], color);
 			} else {
@@ -76,7 +76,7 @@ public class Needle extends PolyhedronOp {
 				return null;
 			}
 		}
-		return new Needle(gen, size, color);
+		return new Needle(fvgen, fvarg, color);
 	}
 	
 	public static Option[] options() {

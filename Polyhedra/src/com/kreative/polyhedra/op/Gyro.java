@@ -12,15 +12,15 @@ import com.kreative.polyhedra.PolyhedronOp;
 
 public class Gyro extends PolyhedronOp {
 	private final FaceVertexGen fvgen;
-	private final double fvsize;
+	private final Object fvarg;
 	private final EdgeVertexGen evgen;
-	private final double evsize;
+	private final Object evarg;
 	
-	public Gyro(FaceVertexGen fvgen, double fvsize, EdgeVertexGen evgen, double evsize) {
+	public Gyro(FaceVertexGen fvgen, Object fvarg, EdgeVertexGen evgen, Object evarg) {
 		this.fvgen = fvgen;
-		this.fvsize = fvsize;
+		this.fvarg = fvarg;
 		this.evgen = evgen;
-		this.evsize = evsize;
+		this.evarg = evarg;
 	}
 	
 	public Polyhedron op(Polyhedron seed) {
@@ -39,14 +39,14 @@ public class Gyro extends PolyhedronOp {
 			List<Point3D> fv = f.points();
 			faceVertexMap.put(f.index, fv);
 			for (Polyhedron.Edge e : f.edges) {
-				vertices.add(evgen.createVertex(seed, seedVertices, f, fv, e, e.partition(2, 1), evsize));
+				vertices.add(evgen.createVertex(seed, seedVertices, f, fv, e, e.partition(2, 1), evarg));
 			}
 		}
 		
 		int faceStartIndex = vertices.size();
 		for (Polyhedron.Face f : seed.faces) {
 			List<Point3D> faceVertices = faceVertexMap.get(f.index);
-			vertices.add(fvgen.createVertex(seed, seedVertices, f, faceVertices, fvsize));
+			vertices.add(fvgen.createVertex(seed, seedVertices, f, faceVertices, fvarg));
 			int fi = faceStartIndex + f.index;
 			int edgeStartIndex = edgeStartIndexMap.get(f.index);
 			for (int i = 0, n = f.vertices.size(); i < n; i++) {
@@ -68,31 +68,31 @@ public class Gyro extends PolyhedronOp {
 	
 	public static Gyro parse(String[] args) {
 		FaceVertexGen fvgen = FaceVertexGen.AVERAGE_MAGNITUDE_OFFSET;
-		double fvsize = 0;
 		EdgeVertexGen evgen = EdgeVertexGen.AVERAGE_MAGNITUDE_OFFSET;
-		double evsize = 0;
 		FaceVertexGen fvtmp;
 		EdgeVertexGen evtmp;
+		Object fvarg = 0;
+		Object evarg = 0;
 		int argi = 0;
 		while (argi < args.length) {
 			String arg = args[argi++];
 			if (arg.equalsIgnoreCase("-s")) {
 				fvgen = FaceVertexGen.FACE_OFFSET;
-				fvsize = 0;
 				evgen = EdgeVertexGen.FACE_OFFSET;
-				evsize = 0;
+				fvarg = 0;
+				evarg = 0;
 			} else if ((fvtmp = FaceVertexGen.forFlag(arg)) != null && (fvtmp.isVoidType() || argi < args.length)) {
 				fvgen = fvtmp;
-				fvsize = fvtmp.isVoidType() ? 0 : parseDouble(args[argi++], fvsize);
+				fvarg = fvtmp.isVoidType() ? null : fvtmp.parseArgument(args[argi++]);
 			} else if ((evtmp = EdgeVertexGen.forFlag(arg)) != null && (evtmp.isVoidType() || argi < args.length)) {
 				evgen = evtmp;
-				evsize = evtmp.isVoidType() ? 0 : parseDouble(args[argi++], evsize);
+				evarg = evtmp.isVoidType() ? null : evtmp.parseArgument(args[argi++]);
 			} else {
 				printOptions(options());
 				return null;
 			}
 		}
-		return new Gyro(fvgen, fvsize, evgen, evsize);
+		return new Gyro(fvgen, fvarg, evgen, evarg);
 	}
 	
 	public static Option[] options() {

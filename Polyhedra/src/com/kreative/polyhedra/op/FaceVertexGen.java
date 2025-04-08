@@ -13,51 +13,51 @@ public enum FaceVertexGen {
 		public Point3D createVertex(
 			Polyhedron s, List<Point3D> sv,
 			Polyhedron.Face f, List<Point3D> fv,
-			double size
+			Object arg
 		) {
 			Point3D c = Point3D.average(fv);
-			if (size == 0) return c;
-			return c.add(c.normal(fv).multiply(size));
+			double size = (arg instanceof Number) ? ((Number)arg).doubleValue() : 0;
+			return (size == 0) ? c : c.add(c.normal(fv).multiply(size));
 		}
 	},
 	MAX_MAGNITUDE_OFFSET("M", Type.REAL, "create new vertices from faces relative to the maximum magnitude") {
 		public Point3D createVertex(
 			Polyhedron s, List<Point3D> sv,
 			Polyhedron.Face f, List<Point3D> fv,
-			double size
+			Object arg
 		) {
 			Point3D c = Point3D.average(fv);
-			double m = Point3D.maxMagnitude(sv) + size;
-			return c.normalize(m);
+			double size = (arg instanceof Number) ? ((Number)arg).doubleValue() : 0;
+			return c.normalize(Point3D.maxMagnitude(sv) + size);
 		}
 	},
 	AVERAGE_MAGNITUDE_OFFSET("A", Type.REAL, "create new vertices from faces relative to the average magnitude") {
 		public Point3D createVertex(
 			Polyhedron s, List<Point3D> sv,
 			Polyhedron.Face f, List<Point3D> fv,
-			double size
+			Object arg
 		) {
 			Point3D c = Point3D.average(fv);
-			double m = Point3D.averageMagnitude(sv) + size;
-			return c.normalize(m);
+			double size = (arg instanceof Number) ? ((Number)arg).doubleValue() : 0;
+			return c.normalize(Point3D.averageMagnitude(sv) + size);
 		}
 	},
 	FACE_MAGNITUDE_OFFSET("F", Type.REAL, "create new vertices from faces relative to the face magnitude") {
 		public Point3D createVertex(
 			Polyhedron s, List<Point3D> sv,
 			Polyhedron.Face f, List<Point3D> fv,
-			double size
+			Object arg
 		) {
 			Point3D c = Point3D.average(fv);
-			if (size == 0) return c;
-			return c.normalize(c.magnitude() + size);
+			double size = (arg instanceof Number) ? ((Number)arg).doubleValue() : 0;
+			return (size == 0) ? c : c.normalize(c.magnitude() + size);
 		}
 	},
 	EQUILATERAL("E", Type.VOID, "attempt to create equilateral faces (not always possible)") {
 		public Point3D createVertex(
 			Polyhedron s, List<Point3D> sv,
 			Polyhedron.Face f, List<Point3D> fv,
-			double size
+			Object arg
 		) {
 			Point3D c = Point3D.average(fv);
 			if (fv.size() > 5) return c;
@@ -76,7 +76,7 @@ public enum FaceVertexGen {
 		public Point3D createVertex(
 			Polyhedron s, List<Point3D> sv,
 			Polyhedron.Face f, List<Point3D> fv,
-			double size
+			Object arg
 		) {
 			Point3D c = Point3D.average(fv);
 			double heights = 0;
@@ -97,28 +97,32 @@ public enum FaceVertexGen {
 	
 	private final String flagWithoutDash;
 	private final String flagWithDash;
-	private final Type sizeDataType;
+	private final Type argDataType;
 	private final String description;
 	
-	private FaceVertexGen(String flagWithoutDash, Type sizeDataType, String description) {
+	private FaceVertexGen(String flagWithoutDash, Type argDataType, String description) {
 		this.flagWithoutDash = flagWithoutDash;
 		this.flagWithDash = "-" + flagWithoutDash;
-		this.sizeDataType = sizeDataType;
+		this.argDataType = argDataType;
 		this.description = description;
 	}
 	
 	public abstract Point3D createVertex(
 		Polyhedron seed, List<Point3D> seedVertices,
 		Polyhedron.Face face, List<Point3D> faceVertices,
-		double size
+		Object arg
 	);
 	
 	public final boolean isVoidType() {
-		return sizeDataType == Type.VOID;
+		return argDataType == Type.VOID;
+	}
+	
+	public final Object parseArgument(String s) {
+		return argDataType.parse(s);
 	}
 	
 	public final Option option(String... mutex) {
-		return new Option(flagWithoutDash, sizeDataType, description, optionMutexes(mutex));
+		return new Option(flagWithoutDash, argDataType, description, optionMutexes(mutex));
 	}
 	
 	public final String[] optionMutexes(String... mutex) {

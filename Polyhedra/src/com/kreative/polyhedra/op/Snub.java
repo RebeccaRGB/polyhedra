@@ -11,13 +11,13 @@ import com.kreative.polyhedra.Polyhedron;
 import com.kreative.polyhedra.PolyhedronOp;
 
 public class Snub extends PolyhedronOp {
-	private final EdgeVertexGen gen;
-	private final double size;
+	private final EdgeVertexGen evgen;
+	private final Object evarg;
 	private final Color color;
 	
-	public Snub(EdgeVertexGen gen, double size, Color color) {
-		this.gen = gen;
-		this.size = size;
+	public Snub(EdgeVertexGen evgen, Object evarg, Color color) {
+		this.evgen = evgen;
+		this.evarg = evarg;
 		this.color = color;
 	}
 	
@@ -36,7 +36,7 @@ public class Snub extends PolyhedronOp {
 			List<Integer> faceVertexIndices = new ArrayList<Integer>(f.edges.size());
 			for (Polyhedron.Edge e : f.edges) {
 				faceVertexIndices.add(vertices.size());
-				vertices.add(gen.createVertex(seed, seedVertices, f, fv, e, e.partition(1, 2), size));
+				vertices.add(evgen.createVertex(seed, seedVertices, f, fv, e, e.partition(1, 2), evarg));
 			}
 			faces.add(faceVertexIndices);
 			faceColors.add(f.color);
@@ -76,19 +76,19 @@ public class Snub extends PolyhedronOp {
 	}
 	
 	public static Snub parse(String[] args) {
-		EdgeVertexGen gen = EdgeVertexGen.AVERAGE_MAGNITUDE_OFFSET;
-		double size = 0;
+		EdgeVertexGen evgen = EdgeVertexGen.AVERAGE_MAGNITUDE_OFFSET;
+		EdgeVertexGen evtmp;
+		Object evarg = 0;
 		Color color = Color.GRAY;
-		EdgeVertexGen tmp;
 		int argi = 0;
 		while (argi < args.length) {
 			String arg = args[argi++];
 			if (arg.equalsIgnoreCase("-s")) {
-				gen = EdgeVertexGen.FACE_OFFSET;
-				size = 0;
-			} else if ((tmp = EdgeVertexGen.forFlagIgnoreCase(arg)) != null && (tmp.isVoidType() || argi < args.length)) {
-				gen = tmp;
-				size = tmp.isVoidType() ? 0 : parseDouble(args[argi++], size);
+				evgen = EdgeVertexGen.FACE_OFFSET;
+				evarg = 0;
+			} else if ((evtmp = EdgeVertexGen.forFlagIgnoreCase(arg)) != null && (evtmp.isVoidType() || argi < args.length)) {
+				evgen = evtmp;
+				evarg = evtmp.isVoidType() ? null : evtmp.parseArgument(args[argi++]);
 			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 				color = parseColor(args[argi++], color);
 			} else {
@@ -96,7 +96,7 @@ public class Snub extends PolyhedronOp {
 				return null;
 			}
 		}
-		return new Snub(gen, size, color);
+		return new Snub(evgen, evarg, color);
 	}
 	
 	public static Option[] options() {
