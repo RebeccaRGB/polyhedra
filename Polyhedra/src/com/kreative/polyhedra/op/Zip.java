@@ -50,6 +50,25 @@ public class Zip extends PolyhedronOp {
 				}
 				return vertices;
 			}
+		},
+		REGULAR {
+			public List<Point3D> createFace(Polyhedron.Face face, Point3D center, double size) {
+				List<Point3D> vertices = new ArrayList<Point3D>();
+				for (Polyhedron.Edge edge : face.edges) {
+					Point3D m = edge.midpoint();
+					double fa = 0;
+					for (Polyhedron.Face f : face.parent.getOppositeFaces(edge, face)) {
+						double a = m.angleRad(center, f.center());
+						if (a > fa) fa = a;
+					}
+					Point3D vertex = edge.vertex1.point;
+					double ea = vertex.angleRad(center, m);
+					double s = center.distance(m);
+					double t = s / (Math.sin(fa / 2) / Math.cos(ea) + 1);
+					vertices.add(center.subtract(m).normalize(t).add(m));
+				}
+				return vertices;
+			}
 		};
 		public abstract List<Point3D> createFace(Polyhedron.Face face, Point3D center, double size);
 	}
@@ -101,8 +120,8 @@ public class Zip extends PolyhedronOp {
 	}
 	
 	public static Zip parse(String[] args) {
-		ZippedFaceGen gen = ZippedFaceGen.RELATIVE_DISTANCE_FROM_EDGE;
-		double size = 0.5;
+		ZippedFaceGen gen = ZippedFaceGen.REGULAR;
+		double size = 0;
 		Color color = Color.GRAY;
 		int argi = 0;
 		while (argi < args.length) {
@@ -122,6 +141,9 @@ public class Zip extends PolyhedronOp {
 			} else if (arg.equals("-d") && argi < args.length) {
 				gen = ZippedFaceGen.FIXED_DISTANCE_FROM_CENTER;
 				size = parseDouble(args[argi++], size);
+			} else if (arg.equalsIgnoreCase("-r")) {
+				gen = ZippedFaceGen.REGULAR;
+				size = 0;
 			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 				color = parseColor(args[argi++], color);
 			} else {
@@ -134,11 +156,12 @@ public class Zip extends PolyhedronOp {
 	
 	public static Option[] options() {
 		return new Option[] {
-			new Option("a", Type.REAL, "create vertices at a fixed distance from the original edges", "A","d","D","s"),
-			new Option("A", Type.REAL, "create vertices at a relative distance from the original edges", "a","d","D","s"),
-			new Option("d", Type.REAL, "create vertices at a fixed distance from the face center point", "a","A","D","s"),
-			new Option("D", Type.REAL, "create vertices at a relative distance from the face center point", "a","A","d","s"),
-			new Option("s", Type.VOID, "create vertices halfway between the center and the original edge", "a","A","d","D"),
+			new Option("a", Type.REAL, "create vertices at a fixed distance from the original edges", "A","d","D","r","s"),
+			new Option("A", Type.REAL, "create vertices at a relative distance from the original edges", "a","d","D","r","s"),
+			new Option("d", Type.REAL, "create vertices at a fixed distance from the face center point", "a","A","D","r","s"),
+			new Option("D", Type.REAL, "create vertices at a relative distance from the face center point", "a","A","d","r","s"),
+			new Option("r", Type.VOID, "attempt to create regular faces (not always possible)", "a","A","d","D","s"),
+			new Option("s", Type.VOID, "create vertices halfway between the center and the original edge", "a","A","d","D","r"),
 			new Option("c", Type.COLOR, "color of new faces generated between original faces"),
 		};
 	}
