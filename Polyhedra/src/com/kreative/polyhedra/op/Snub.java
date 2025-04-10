@@ -11,11 +11,19 @@ import com.kreative.polyhedra.Polyhedron;
 import com.kreative.polyhedra.PolyhedronOp;
 
 public class Snub extends PolyhedronOp {
+	private final GyroVertexGen gvgen;
+	private final Object gvarg;
 	private final EdgeVertexGen evgen;
 	private final Object evarg;
 	private final Color color;
 	
-	public Snub(EdgeVertexGen evgen, Object evarg, Color color) {
+	public Snub(
+		GyroVertexGen gvgen, Object gvarg,
+		EdgeVertexGen evgen, Object evarg,
+		Color color
+	) {
+		this.gvgen = gvgen;
+		this.gvarg = gvarg;
 		this.evgen = evgen;
 		this.evarg = evarg;
 		this.color = color;
@@ -36,7 +44,8 @@ public class Snub extends PolyhedronOp {
 			List<Integer> faceVertexIndices = new ArrayList<Integer>(f.edges.size());
 			for (Polyhedron.Edge e : f.edges) {
 				faceVertexIndices.add(vertices.size());
-				vertices.add(evgen.createVertex(seed, seedVertices, f, fv, e, e.partition(1, 2), evarg));
+				Point3D v = gvgen.createVertex(seed, seedVertices, f, fv, e, e.vertex1.point, gvarg);
+				vertices.add(evgen.createVertex(seed, seedVertices, f, fv, e, v, evarg));
 			}
 			faces.add(faceVertexIndices);
 			faceColors.add(f.color);
@@ -76,16 +85,24 @@ public class Snub extends PolyhedronOp {
 	}
 	
 	public static Snub parse(String[] args) {
+		GyroVertexGen gvgen = GyroVertexGen.RELATIVE_DISTANCE_FROM_MIDPOINT;
 		EdgeVertexGen evgen = EdgeVertexGen.AVERAGE_MAGNITUDE_OFFSET;
+		GyroVertexGen gvtmp;
 		EdgeVertexGen evtmp;
+		Object gvarg = 1.0 / 3.0;
 		Object evarg = 0;
 		Color color = Color.GRAY;
 		int argi = 0;
 		while (argi < args.length) {
 			String arg = args[argi++];
 			if (arg.equalsIgnoreCase("-s")) {
+				gvgen = GyroVertexGen.RELATIVE_DISTANCE_FROM_MIDPOINT;
 				evgen = EdgeVertexGen.FACE_OFFSET;
+				gvarg = 1.0 / 3.0;
 				evarg = 0;
+			} else if ((gvtmp = GyroVertexGen.forFlag(arg)) != null && (gvtmp.isVoidType() || argi < args.length)) {
+				gvgen = gvtmp;
+				gvarg = gvtmp.isVoidType() ? null : gvtmp.parseArgument(args[argi++]);
 			} else if ((evtmp = EdgeVertexGen.forFlagIgnoreCase(arg)) != null && (evtmp.isVoidType() || argi < args.length)) {
 				evgen = evtmp;
 				evarg = evtmp.isVoidType() ? null : evtmp.parseArgument(args[argi++]);
@@ -96,17 +113,26 @@ public class Snub extends PolyhedronOp {
 				return null;
 			}
 		}
-		return new Snub(evgen, evarg, color);
+		return new Snub(gvgen, gvarg, evgen, evarg, color);
 	}
 	
 	public static Option[] options() {
 		return new Option[] {
+			GyroVertexGen.FIXED_DISTANCE_FROM_VERTEX.option("s"),
+			GyroVertexGen.RELATIVE_DISTANCE_FROM_VERTEX.option("s"),
+			GyroVertexGen.FIXED_ANGLE_FROM_VERTEX.option("s"),
+			GyroVertexGen.FIXED_DISTANCE_FROM_MIDPOINT.option("s"),
+			GyroVertexGen.RELATIVE_DISTANCE_FROM_MIDPOINT.option("s"),
+			GyroVertexGen.FIXED_ANGLE_FROM_MIDPOINT.option("s"),
 			EdgeVertexGen.FACE_OFFSET.option("s"),
 			EdgeVertexGen.MAX_MAGNITUDE_OFFSET.option("s"),
 			EdgeVertexGen.AVERAGE_MAGNITUDE_OFFSET.option("s"),
 			EdgeVertexGen.EDGE_MAGNITUDE_OFFSET.option("s"),
 			EdgeVertexGen.VERTEX_MAGNITUDE_OFFSET.option("s"),
-			new Option("s", Type.VOID, "create new vertices along original edges (strict mode)", EdgeVertexGen.allOptionMutexes()),
+			new Option(
+				"s", Type.VOID, "create new vertices along original edges (strict mode)",
+				GyroVertexGen.allOptionMutexes(EdgeVertexGen.allOptionMutexes())
+			),
 			new Option("c", Type.COLOR, "color of new faces generated from original vertices"),
 		};
 	}
