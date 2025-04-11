@@ -77,7 +77,7 @@ public class Gyro extends PolyhedronOp {
 	
 	public static Gyro parse(String[] args) {
 		FaceVertexGen fvgen = FaceVertexGen.AVERAGE_MAGNITUDE_OFFSET;
-		GyroVertexGen gvgen = GyroVertexGen.RELATIVE_DISTANCE_FROM_MIDPOINT;
+		GyroVertexGen gvgen = GyroVertexGen.RELATIVE_DISTANCE_FROM_MIDPOINT_ALONG_EDGE;
 		EdgeVertexGen evgen = EdgeVertexGen.AVERAGE_MAGNITUDE_OFFSET;
 		FaceVertexGen fvtmp;
 		GyroVertexGen gvtmp;
@@ -90,7 +90,7 @@ public class Gyro extends PolyhedronOp {
 			String arg = args[argi++];
 			if (arg.equalsIgnoreCase("-s")) {
 				fvgen = FaceVertexGen.FACE_OFFSET;
-				gvgen = GyroVertexGen.RELATIVE_DISTANCE_FROM_MIDPOINT;
+				gvgen = GyroVertexGen.RELATIVE_DISTANCE_FROM_MIDPOINT_ALONG_EDGE;
 				evgen = EdgeVertexGen.FACE_OFFSET;
 				fvarg = 0;
 				gvarg = 1.0 / 3.0;
@@ -118,12 +118,13 @@ public class Gyro extends PolyhedronOp {
 			FaceVertexGen.MAX_MAGNITUDE_OFFSET.option("s"),
 			FaceVertexGen.AVERAGE_MAGNITUDE_OFFSET.option("s"),
 			FaceVertexGen.FACE_MAGNITUDE_OFFSET.option("s"),
-			GyroVertexGen.FIXED_DISTANCE_FROM_VERTEX.option("s"),
-			GyroVertexGen.RELATIVE_DISTANCE_FROM_VERTEX.option("s"),
-			GyroVertexGen.FIXED_ANGLE_FROM_VERTEX.option("s"),
-			GyroVertexGen.FIXED_DISTANCE_FROM_MIDPOINT.option("s"),
-			GyroVertexGen.RELATIVE_DISTANCE_FROM_MIDPOINT.option("s"),
-			GyroVertexGen.FIXED_ANGLE_FROM_MIDPOINT.option("s"),
+			GyroVertexGen.FIXED_DISTANCE_FROM_VERTEX_ALONG_EDGE.option("s"),
+			GyroVertexGen.RELATIVE_DISTANCE_FROM_VERTEX_ALONG_EDGE.option("s"),
+			GyroVertexGen.FIXED_ANGLE_FROM_VERTEX_ALONG_EDGE.option("s"),
+			GyroVertexGen.FIXED_DISTANCE_FROM_MIDPOINT_ALONG_EDGE.option("s"),
+			GyroVertexGen.RELATIVE_DISTANCE_FROM_MIDPOINT_ALONG_EDGE.option("s"),
+			GyroVertexGen.FIXED_ANGLE_FROM_MIDPOINT_ALONG_EDGE.option("s"),
+			GyroVertexGen.TWIST_ANGLE.option("s"),
 			EdgeVertexGen.FACE_OFFSET.option("s"),
 			EdgeVertexGen.MAX_MAGNITUDE_OFFSET.option("s"),
 			EdgeVertexGen.AVERAGE_MAGNITUDE_OFFSET.option("s"),
