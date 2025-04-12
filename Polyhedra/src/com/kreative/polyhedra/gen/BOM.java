@@ -32,6 +32,7 @@ public class BOM {
 			new Icosahedron.Factory(),
 			// new JohnsonSolid.Factory(),
 			new Octahedron.Factory(),
+			new Path.Factory(),
 			new Polygon.Factory(),
 			new Prism.Factory(),
 			new Pyramid.Factory(),

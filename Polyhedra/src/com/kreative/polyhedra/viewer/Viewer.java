@@ -11,6 +11,7 @@ import com.kreative.polyhedra.Polyhedron;
 import com.kreative.polyhedra.PolyhedronGen;
 import com.kreative.polyhedra.PolyhedronUtils;
 import com.kreative.polyhedra.gen.Construct;
+import com.kreative.polyhedra.gen.Path;
 
 public class Viewer {
 	public static void main(String[] args) {
@@ -36,6 +37,10 @@ public class Viewer {
 					String s = args[argi++];
 					PolyhedronGen gen = PolyhedronUtils.parseGen(s);
 					if (gen != null) open(s, gen.gen());
+				} else if (arg.equals("-p") && argi < args.length) {
+					String[] cargs = new String[]{ args[argi++] };
+					PolyhedronGen gen = new Path.Factory().parse(cargs);
+					if (gen != null) open(cargs[0], gen.gen());
 				} else if (arg.equals("[") && argi < args.length) {
 					String factoryName = args[argi++];
 					int startIndex = argi, endIndex = argi, level = 0;

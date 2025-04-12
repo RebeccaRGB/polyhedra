@@ -1,0 +1,6 @@
+[magenta] V 1 1 1 L 1 1 -1 L -1 1 -1 L -1 1 1 Z
+[cyan] V -1 -1 -1 L 1 -1 -1 L 1 -1 1 L -1 -1 1 Z
+[blue] V #0 L #6 #5 #1 Z
+[lime] V #1 L #5 #4 #2 Z
+[yellow] V #2 L #4 #7 #3 Z
+[red] V #3 L #7 #6 #0 Z

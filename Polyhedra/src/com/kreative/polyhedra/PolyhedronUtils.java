@@ -271,6 +271,7 @@ public abstract class PolyhedronUtils {
 		REALS { public List<Double> parse(String s) { return parseDoubleList(s); } },
 		COLOR { public Color parse(String s) { return parseColor(s, null); } },
 		TEXT { public String parse(String s) { return s; } },
+		PATH { public String parse(String s) { return s; } },
 		OP { public PolyhedronOp parse(String s) { return parseOp(s); } },
 		GEN { public PolyhedronGen parse(String s) { return parseGen(s); } };
 		public abstract Object parse(String s);
