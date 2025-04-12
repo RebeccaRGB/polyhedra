@@ -95,68 +95,71 @@ public class Polygon extends PolyhedronGen {
 		return new Polyhedron(vertices, faces, faceColors);
 	}
 	
-	public static Polygon parse(String[] args) {
-		int n = 3;
-		int m = 1;
-		SizeSpecifier spec = SizeSpecifier.RADIUS;
-		double size = 1;
-		Axis axis = Axis.Y;
-		double z = 0;
-		Color c = Color.GRAY;
-		int argi = 0;
-		while (argi < args.length) {
-			String arg = args[argi++];
-			if (arg.equalsIgnoreCase("-n") && argi < args.length) {
-				if ((n = Math.abs(parseInt(args[argi++], n))) < 3) n = 3;
-			} else if (arg.equalsIgnoreCase("-m") && argi < args.length) {
-				if ((m = Math.abs(parseInt(args[argi++], m))) < 1) m = 1;
-			} else if (arg.equalsIgnoreCase("-r") && argi < args.length) {
-				spec = SizeSpecifier.RADIUS;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-d") && argi < args.length) {
-				spec = SizeSpecifier.DIAMETER;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-s") && argi < args.length) {
-				spec = SizeSpecifier.SIDE_LENGTH;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-a") && argi < args.length) {
-				spec = SizeSpecifier.APOTHEM;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-x") && argi < args.length) {
-				axis = Axis.X;
-				z = parseDouble(args[argi++], z);
-			} else if (arg.equalsIgnoreCase("-y") && argi < args.length) {
-				axis = Axis.Y;
-				z = parseDouble(args[argi++], z);
-			} else if (arg.equalsIgnoreCase("-z") && argi < args.length) {
-				axis = Axis.Z;
-				z = parseDouble(args[argi++], z);
-			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
-				c = parseColor(args[argi++], c);
-			} else {
-				printOptions(options());
-				return null;
+	public static class Factory extends PolyhedronGen.Factory<Polygon> {
+		public String name() { return "Polygon"; }
+		
+		public Polygon parse(String[] args) {
+			int n = 3;
+			int m = 1;
+			SizeSpecifier spec = SizeSpecifier.RADIUS;
+			double size = 1;
+			Axis axis = Axis.Y;
+			double z = 0;
+			Color c = Color.GRAY;
+			int argi = 0;
+			while (argi < args.length) {
+				String arg = args[argi++];
+				if (arg.equalsIgnoreCase("-n") && argi < args.length) {
+					if ((n = Math.abs(parseInt(args[argi++], n))) < 3) n = 3;
+				} else if (arg.equalsIgnoreCase("-m") && argi < args.length) {
+					if ((m = Math.abs(parseInt(args[argi++], m))) < 1) m = 1;
+				} else if (arg.equalsIgnoreCase("-r") && argi < args.length) {
+					spec = SizeSpecifier.RADIUS;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equalsIgnoreCase("-d") && argi < args.length) {
+					spec = SizeSpecifier.DIAMETER;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equalsIgnoreCase("-s") && argi < args.length) {
+					spec = SizeSpecifier.SIDE_LENGTH;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equalsIgnoreCase("-a") && argi < args.length) {
+					spec = SizeSpecifier.APOTHEM;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equalsIgnoreCase("-x") && argi < args.length) {
+					axis = Axis.X;
+					z = parseDouble(args[argi++], z);
+				} else if (arg.equalsIgnoreCase("-y") && argi < args.length) {
+					axis = Axis.Y;
+					z = parseDouble(args[argi++], z);
+				} else if (arg.equalsIgnoreCase("-z") && argi < args.length) {
+					axis = Axis.Z;
+					z = parseDouble(args[argi++], z);
+				} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
+					c = parseColor(args[argi++], c);
+				} else {
+					return null;
+				}
 			}
+			return new Polygon(n, m, spec.toRadius(size, n), axis, z, c);
 		}
-		return new Polygon(n, m, spec.toRadius(size, n), axis, z, c);
-	}
-	
-	public static Option[] options() {
-		return new Option[] {
-			new Option("n", Type.INT, "sides"),
-			new Option("m", Type.INT, "stellation"),
-			new Option("r", Type.REAL, "radius", "d","s","a"),
-			new Option("d", Type.REAL, "diameter", "r","s","a"),
-			new Option("s", Type.REAL, "side length", "r","d","a"),
-			new Option("a", Type.REAL, "apothem", "r","d","s"),
-			new Option("x", Type.REAL, "x-coordinate of polygon parallel to yz plane", "y","z"),
-			new Option("y", Type.REAL, "y-coordinate of polygon parallel to xz plane", "x","z"),
-			new Option("z", Type.REAL, "z-coordinate of polygon parallel to xy plane", "x","y"),
-			new Option("c", Type.COLOR, "color"),
-		};
+		
+		public Option[] options() {
+			return new Option[] {
+				new Option("n", Type.INT, "sides"),
+				new Option("m", Type.INT, "stellation"),
+				new Option("r", Type.REAL, "radius", "d","s","a"),
+				new Option("d", Type.REAL, "diameter", "r","s","a"),
+				new Option("s", Type.REAL, "side length", "r","d","a"),
+				new Option("a", Type.REAL, "apothem", "r","d","s"),
+				new Option("x", Type.REAL, "x-coordinate of polygon parallel to yz plane", "y","z"),
+				new Option("y", Type.REAL, "y-coordinate of polygon parallel to xz plane", "x","z"),
+				new Option("z", Type.REAL, "z-coordinate of polygon parallel to xy plane", "x","y"),
+				new Option("c", Type.COLOR, "color"),
+			};
+		}
 	}
 	
 	public static void main(String[] args) {
-		main(parse(args));
+		new Factory().main(args);
 	}
 }

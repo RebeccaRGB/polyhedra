@@ -235,58 +235,61 @@ public class Truncate extends PolyhedronOp {
 		return new Polyhedron(vertices, faces, faceColors);
 	}
 	
-	public static Truncate parse(String[] args) {
-		List<Integer> degrees = null;
-		TruncatedVertexGen gen = TruncatedVertexGen.REGULAR;
-		double size = 0;
-		Color color = Color.GRAY;
-		int argi = 0;
-		while (argi < args.length) {
-			String arg = args[argi++];
-			if (arg.equalsIgnoreCase("-n") && argi < args.length) {
-				degrees = parseIntList(args[argi++]);
-			} else if (arg.equalsIgnoreCase("-s")) {
-				gen = TruncatedVertexGen.RELATIVE_DISTANCE_ALONG_EDGE;
-				size = (double)1 / (double)3;
-			} else if (arg.equals("-A") && argi < args.length) {
-				gen = TruncatedVertexGen.RELATIVE_DISTANCE_ALONG_EDGE;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equals("-a") && argi < args.length) {
-				gen = TruncatedVertexGen.FIXED_DISTANCE_ALONG_EDGE;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equals("-H") && argi < args.length) {
-				gen = TruncatedVertexGen.RELATIVE_DISTANCE_FROM_VERTEX;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equals("-h") && argi < args.length) {
-				gen = TruncatedVertexGen.FIXED_DISTANCE_FROM_VERTEX;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-r")) {
-				gen = TruncatedVertexGen.REGULAR;
-				size = 0;
-			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
-				color = parseColor(args[argi++], color);
-			} else {
-				printOptions(options());
-				return null;
+	public static class Factory extends PolyhedronOp.Factory<Truncate> {
+		public String name() { return "Truncate"; }
+		
+		public Truncate parse(String[] args) {
+			List<Integer> degrees = null;
+			TruncatedVertexGen gen = TruncatedVertexGen.REGULAR;
+			double size = 0;
+			Color color = Color.GRAY;
+			int argi = 0;
+			while (argi < args.length) {
+				String arg = args[argi++];
+				if (arg.equalsIgnoreCase("-n") && argi < args.length) {
+					degrees = parseIntList(args[argi++]);
+				} else if (arg.equalsIgnoreCase("-s")) {
+					gen = TruncatedVertexGen.RELATIVE_DISTANCE_ALONG_EDGE;
+					size = (double)1 / (double)3;
+				} else if (arg.equals("-A") && argi < args.length) {
+					gen = TruncatedVertexGen.RELATIVE_DISTANCE_ALONG_EDGE;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equals("-a") && argi < args.length) {
+					gen = TruncatedVertexGen.FIXED_DISTANCE_ALONG_EDGE;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equals("-H") && argi < args.length) {
+					gen = TruncatedVertexGen.RELATIVE_DISTANCE_FROM_VERTEX;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equals("-h") && argi < args.length) {
+					gen = TruncatedVertexGen.FIXED_DISTANCE_FROM_VERTEX;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equalsIgnoreCase("-r")) {
+					gen = TruncatedVertexGen.REGULAR;
+					size = 0;
+				} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
+					color = parseColor(args[argi++], color);
+				} else {
+					return null;
+				}
 			}
+			return new Truncate(degrees, gen, size, color);
 		}
-		return new Truncate(degrees, gen, size, color);
-	}
-	
-	public static Option[] options() {
-		return new Option[] {
-			new Option("n", Type.INTS, "only operate on vertices of the specified degree"),
-			new Option("h", Type.REAL, "truncate at a fixed distance from the original vertices", "H","a","A","r","s"),
-			new Option("H", Type.REAL, "truncate at a relative distance from the original vertices", "h","a","A","r","s"),
-			new Option("a", Type.REAL, "truncate at a fixed distance along the original edges", "h","H","A","r","s"),
-			new Option("A", Type.REAL, "truncate at a relative distance along the original edges", "h","H","a","r","s"),
-			new Option("r", Type.VOID, "attempt to create regular faces (not always possible)", "h","H","a","A","s"),
-			new Option("s", Type.VOID, "truncate at the trisection points of the original edges", "h","H","a","A","r"),
-			new Option("c", Type.COLOR, "color of faces generated from truncated vertices"),
-		};
+		
+		public Option[] options() {
+			return new Option[] {
+				new Option("n", Type.INTS, "only operate on vertices of the specified degree"),
+				new Option("h", Type.REAL, "truncate at a fixed distance from the original vertices", "H","a","A","r","s"),
+				new Option("H", Type.REAL, "truncate at a relative distance from the original vertices", "h","a","A","r","s"),
+				new Option("a", Type.REAL, "truncate at a fixed distance along the original edges", "h","H","A","r","s"),
+				new Option("A", Type.REAL, "truncate at a relative distance along the original edges", "h","H","a","r","s"),
+				new Option("r", Type.VOID, "attempt to create regular faces (not always possible)", "h","H","a","A","s"),
+				new Option("s", Type.VOID, "truncate at the trisection points of the original edges", "h","H","a","A","r"),
+				new Option("c", Type.COLOR, "color of faces generated from truncated vertices"),
+			};
+		}
 	}
 	
 	public static void main(String[] args) {
-		main(parse(args));
+		new Factory().main(args);
 	}
 }

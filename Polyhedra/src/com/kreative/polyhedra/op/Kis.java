@@ -68,43 +68,46 @@ public class Kis extends PolyhedronOp {
 		return new Polyhedron(vertices, faces, faceColors);
 	}
 	
-	public static Kis parse(String[] args) {
-		List<Integer> sides = null;
-		FaceVertexGen fvgen = FaceVertexGen.EQUILATERAL;
-		FaceVertexGen fvtmp;
-		Object fvarg = 0;
-		int argi = 0;
-		while (argi < args.length) {
-			String arg = args[argi++];
-			if (arg.equalsIgnoreCase("-n") && argi < args.length) {
-				sides = parseIntList(args[argi++]);
-			} else if (arg.equalsIgnoreCase("-s")) {
-				fvgen = FaceVertexGen.FACE_OFFSET;
-				fvarg = 0;
-			} else if ((fvtmp = FaceVertexGen.forFlagIgnoreCase(arg)) != null && (fvtmp.isVoidType() || argi < args.length)) {
-				fvgen = fvtmp;
-				fvarg = fvtmp.isVoidType() ? null : fvtmp.parseArgument(args[argi++]);
-			} else {
-				printOptions(options());
-				return null;
+	public static class Factory extends PolyhedronOp.Factory<Kis> {
+		public String name() { return "Kis"; }
+		
+		public Kis parse(String[] args) {
+			List<Integer> sides = null;
+			FaceVertexGen fvgen = FaceVertexGen.EQUILATERAL;
+			FaceVertexGen fvtmp;
+			Object fvarg = 0;
+			int argi = 0;
+			while (argi < args.length) {
+				String arg = args[argi++];
+				if (arg.equalsIgnoreCase("-n") && argi < args.length) {
+					sides = parseIntList(args[argi++]);
+				} else if (arg.equalsIgnoreCase("-s")) {
+					fvgen = FaceVertexGen.FACE_OFFSET;
+					fvarg = 0;
+				} else if ((fvtmp = FaceVertexGen.forFlagIgnoreCase(arg)) != null && (fvtmp.isVoidType() || argi < args.length)) {
+					fvgen = fvtmp;
+					fvarg = fvtmp.isVoidType() ? null : fvtmp.parseArgument(args[argi++]);
+				} else {
+					return null;
+				}
 			}
+			return new Kis(sides, fvgen, fvarg);
 		}
-		return new Kis(sides, fvgen, fvarg);
-	}
-	
-	public static Option[] options() {
-		return new Option[] {
-			new Option("n", Type.INTS, "only operate on faces with the specified number of edges"),
-			FaceVertexGen.FACE_OFFSET.option("s"),
-			FaceVertexGen.MAX_MAGNITUDE_OFFSET.option("s"),
-			FaceVertexGen.AVERAGE_MAGNITUDE_OFFSET.option("s"),
-			FaceVertexGen.FACE_MAGNITUDE_OFFSET.option("s"),
-			FaceVertexGen.EQUILATERAL.option("s"),
-			new Option("s", Type.VOID, "create new vertices at centers of original faces (strict mode)", FaceVertexGen.allOptionMutexes()),
-		};
+		
+		public Option[] options() {
+			return new Option[] {
+				new Option("n", Type.INTS, "only operate on faces with the specified number of edges"),
+				FaceVertexGen.FACE_OFFSET.option("s"),
+				FaceVertexGen.MAX_MAGNITUDE_OFFSET.option("s"),
+				FaceVertexGen.AVERAGE_MAGNITUDE_OFFSET.option("s"),
+				FaceVertexGen.FACE_MAGNITUDE_OFFSET.option("s"),
+				FaceVertexGen.EQUILATERAL.option("s"),
+				new Option("s", Type.VOID, "create new vertices at centers of original faces (strict mode)", FaceVertexGen.allOptionMutexes()),
+			};
+		}
 	}
 	
 	public static void main(String[] args) {
-		main(parse(args));
+		new Factory().main(args);
 	}
 }

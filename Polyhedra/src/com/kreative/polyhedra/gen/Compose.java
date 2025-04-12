@@ -41,22 +41,26 @@ public class Compose extends PolyhedronGen {
 		return new Polyhedron(vertices, faces, faceColors);
 	}
 	
-	public static Compose parse(String[] args) {
-		List<PolyhedronGen> gens = new ArrayList<PolyhedronGen>();
-		for (String arg : args) {
-			PolyhedronGen gen = parseGen(arg);
-			if (gen != null) gens.add(gen);
+	public static class Factory extends PolyhedronGen.Factory<Compose> {
+		public String name() { return "Compose"; }
+		
+		public Compose parse(String[] args) {
+			List<PolyhedronGen> gens = new ArrayList<PolyhedronGen>();
+			for (String arg : args) {
+				PolyhedronGen gen = parseGen(arg);
+				if (gen != null) gens.add(gen);
+			}
+			return new Compose(gens);
 		}
-		return new Compose(gens);
-	}
-	
-	public static Option[] options() {
-		return new Option[] {
-			new Option(Mult.REPEATED_REQUIRED, Type.GEN, "generator"),
-		};
+		
+		public Option[] options() {
+			return new Option[] {
+				new Option(Mult.REPEATED_REQUIRED, Type.GEN, "generator"),
+			};
+		}
 	}
 	
 	public static void main(String[] args) {
-		main(parse(args));
+		new Factory().main(args);
 	}
 }

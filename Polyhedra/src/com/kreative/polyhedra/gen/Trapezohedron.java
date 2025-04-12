@@ -180,80 +180,83 @@ public class Trapezohedron extends PolyhedronGen {
 		return new Polyhedron(vertices, faces, faceColors);
 	}
 	
-	public static Trapezohedron parse(String[] args) {
-		int n = 3;
-		int m = 1;
-		SizeSpecifier spec = SizeSpecifier.APEX_Z;
-		double size = 1;
-		Axis axis = Axis.Y;
-		Color c = Color.GRAY;
-		int argi = 0;
-		while (argi < args.length) {
-			String arg = args[argi++];
-			if (arg.equalsIgnoreCase("-n") && argi < args.length) {
-				if ((n = Math.abs(parseInt(args[argi++], n))) < 3) n = 3;
-			} else if (arg.equalsIgnoreCase("-m") && argi < args.length) {
-				if ((m = Math.abs(parseInt(args[argi++], m))) < 1) m = 1;
-			} else if (arg.equalsIgnoreCase("-a") && argi < args.length) {
-				spec = SizeSpecifier.SHORT_EDGE_LENGTH;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-e") && argi < args.length) {
-				spec = SizeSpecifier.LONG_EDGE_LENGTH;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-h") && argi < args.length) {
-				spec = SizeSpecifier.HALF_HEIGHT;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-r") && argi < args.length) {
-				spec = SizeSpecifier.INRADIUS;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-p") && argi < args.length) {
-				spec = SizeSpecifier.MIDRADIUS;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-u") && argi < args.length) {
-				spec = SizeSpecifier.POLYGON_RADIUS;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-v") && argi < args.length) {
-				spec = SizeSpecifier.POLYGON_Z;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-w") && argi < args.length) {
-				spec = SizeSpecifier.APEX_Z;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-x")) {
-				axis = Axis.X;
-			} else if (arg.equalsIgnoreCase("-y")) {
-				axis = Axis.Y;
-			} else if (arg.equalsIgnoreCase("-z")) {
-				axis = Axis.Z;
-			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
-				c = parseColor(args[argi++], c);
-			} else {
-				printOptions(options());
-				return null;
+	public static class Factory extends PolyhedronGen.Factory<Trapezohedron> {
+		public String name() { return "Trapezohedron"; }
+		
+		public Trapezohedron parse(String[] args) {
+			int n = 3;
+			int m = 1;
+			SizeSpecifier spec = SizeSpecifier.APEX_Z;
+			double size = 1;
+			Axis axis = Axis.Y;
+			Color c = Color.GRAY;
+			int argi = 0;
+			while (argi < args.length) {
+				String arg = args[argi++];
+				if (arg.equalsIgnoreCase("-n") && argi < args.length) {
+					if ((n = Math.abs(parseInt(args[argi++], n))) < 3) n = 3;
+				} else if (arg.equalsIgnoreCase("-m") && argi < args.length) {
+					if ((m = Math.abs(parseInt(args[argi++], m))) < 1) m = 1;
+				} else if (arg.equalsIgnoreCase("-a") && argi < args.length) {
+					spec = SizeSpecifier.SHORT_EDGE_LENGTH;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equalsIgnoreCase("-e") && argi < args.length) {
+					spec = SizeSpecifier.LONG_EDGE_LENGTH;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equalsIgnoreCase("-h") && argi < args.length) {
+					spec = SizeSpecifier.HALF_HEIGHT;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equalsIgnoreCase("-r") && argi < args.length) {
+					spec = SizeSpecifier.INRADIUS;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equalsIgnoreCase("-p") && argi < args.length) {
+					spec = SizeSpecifier.MIDRADIUS;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equalsIgnoreCase("-u") && argi < args.length) {
+					spec = SizeSpecifier.POLYGON_RADIUS;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equalsIgnoreCase("-v") && argi < args.length) {
+					spec = SizeSpecifier.POLYGON_Z;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equalsIgnoreCase("-w") && argi < args.length) {
+					spec = SizeSpecifier.APEX_Z;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equalsIgnoreCase("-x")) {
+					axis = Axis.X;
+				} else if (arg.equalsIgnoreCase("-y")) {
+					axis = Axis.Y;
+				} else if (arg.equalsIgnoreCase("-z")) {
+					axis = Axis.Z;
+				} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
+					c = parseColor(args[argi++], c);
+				} else {
+					return null;
+				}
 			}
+			return new Trapezohedron(n, m, spec, size, axis, c);
 		}
-		return new Trapezohedron(n, m, spec, size, axis, c);
-	}
-	
-	public static Option[] options() {
-		return new Option[] {
-			new Option("n", Type.INT, "sides"),
-			new Option("m", Type.INT, "stellation"),
-			new Option("a", Type.REAL, "short edge length", "e","h","r","p","u","v","w"),
-			new Option("e", Type.REAL, "long edge length", "a","h","r","p","u","v","w"),
-			new Option("h", Type.REAL, "(half-)height", "a","e","r","p","u","v","w"),
-			new Option("r", Type.REAL, "radius of inscribed sphere", "a","e","h","p","u","v","w"),
-			new Option("p", Type.REAL, "radius of sphere tangent to edges", "a","e","h","r","u","v","w"),
-			new Option("u", Type.REAL, "radius of center polygon", "a","e","h","r","p","v","w"),
-			new Option("v", Type.REAL, "distance from origin to plane of center polygon", "a","e","h","r","p","u","w"),
-			new Option("w", Type.REAL, "distance from origin to apex", "a","e","h","r","p","u","v"),
-			new Option("x", Type.VOID, "align central axis to X axis", "y","z"),
-			new Option("y", Type.VOID, "align central axis to Y axis", "x","z"),
-			new Option("z", Type.VOID, "align central axis to Z axis", "x","y"),
-			new Option("c", Type.COLOR, "color"),
-		};
+		
+		public Option[] options() {
+			return new Option[] {
+				new Option("n", Type.INT, "sides"),
+				new Option("m", Type.INT, "stellation"),
+				new Option("a", Type.REAL, "short edge length", "e","h","r","p","u","v","w"),
+				new Option("e", Type.REAL, "long edge length", "a","h","r","p","u","v","w"),
+				new Option("h", Type.REAL, "(half-)height", "a","e","r","p","u","v","w"),
+				new Option("r", Type.REAL, "radius of inscribed sphere", "a","e","h","p","u","v","w"),
+				new Option("p", Type.REAL, "radius of sphere tangent to edges", "a","e","h","r","u","v","w"),
+				new Option("u", Type.REAL, "radius of center polygon", "a","e","h","r","p","v","w"),
+				new Option("v", Type.REAL, "distance from origin to plane of center polygon", "a","e","h","r","p","u","w"),
+				new Option("w", Type.REAL, "distance from origin to apex", "a","e","h","r","p","u","v"),
+				new Option("x", Type.VOID, "align central axis to X axis", "y","z"),
+				new Option("y", Type.VOID, "align central axis to Y axis", "x","z"),
+				new Option("z", Type.VOID, "align central axis to Z axis", "x","y"),
+				new Option("c", Type.COLOR, "color"),
+			};
+		}
 	}
 	
 	public static void main(String[] args) {
-		main(parse(args));
+		new Factory().main(args);
 	}
 }

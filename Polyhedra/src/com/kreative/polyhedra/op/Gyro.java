@@ -75,69 +75,72 @@ public class Gyro extends PolyhedronOp {
 		return new Polyhedron(vertices, faces, faceColors);
 	}
 	
-	public static Gyro parse(String[] args) {
-		FaceVertexGen fvgen = FaceVertexGen.AVERAGE_MAGNITUDE_OFFSET;
-		GyroVertexGen gvgen = GyroVertexGen.RELATIVE_DISTANCE_FROM_MIDPOINT_ALONG_EDGE;
-		EdgeVertexGen evgen = EdgeVertexGen.AVERAGE_MAGNITUDE_OFFSET;
-		FaceVertexGen fvtmp;
-		GyroVertexGen gvtmp;
-		EdgeVertexGen evtmp;
-		Object fvarg = 0;
-		Object gvarg = 1.0 / 3.0;
-		Object evarg = 0;
-		int argi = 0;
-		while (argi < args.length) {
-			String arg = args[argi++];
-			if (arg.equalsIgnoreCase("-s")) {
-				fvgen = FaceVertexGen.FACE_OFFSET;
-				gvgen = GyroVertexGen.RELATIVE_DISTANCE_FROM_MIDPOINT_ALONG_EDGE;
-				evgen = EdgeVertexGen.FACE_OFFSET;
-				fvarg = 0;
-				gvarg = 1.0 / 3.0;
-				evarg = 0;
-			} else if ((fvtmp = FaceVertexGen.forFlag(arg)) != null && (fvtmp.isVoidType() || argi < args.length)) {
-				fvgen = fvtmp;
-				fvarg = fvtmp.isVoidType() ? null : fvtmp.parseArgument(args[argi++]);
-			} else if ((gvtmp = GyroVertexGen.forFlag(arg)) != null && (gvtmp.isVoidType() || argi < args.length)) {
-				gvgen = gvtmp;
-				gvarg = gvtmp.isVoidType() ? null : gvtmp.parseArgument(args[argi++]);
-			} else if ((evtmp = EdgeVertexGen.forFlag(arg)) != null && (evtmp.isVoidType() || argi < args.length)) {
-				evgen = evtmp;
-				evarg = evtmp.isVoidType() ? null : evtmp.parseArgument(args[argi++]);
-			} else {
-				printOptions(options());
-				return null;
+	public static class Factory extends PolyhedronOp.Factory<Gyro> {
+		public String name() { return "Gyro"; }
+		
+		public Gyro parse(String[] args) {
+			FaceVertexGen fvgen = FaceVertexGen.AVERAGE_MAGNITUDE_OFFSET;
+			GyroVertexGen gvgen = GyroVertexGen.RELATIVE_DISTANCE_FROM_MIDPOINT_ALONG_EDGE;
+			EdgeVertexGen evgen = EdgeVertexGen.AVERAGE_MAGNITUDE_OFFSET;
+			FaceVertexGen fvtmp;
+			GyroVertexGen gvtmp;
+			EdgeVertexGen evtmp;
+			Object fvarg = 0;
+			Object gvarg = 1.0 / 3.0;
+			Object evarg = 0;
+			int argi = 0;
+			while (argi < args.length) {
+				String arg = args[argi++];
+				if (arg.equalsIgnoreCase("-s")) {
+					fvgen = FaceVertexGen.FACE_OFFSET;
+					gvgen = GyroVertexGen.RELATIVE_DISTANCE_FROM_MIDPOINT_ALONG_EDGE;
+					evgen = EdgeVertexGen.FACE_OFFSET;
+					fvarg = 0;
+					gvarg = 1.0 / 3.0;
+					evarg = 0;
+				} else if ((fvtmp = FaceVertexGen.forFlag(arg)) != null && (fvtmp.isVoidType() || argi < args.length)) {
+					fvgen = fvtmp;
+					fvarg = fvtmp.isVoidType() ? null : fvtmp.parseArgument(args[argi++]);
+				} else if ((gvtmp = GyroVertexGen.forFlag(arg)) != null && (gvtmp.isVoidType() || argi < args.length)) {
+					gvgen = gvtmp;
+					gvarg = gvtmp.isVoidType() ? null : gvtmp.parseArgument(args[argi++]);
+				} else if ((evtmp = EdgeVertexGen.forFlag(arg)) != null && (evtmp.isVoidType() || argi < args.length)) {
+					evgen = evtmp;
+					evarg = evtmp.isVoidType() ? null : evtmp.parseArgument(args[argi++]);
+				} else {
+					return null;
+				}
 			}
+			return new Gyro(fvgen, fvarg, gvgen, gvarg, evgen, evarg);
 		}
-		return new Gyro(fvgen, fvarg, gvgen, gvarg, evgen, evarg);
-	}
-	
-	public static Option[] options() {
-		return new Option[] {
-			FaceVertexGen.FACE_OFFSET.option("s"),
-			FaceVertexGen.MAX_MAGNITUDE_OFFSET.option("s"),
-			FaceVertexGen.AVERAGE_MAGNITUDE_OFFSET.option("s"),
-			FaceVertexGen.FACE_MAGNITUDE_OFFSET.option("s"),
-			GyroVertexGen.FIXED_DISTANCE_FROM_VERTEX_ALONG_EDGE.option("s"),
-			GyroVertexGen.RELATIVE_DISTANCE_FROM_VERTEX_ALONG_EDGE.option("s"),
-			GyroVertexGen.FIXED_ANGLE_FROM_VERTEX_ALONG_EDGE.option("s"),
-			GyroVertexGen.FIXED_DISTANCE_FROM_MIDPOINT_ALONG_EDGE.option("s"),
-			GyroVertexGen.RELATIVE_DISTANCE_FROM_MIDPOINT_ALONG_EDGE.option("s"),
-			GyroVertexGen.FIXED_ANGLE_FROM_MIDPOINT_ALONG_EDGE.option("s"),
-			GyroVertexGen.TWIST_ANGLE.option("s"),
-			EdgeVertexGen.FACE_OFFSET.option("s"),
-			EdgeVertexGen.MAX_MAGNITUDE_OFFSET.option("s"),
-			EdgeVertexGen.AVERAGE_MAGNITUDE_OFFSET.option("s"),
-			EdgeVertexGen.EDGE_MAGNITUDE_OFFSET.option("s"),
-			EdgeVertexGen.VERTEX_MAGNITUDE_OFFSET.option("s"),
-			new Option(
-				"s", Type.VOID, "create new vertices at centers of original faces (strict mode)",
-				FaceVertexGen.allOptionMutexes(GyroVertexGen.allOptionMutexes(EdgeVertexGen.allOptionMutexes()))
-			),
-		};
+		
+		public Option[] options() {
+			return new Option[] {
+				FaceVertexGen.FACE_OFFSET.option("s"),
+				FaceVertexGen.MAX_MAGNITUDE_OFFSET.option("s"),
+				FaceVertexGen.AVERAGE_MAGNITUDE_OFFSET.option("s"),
+				FaceVertexGen.FACE_MAGNITUDE_OFFSET.option("s"),
+				GyroVertexGen.FIXED_DISTANCE_FROM_VERTEX_ALONG_EDGE.option("s"),
+				GyroVertexGen.RELATIVE_DISTANCE_FROM_VERTEX_ALONG_EDGE.option("s"),
+				GyroVertexGen.FIXED_ANGLE_FROM_VERTEX_ALONG_EDGE.option("s"),
+				GyroVertexGen.FIXED_DISTANCE_FROM_MIDPOINT_ALONG_EDGE.option("s"),
+				GyroVertexGen.RELATIVE_DISTANCE_FROM_MIDPOINT_ALONG_EDGE.option("s"),
+				GyroVertexGen.FIXED_ANGLE_FROM_MIDPOINT_ALONG_EDGE.option("s"),
+				GyroVertexGen.TWIST_ANGLE.option("s"),
+				EdgeVertexGen.FACE_OFFSET.option("s"),
+				EdgeVertexGen.MAX_MAGNITUDE_OFFSET.option("s"),
+				EdgeVertexGen.AVERAGE_MAGNITUDE_OFFSET.option("s"),
+				EdgeVertexGen.EDGE_MAGNITUDE_OFFSET.option("s"),
+				EdgeVertexGen.VERTEX_MAGNITUDE_OFFSET.option("s"),
+				new Option(
+					"s", Type.VOID, "create new vertices at centers of original faces (strict mode)",
+					FaceVertexGen.allOptionMutexes(GyroVertexGen.allOptionMutexes(EdgeVertexGen.allOptionMutexes()))
+				),
+			};
+		}
 	}
 	
 	public static void main(String[] args) {
-		main(parse(args));
+		new Factory().main(args);
 	}
 }

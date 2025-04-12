@@ -374,32 +374,35 @@ public class Recolor extends PolyhedronOp {
 		return new Polyhedron(vertices, faces, faceColors);
 	}
 	
-	public static Recolor parse(String[] args) {
-		Map<Classifier,Color> colorMap = new HashMap<Classifier,Color>();
-		int argi = 0;
-		while (argi < args.length) {
-			String arg = args[argi++];
-			Classifier cl = Classifier.forString(arg);
-			if (cl != null && argi < args.length) {
-				Color c = parseColor(args[argi++], Color.GRAY);
-				colorMap.put(cl, c);
-			} else {
-				printOptions(options());
-				return null;
+	public static class Factory extends PolyhedronOp.Factory<Recolor> {
+		public String name() { return "Recolor"; }
+		
+		public Recolor parse(String[] args) {
+			Map<Classifier,Color> colorMap = new HashMap<Classifier,Color>();
+			int argi = 0;
+			while (argi < args.length) {
+				String arg = args[argi++];
+				Classifier cl = Classifier.forString(arg);
+				if (cl != null && argi < args.length) {
+					Color c = parseColor(args[argi++], Color.GRAY);
+					colorMap.put(cl, c);
+				} else {
+					return null;
+				}
 			}
+			return new Recolor(colorMap);
 		}
-		return new Recolor(colorMap);
-	}
-	
-	public static Option[] options() {
-		ArrayList<Option> options = new ArrayList<Option>();
-		for (Classifier c : Classifier.values()) {
-			options.add(new Option(c.nname, Type.COLOR, "color for " + c.dname));
+		
+		public Option[] options() {
+			ArrayList<Option> options = new ArrayList<Option>();
+			for (Classifier c : Classifier.values()) {
+				options.add(new Option(c.nname, Type.COLOR, "color for " + c.dname));
+			}
+			return options.toArray(new Option[options.size()]);
 		}
-		return options.toArray(new Option[options.size()]);
 	}
 	
 	public static void main(String[] args) {
-		main(parse(args));
+		new Factory().main(args);
 	}
 }

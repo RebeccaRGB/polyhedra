@@ -5,104 +5,115 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import com.kreative.polyhedra.Arrayz;
 import com.kreative.polyhedra.PolyhedronOp;
 
 public class BOM {
-	public static final List<Class<? extends PolyhedronOp>> BOM = Collections.unmodifiableList(
+	public static final List<PolyhedronOp.Factory<? extends PolyhedronOp>> BOM = Collections.unmodifiableList(
 		Arrays.asList(
-			AffineTransform.class,
-			Ambo.class,
-			Bevel.class,
-			// Bowtie.class,
-			Center.class,
-			Chain.class,
-			// Chamfer.class,
-			ConvexHull.class,
-			// Cross.class,
-			Dual.class,
-			// Ethyl.class,
-			Expand.class,
-			Gyro.class,
-			Identity.class,
-			InsideOut.class,
-			Join.class,
-			// JoinKisKis.class,
-			// JoinLace.class,
-			// JoinMedial.class,
-			Kis.class,
-			// Lace.class,
-			// Loft.class,
-			// Medial.class,
-			Meta.class,
-			Needle.class,
-			NormalizeVertices.class,
-			// OppositeLace.class,
-			Ortho.class,
-			// Propeller.class,
-			// Quinto.class,
-			Recolor.class,
-			Reflect.class,
-			Resize.class,
-			Rotate.class,
-			Scale.class,
-			Snub.class,
-			// Stake.class,
-			// Subdivide.class,
-			Translate.class,
-			Truncate.class,
-			// Volute.class,
-			// Waffle.class,
-			// Whirl.class,
-			Zip.class
+			new AffineTransform.Factory(),
+			new Ambo.Factory(),
+			new Bevel.Factory(),
+			// new Bowtie.Factory(),
+			new Center.Factory(),
+			new Chain.Factory(),
+			// new Chamfer.Factory(),
+			new ConvexHull.Factory(),
+			// new Cross.Factory(),
+			new Dual.Factory(),
+			// new Ethyl.Factory(),
+			new Expand.Factory(),
+			new Gyro.Factory(),
+			new Identity.Factory(),
+			new InsideOut.Factory(),
+			new Join.Factory(),
+			// new JoinKisKis.Factory(),
+			// new JoinLace.Factory(),
+			// new JoinMedial.Factory(),
+			new Kis.Factory(),
+			// new Lace.Factory(),
+			// new Loft.Factory(),
+			// new Medial.Factory(),
+			new Meta.Factory(),
+			new Needle.Factory(),
+			new NormalizeVertices.Factory(),
+			// new OppositeLace.Factory(),
+			new Ortho.Factory(),
+			// new Propeller.Factory(),
+			// new Quinto.Factory(),
+			new Recolor.Factory(),
+			new Reflect.Factory(),
+			new Resize.Factory(),
+			new Rotate.Factory(),
+			new Scale.Factory(),
+			new Snub.Factory(),
+			// new Stake.Factory(),
+			// new Subdivide.Factory(),
+			new Translate.Factory(),
+			new Truncate.Factory(),
+			// new Volute.Factory(),
+			// new Waffle.Factory(),
+			// new Whirl.Factory(),
+			new Zip.Factory()
 		)
 	);
 	
-	public static final Map<String,Class<? extends PolyhedronOp>> CON = Collections.unmodifiableMap(
-		Arrayz.asMap(
-			// Arrayz.mapEntry("B", Bowtie.class),
-			// Arrayz.mapEntry("E", Ethyl.class),
-			// Arrayz.mapEntry("G", OppositeLace.class),
-			Arrayz.mapEntry("I", Identity.class),
-			// Arrayz.mapEntry("J", JoinMedial.class),
-			// Arrayz.mapEntry("K", Stake.class),
-			// Arrayz.mapEntry("L", Lace.class),
-			// Arrayz.mapEntry("L0", JoinLace.class),
-			// Arrayz.mapEntry("M", Medial.class),
-			// Arrayz.mapEntry("Q0", JoinKisKis.class),
-			// Arrayz.mapEntry("W", Waffle.class),
-			// Arrayz.mapEntry("X", Cross.class),
-			Arrayz.mapEntry("a", Ambo.class),
-			Arrayz.mapEntry("b", Bevel.class),
-			// Arrayz.mapEntry("c", Chamfer.class),
-			Arrayz.mapEntry("d", Dual.class),
-			Arrayz.mapEntry("e", Expand.class),
-			Arrayz.mapEntry("g", Gyro.class),
-			Arrayz.mapEntry("j", Join.class),
-			Arrayz.mapEntry("k", Kis.class),
-			// Arrayz.mapEntry("kk0", JoinKisKis.class),
-			// Arrayz.mapEntry("l", Loft.class),
-			Arrayz.mapEntry("m", Meta.class),
-			Arrayz.mapEntry("n", Needle.class),
-			Arrayz.mapEntry("o", Ortho.class),
-			// Arrayz.mapEntry("p", Propeller.class),
-			// Arrayz.mapEntry("q", Quinto.class),
-			Arrayz.mapEntry("r", Reflect.class),
-			Arrayz.mapEntry("s", Snub.class),
-			Arrayz.mapEntry("t", Truncate.class),
-			// Arrayz.mapEntry("u", Subdivide.class),
-			// Arrayz.mapEntry("v", Volute.class),
-			// Arrayz.mapEntry("w", Whirl.class),
-			Arrayz.mapEntry("z", Zip.class)
-		)
-	);
+	public static final Map<String,PolyhedronOp.Factory<? extends PolyhedronOp>> CON;
+	public static final Map<String,PolyhedronOp.Factory<? extends PolyhedronOp>> MAP;
 	
-	public static final Map<String,Class<? extends PolyhedronOp>> MAP;
 	static {
-		Map<String,Class<? extends PolyhedronOp>> map =
-			new HashMap<String,Class<? extends PolyhedronOp>>(CON);
-		for (Class<? extends PolyhedronOp> cls : BOM)
-			map.put(cls.getSimpleName().toLowerCase(), cls);
+		Map<String,PolyhedronOp.Factory<? extends PolyhedronOp>> con =
+			new HashMap<String,PolyhedronOp.Factory<? extends PolyhedronOp>>();
+		
+		// con.put("B", new Bowtie.Factory());
+		// con.put("E", new Ethyl.Factory());
+		// con.put("G", new OppositeLace.Factory());
+		con.put("I", new Identity.Factory());
+		// con.put("J", new JoinMedial.Factory());
+		// con.put("K", new Stake.Factory());
+		// con.put("L", new Lace.Factory());
+		// con.put("L0", new JoinLace.Factory());
+		// con.put("M", new Medial.Factory());
+		// con.put("Q0", new JoinKisKis.Factory());
+		// con.put("W", new Waffle.Factory());
+		// con.put("X", new Cross.Factory());
+		con.put("a", new Ambo.Factory());
+		con.put("b", new Bevel.Factory());
+		// con.put("c", new Chamfer.Factory());
+		con.put("d", new Dual.Factory());
+		con.put("e", new Expand.Factory());
+		con.put("g", new Gyro.Factory());
+		con.put("j", new Join.Factory());
+		con.put("k", new Kis.Factory());
+		// con.put("kk0", new JoinKisKis.Factory());
+		// con.put("l", new Loft.Factory());
+		con.put("m", new Meta.Factory());
+		con.put("n", new Needle.Factory());
+		con.put("o", new Ortho.Factory());
+		// con.put("p", new Propeller.Factory());
+		// con.put("q", new Quinto.Factory());
+		con.put("r", new Reflect.Factory());
+		con.put("s", new Snub.Factory());
+		con.put("t", new Truncate.Factory());
+		// con.put("u", new Subdivide.Factory());
+		// con.put("v", new Volute.Factory());
+		// con.put("w", new Whirl.Factory());
+		con.put("z", new Zip.Factory());
+		
+		Map<String,PolyhedronOp.Factory<? extends PolyhedronOp>> map =
+			new HashMap<String,PolyhedronOp.Factory<? extends PolyhedronOp>>(con);
+		
+		for (PolyhedronOp.Factory<? extends PolyhedronOp> factory : BOM) {
+			String name = factory.name();
+			map.put(name, factory);
+			map.put(name.toUpperCase(), factory);
+			map.put(name.toLowerCase(), factory);
+			name = name.replaceAll("\\s+", "");
+			map.put(name, factory);
+			map.put(name.toUpperCase(), factory);
+			map.put(name.toLowerCase(), factory);
+		}
+		
+		CON = Collections.unmodifiableMap(con);
 		MAP = Collections.unmodifiableMap(map);
 	}
 }

@@ -1,6 +1,5 @@
 package com.kreative.polyhedra;
 
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.SortedSet;
@@ -25,44 +24,30 @@ public class Main {
 		
 		if (command.equals("ops")) {
 			SortedSet<String> ops = new TreeSet<String>();
-			ops.addAll(com.kreative.polyhedra.op.BOM.MAP.keySet());
+			for (PolyhedronOp.Factory<? extends PolyhedronOp> opFactory : com.kreative.polyhedra.op.BOM.BOM) {
+				ops.add(opFactory.name());
+			}
 			for (String op : ops) System.out.println(op);
 			return;
 		}
 		
 		if (command.equals("gens")) {
 			SortedSet<String> gens = new TreeSet<String>();
-			gens.addAll(com.kreative.polyhedra.gen.BOM.MAP.keySet());
+			for (PolyhedronGen.Factory<? extends PolyhedronGen> genFactory : com.kreative.polyhedra.gen.BOM.BOM) {
+				gens.add(genFactory.name());
+			}
 			for (String gen : gens) System.out.println(gen);
 			return;
 		}
 		
-		Class<? extends PolyhedronOp> opClass;
-		Class<? extends PolyhedronGen> genClass;
+		PolyhedronOp.Factory<? extends PolyhedronOp> opFactory;
+		opFactory = com.kreative.polyhedra.op.BOM.MAP.get(args[0]);
+		if (opFactory != null) { opFactory.main(cargs); return; }
 		
-		opClass = com.kreative.polyhedra.op.BOM.MAP.get(args[0]);
-		if (opClass != null && invokeMain(opClass, cargs)) return;
-		
-		genClass = com.kreative.polyhedra.gen.BOM.MAP.get(args[0]);
-		if (genClass != null && invokeMain(genClass, cargs)) return;
-		
-		opClass = com.kreative.polyhedra.op.BOM.MAP.get(command);
-		if (opClass != null && invokeMain(opClass, cargs)) return;
-		
-		genClass = com.kreative.polyhedra.gen.BOM.MAP.get(command);
-		if (genClass != null && invokeMain(genClass, cargs)) return;
+		PolyhedronGen.Factory<? extends PolyhedronGen> genFactory;
+		genFactory = com.kreative.polyhedra.gen.BOM.MAP.get(args[0]);
+		if (genFactory != null) { genFactory.main(cargs); return; }
 		
 		Viewer.main(args);
-	}
-	
-	private static boolean invokeMain(Class<?> cls, String[] args) {
-		try {
-			Method main = cls.getMethod("main", String[].class);
-			main.invoke(null, (Object)args);
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
 	}
 }

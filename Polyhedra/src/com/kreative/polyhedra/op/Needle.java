@@ -55,42 +55,45 @@ public class Needle extends PolyhedronOp {
 		return new Polyhedron(vertices, faces, faceColors);
 	}
 	
-	public static Needle parse(String[] args) {
-		FaceVertexGen fvgen = FaceVertexGen.FACE_OFFSET;
-		FaceVertexGen fvtmp;
-		Object fvarg = 0;
-		Color color = Color.GRAY;
-		int argi = 0;
-		while (argi < args.length) {
-			String arg = args[argi++];
-			if (arg.equalsIgnoreCase("-s")) {
-				fvgen = FaceVertexGen.FACE_OFFSET;
-				fvarg = 0;
-			} else if ((fvtmp = FaceVertexGen.forFlagIgnoreCase(arg)) != null && (fvtmp.isVoidType() || argi < args.length)) {
-				fvgen = fvtmp;
-				fvarg = fvtmp.isVoidType() ? null : fvtmp.parseArgument(args[argi++]);
-			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
-				color = parseColor(args[argi++], color);
-			} else {
-				printOptions(options());
-				return null;
+	public static class Factory extends PolyhedronOp.Factory<Needle> {
+		public String name() { return "Needle"; }
+		
+		public Needle parse(String[] args) {
+			FaceVertexGen fvgen = FaceVertexGen.FACE_OFFSET;
+			FaceVertexGen fvtmp;
+			Object fvarg = 0;
+			Color color = Color.GRAY;
+			int argi = 0;
+			while (argi < args.length) {
+				String arg = args[argi++];
+				if (arg.equalsIgnoreCase("-s")) {
+					fvgen = FaceVertexGen.FACE_OFFSET;
+					fvarg = 0;
+				} else if ((fvtmp = FaceVertexGen.forFlagIgnoreCase(arg)) != null && (fvtmp.isVoidType() || argi < args.length)) {
+					fvgen = fvtmp;
+					fvarg = fvtmp.isVoidType() ? null : fvtmp.parseArgument(args[argi++]);
+				} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
+					color = parseColor(args[argi++], color);
+				} else {
+					return null;
+				}
 			}
+			return new Needle(fvgen, fvarg, color);
 		}
-		return new Needle(fvgen, fvarg, color);
-	}
-	
-	public static Option[] options() {
-		return new Option[] {
-			FaceVertexGen.FACE_OFFSET.option("s"),
-			FaceVertexGen.MAX_MAGNITUDE_OFFSET.option("s"),
-			FaceVertexGen.AVERAGE_MAGNITUDE_OFFSET.option("s"),
-			FaceVertexGen.FACE_MAGNITUDE_OFFSET.option("s"),
-			new Option("s", Type.VOID, "create new vertices at centers of original faces (strict mode)", FaceVertexGen.allOptionMutexes()),
-			new Option("c", Type.COLOR, "color"),
-		};
+		
+		public Option[] options() {
+			return new Option[] {
+				FaceVertexGen.FACE_OFFSET.option("s"),
+				FaceVertexGen.MAX_MAGNITUDE_OFFSET.option("s"),
+				FaceVertexGen.AVERAGE_MAGNITUDE_OFFSET.option("s"),
+				FaceVertexGen.FACE_MAGNITUDE_OFFSET.option("s"),
+				new Option("s", Type.VOID, "create new vertices at centers of original faces (strict mode)", FaceVertexGen.allOptionMutexes()),
+				new Option("c", Type.COLOR, "color"),
+			};
+		}
 	}
 	
 	public static void main(String[] args) {
-		main(parse(args));
+		new Factory().main(args);
 	}
 }

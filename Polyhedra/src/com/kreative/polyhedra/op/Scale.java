@@ -48,37 +48,40 @@ public class Scale extends PolyhedronOp {
 		return new Polyhedron(vertices, faces, faceColors);
 	}
 	
-	public static Scale parse(String[] args) {
-		double sx = 1, sy = 1, sz = 1;
-		int argi = 0;
-		while (argi < args.length) {
-			String arg = args[argi++];
-			if (arg.equalsIgnoreCase("-s") && argi < args.length) {
-				sx = sy = sz = parseDouble(args[argi++], (sx + sy + sz) / 3);
-			} else if (arg.equalsIgnoreCase("-x") && argi < args.length) {
-				sx = parseDouble(args[argi++], sx);
-			} else if (arg.equalsIgnoreCase("-y") && argi < args.length) {
-				sy = parseDouble(args[argi++], sy);
-			} else if (arg.equalsIgnoreCase("-z") && argi < args.length) {
-				sz = parseDouble(args[argi++], sz);
-			} else {
-				printOptions(options());
-				return null;
+	public static class Factory extends PolyhedronOp.Factory<Scale> {
+		public String name() { return "Scale"; }
+		
+		public Scale parse(String[] args) {
+			double sx = 1, sy = 1, sz = 1;
+			int argi = 0;
+			while (argi < args.length) {
+				String arg = args[argi++];
+				if (arg.equalsIgnoreCase("-s") && argi < args.length) {
+					sx = sy = sz = parseDouble(args[argi++], (sx + sy + sz) / 3);
+				} else if (arg.equalsIgnoreCase("-x") && argi < args.length) {
+					sx = parseDouble(args[argi++], sx);
+				} else if (arg.equalsIgnoreCase("-y") && argi < args.length) {
+					sy = parseDouble(args[argi++], sy);
+				} else if (arg.equalsIgnoreCase("-z") && argi < args.length) {
+					sz = parseDouble(args[argi++], sz);
+				} else {
+					return null;
+				}
 			}
+			return new Scale(sx, sy, sz);
 		}
-		return new Scale(sx, sy, sz);
-	}
-	
-	public static Option[] options() {
-		return new Option[] {
-			new Option("s", Type.REAL, "scale uniformly", "x","y","z"),
-			new Option("x", Type.REAL, "scale x axis", "s"),
-			new Option("y", Type.REAL, "scale y axis", "s"),
-			new Option("z", Type.REAL, "scale z axis", "s"),
-		};
+		
+		public Option[] options() {
+			return new Option[] {
+				new Option("s", Type.REAL, "scale uniformly", "x","y","z"),
+				new Option("x", Type.REAL, "scale x axis", "s"),
+				new Option("y", Type.REAL, "scale y axis", "s"),
+				new Option("z", Type.REAL, "scale z axis", "s"),
+			};
+		}
 	}
 	
 	public static void main(String[] args) {
-		main(parse(args));
+		new Factory().main(args);
 	}
 }

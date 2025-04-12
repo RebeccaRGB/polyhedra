@@ -67,78 +67,81 @@ public class Prism extends PolyhedronGen {
 		return new Polyhedron(vertices, faces, faceColors);
 	}
 	
-	public static Prism parse(String[] args) {
-		int n = 3;
-		int m = 1;
-		SizeSpecifier spec = SizeSpecifier.RADIUS;
-		double size = 1;
-		Axis axis = Axis.Y;
-		Double h = null;
-		Color c = Color.GRAY;
-		Color bc = null;
-		Color jc = null;
-		int argi = 0;
-		while (argi < args.length) {
-			String arg = args[argi++];
-			if (arg.equalsIgnoreCase("-n") && argi < args.length) {
-				if ((n = Math.abs(parseInt(args[argi++], n))) < 3) n = 3;
-			} else if (arg.equalsIgnoreCase("-m") && argi < args.length) {
-				if ((m = Math.abs(parseInt(args[argi++], m))) < 1) m = 1;
-			} else if (arg.equalsIgnoreCase("-r") && argi < args.length) {
-				spec = SizeSpecifier.RADIUS;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-d") && argi < args.length) {
-				spec = SizeSpecifier.DIAMETER;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-s") && argi < args.length) {
-				spec = SizeSpecifier.SIDE_LENGTH;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-a") && argi < args.length) {
-				spec = SizeSpecifier.APOTHEM;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-x")) {
-				axis = Axis.X;
-			} else if (arg.equalsIgnoreCase("-y")) {
-				axis = Axis.Y;
-			} else if (arg.equalsIgnoreCase("-z")) {
-				axis = Axis.Z;
-			} else if (arg.equalsIgnoreCase("-h") && argi < args.length) {
-				h = parseDouble(args[argi++], ((h == null) ? 1 : h.intValue()));
-			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
-				c = parseColor(args[argi++], c);
-			} else if (arg.equalsIgnoreCase("-b") && argi < args.length) {
-				bc = parseColor(args[argi++], bc);
-			} else if (arg.equalsIgnoreCase("-j") && argi < args.length) {
-				jc = parseColor(args[argi++], jc);
-			} else {
-				printOptions(options());
-				return null;
+	public static class Factory extends PolyhedronGen.Factory<Prism> {
+		public String name() { return "Prism"; }
+		
+		public Prism parse(String[] args) {
+			int n = 3;
+			int m = 1;
+			SizeSpecifier spec = SizeSpecifier.RADIUS;
+			double size = 1;
+			Axis axis = Axis.Y;
+			Double h = null;
+			Color c = Color.GRAY;
+			Color bc = null;
+			Color jc = null;
+			int argi = 0;
+			while (argi < args.length) {
+				String arg = args[argi++];
+				if (arg.equalsIgnoreCase("-n") && argi < args.length) {
+					if ((n = Math.abs(parseInt(args[argi++], n))) < 3) n = 3;
+				} else if (arg.equalsIgnoreCase("-m") && argi < args.length) {
+					if ((m = Math.abs(parseInt(args[argi++], m))) < 1) m = 1;
+				} else if (arg.equalsIgnoreCase("-r") && argi < args.length) {
+					spec = SizeSpecifier.RADIUS;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equalsIgnoreCase("-d") && argi < args.length) {
+					spec = SizeSpecifier.DIAMETER;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equalsIgnoreCase("-s") && argi < args.length) {
+					spec = SizeSpecifier.SIDE_LENGTH;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equalsIgnoreCase("-a") && argi < args.length) {
+					spec = SizeSpecifier.APOTHEM;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equalsIgnoreCase("-x")) {
+					axis = Axis.X;
+				} else if (arg.equalsIgnoreCase("-y")) {
+					axis = Axis.Y;
+				} else if (arg.equalsIgnoreCase("-z")) {
+					axis = Axis.Z;
+				} else if (arg.equalsIgnoreCase("-h") && argi < args.length) {
+					h = parseDouble(args[argi++], ((h == null) ? 1 : h.intValue()));
+				} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
+					c = parseColor(args[argi++], c);
+				} else if (arg.equalsIgnoreCase("-b") && argi < args.length) {
+					bc = parseColor(args[argi++], bc);
+				} else if (arg.equalsIgnoreCase("-j") && argi < args.length) {
+					jc = parseColor(args[argi++], jc);
+				} else {
+					return null;
+				}
 			}
+			double r = spec.toRadius(size, n);
+			if (h == null) h = SizeSpecifier.SIDE_LENGTH.fromRadius(r, n);
+			return new Prism(n, m, r, axis, h, ((bc != null) ? bc : c), ((jc != null) ? jc : c));
 		}
-		double r = spec.toRadius(size, n);
-		if (h == null) h = SizeSpecifier.SIDE_LENGTH.fromRadius(r, n);
-		return new Prism(n, m, r, axis, h, ((bc != null) ? bc : c), ((jc != null) ? jc : c));
-	}
-	
-	public static Option[] options() {
-		return new Option[] {
-			new Option("n", Type.INT, "sides"),
-			new Option("m", Type.INT, "stellation"),
-			new Option("r", Type.REAL, "radius", "d","s","a"),
-			new Option("d", Type.REAL, "diameter", "r","s","a"),
-			new Option("s", Type.REAL, "side length", "r","d","a"),
-			new Option("a", Type.REAL, "apothem", "r","d","s"),
-			new Option("x", Type.VOID, "align central axis to X axis", "y","z"),
-			new Option("y", Type.VOID, "align central axis to Y axis", "x","z"),
-			new Option("z", Type.VOID, "align central axis to Z axis", "x","y"),
-			new Option("h", Type.REAL, "height"),
-			new Option("c", Type.COLOR, "color", "b","j"),
-			new Option("b", Type.COLOR, "base color", "c"),
-			new Option("j", Type.COLOR, "join color", "c"),
-		};
+		
+		public Option[] options() {
+			return new Option[] {
+				new Option("n", Type.INT, "sides"),
+				new Option("m", Type.INT, "stellation"),
+				new Option("r", Type.REAL, "radius", "d","s","a"),
+				new Option("d", Type.REAL, "diameter", "r","s","a"),
+				new Option("s", Type.REAL, "side length", "r","d","a"),
+				new Option("a", Type.REAL, "apothem", "r","d","s"),
+				new Option("x", Type.VOID, "align central axis to X axis", "y","z"),
+				new Option("y", Type.VOID, "align central axis to Y axis", "x","z"),
+				new Option("z", Type.VOID, "align central axis to Z axis", "x","y"),
+				new Option("h", Type.REAL, "height"),
+				new Option("c", Type.COLOR, "color", "b","j"),
+				new Option("b", Type.COLOR, "base color", "c"),
+				new Option("j", Type.COLOR, "join color", "c"),
+			};
+		}
 	}
 	
 	public static void main(String[] args) {
-		main(parse(args));
+		new Factory().main(args);
 	}
 }

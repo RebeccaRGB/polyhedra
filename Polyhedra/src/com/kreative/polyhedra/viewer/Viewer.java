@@ -3,7 +3,6 @@ package com.kreative.polyhedra.viewer;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.SwingUtilities;
@@ -24,13 +23,13 @@ public class Viewer {
 				if (arg.equals("-")) {
 					open("standard input", System.in);
 				} else if (arg.equals("--") && argi < args.length) {
-					String className = args[argi++];
-					open(className, args, argi, args.length);
+					String factoryName = args[argi++];
+					open(factoryName, args, argi, args.length);
 					break;
 				} else if (arg.equals("-c") && argi < args.length) {
-					String s = args[argi++];
-					PolyhedronGen gen = Construct.parse(new String[]{s});
-					if (gen != null) open(s, gen.gen());
+					String[] cargs = new String[]{ args[argi++] };
+					PolyhedronGen gen = new Construct.Factory().parse(cargs);
+					if (gen != null) open(cargs[0], gen.gen());
 				} else if (arg.equals("-f") && argi < args.length) {
 					open(args[argi++]);
 				} else if (arg.equals("-g") && argi < args.length) {
@@ -38,7 +37,7 @@ public class Viewer {
 					PolyhedronGen gen = PolyhedronUtils.parseGen(s);
 					if (gen != null) open(s, gen.gen());
 				} else if (arg.equals("[") && argi < args.length) {
-					String className = args[argi++];
+					String factoryName = args[argi++];
 					int startIndex = argi, endIndex = argi, level = 0;
 					while (argi < args.length) {
 						arg = args[argi++];
@@ -50,7 +49,7 @@ public class Viewer {
 						}
 						endIndex++;
 					}
-					open(className, args, startIndex, endIndex);
+					open(factoryName, args, startIndex, endIndex);
 				} else {
 					open(arg);
 				}
@@ -58,26 +57,17 @@ public class Viewer {
 		}
 	}
 	
-	public static void open(String className, String[] args, int argi, int argn) {
-		Class<? extends PolyhedronGen> genClass;
-		genClass = com.kreative.polyhedra.gen.BOM.MAP.get(className);
-		if (genClass == null) {
-			genClass = com.kreative.polyhedra.gen.BOM.MAP.get(className.toLowerCase());
-			if (genClass == null) {
-				System.err.println("Unknown generator " + className);
-				return;
-			}
+	public static void open(String factoryName, String[] args, int argi, int argn) {
+		PolyhedronGen.Factory<? extends PolyhedronGen> genFactory;
+		genFactory = com.kreative.polyhedra.gen.BOM.MAP.get(factoryName);
+		if (genFactory == null) {
+			System.err.println("Unknown generator " + factoryName);
+			return;
 		}
-		try {
-			Method parse = genClass.getMethod("parse", String[].class);
-			List<String> cargl = Arrays.asList(args).subList(argi, argn);
-			String[] cargs = cargl.toArray(new String[argn - argi]);
-			Object gen = parse.invoke(null, (Object)cargs);
-			if (gen == null) return;
-			open(className, ((PolyhedronGen)gen).gen());
-		} catch (Exception e) {
-			System.err.println("Error invoking generator " + className + ": " + e);
-		}
+		List<String> cargl = Arrays.asList(args).subList(argi, argn);
+		String[] cargs = cargl.toArray(new String[argn - argi]);
+		PolyhedronGen gen = genFactory.parse(cargs);
+		if (gen != null) open(factoryName, gen.gen());
 	}
 	
 	public static void open(String src, InputStream in) {

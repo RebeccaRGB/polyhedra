@@ -92,54 +92,57 @@ public class Octahedron extends PolyhedronGen {
 		);
 	}
 	
-	public static Octahedron parse(String[] args) {
-		SizeSpecifier spec = SizeSpecifier.CIRCUMRADIUS;
-		double size = 1;
-		Color c = Color.GRAY;
-		int argi = 0;
-		while (argi < args.length) {
-			String arg = args[argi++];
-			if (arg.equalsIgnoreCase("-r") && argi < args.length) {
-				spec = SizeSpecifier.CIRCUMRADIUS;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-m") && argi < args.length) {
-				spec = SizeSpecifier.MIDRADIUS;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-i") && argi < args.length) {
-				spec = SizeSpecifier.INRADIUS;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-d") && argi < args.length) {
-				spec = SizeSpecifier.SPACE_DIAGONAL;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-f") && argi < args.length) {
-				spec = SizeSpecifier.FACE_HEIGHT;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-a") && argi < args.length) {
-				spec = SizeSpecifier.EDGE_LENGTH;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
-				c = parseColor(args[argi++], c);
-			} else {
-				printOptions(options());
-				return null;
+	public static class Factory extends PolyhedronGen.Factory<Octahedron> {
+		public String name() { return "Octahedron"; }
+		
+		public Octahedron parse(String[] args) {
+			SizeSpecifier spec = SizeSpecifier.CIRCUMRADIUS;
+			double size = 1;
+			Color c = Color.GRAY;
+			int argi = 0;
+			while (argi < args.length) {
+				String arg = args[argi++];
+				if (arg.equalsIgnoreCase("-r") && argi < args.length) {
+					spec = SizeSpecifier.CIRCUMRADIUS;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equalsIgnoreCase("-m") && argi < args.length) {
+					spec = SizeSpecifier.MIDRADIUS;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equalsIgnoreCase("-i") && argi < args.length) {
+					spec = SizeSpecifier.INRADIUS;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equalsIgnoreCase("-d") && argi < args.length) {
+					spec = SizeSpecifier.SPACE_DIAGONAL;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equalsIgnoreCase("-f") && argi < args.length) {
+					spec = SizeSpecifier.FACE_HEIGHT;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equalsIgnoreCase("-a") && argi < args.length) {
+					spec = SizeSpecifier.EDGE_LENGTH;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
+					c = parseColor(args[argi++], c);
+				} else {
+					return null;
+				}
 			}
+			return new Octahedron(spec, size, c);
 		}
-		return new Octahedron(spec, size, c);
-	}
-	
-	public static Option[] options() {
-		return new Option[] {
-			new Option("r", Type.REAL, "radius of circumscribed sphere", "m","i","d","f","a"),
-			new Option("m", Type.REAL, "radius of sphere tangent to edges", "r","i","d","f","a"),
-			new Option("i", Type.REAL, "radius of inscribed sphere", "r","m","d","f","a"),
-			new Option("d", Type.REAL, "space diagonal", "r","m","i","f","a"),
-			new Option("f", Type.REAL, "height of triangular face", "r","m","i","d","a"),
-			new Option("a", Type.REAL, "edge length", "r","m","i","d","f"),
-			new Option("c", Type.COLOR, "color"),
-		};
+		
+		public Option[] options() {
+			return new Option[] {
+				new Option("r", Type.REAL, "radius of circumscribed sphere", "m","i","d","f","a"),
+				new Option("m", Type.REAL, "radius of sphere tangent to edges", "r","i","d","f","a"),
+				new Option("i", Type.REAL, "radius of inscribed sphere", "r","m","d","f","a"),
+				new Option("d", Type.REAL, "space diagonal", "r","m","i","f","a"),
+				new Option("f", Type.REAL, "height of triangular face", "r","m","i","d","a"),
+				new Option("a", Type.REAL, "edge length", "r","m","i","d","f"),
+				new Option("c", Type.COLOR, "color"),
+			};
+		}
 	}
 	
 	public static void main(String[] args) {
-		main(parse(args));
+		new Factory().main(args);
 	}
 }

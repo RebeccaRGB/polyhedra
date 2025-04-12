@@ -24,19 +24,20 @@ public class NormalizeVertices extends PolyhedronOp {
 		return new Polyhedron(vertices, faces, faceColors);
 	}
 	
-	public static NormalizeVertices parse(String[] args) {
-		if (args.length > 0) {
-			printOptions(options());
+	public static class Factory extends PolyhedronOp.Factory<NormalizeVertices> {
+		public String name() { return "NormalizeVertices"; }
+		
+		public NormalizeVertices parse(String[] args) {
+			if (args.length > 0) return null;
+			return new NormalizeVertices();
+		}
+		
+		public Option[] options() {
 			return null;
 		}
-		return new NormalizeVertices();
-	}
-	
-	public static Option[] options() {
-		return null;
 	}
 	
 	public static void main(String[] args) {
-		main(parse(args));
+		new Factory().main(args);
 	}
 }

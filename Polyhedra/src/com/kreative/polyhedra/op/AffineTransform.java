@@ -35,45 +35,49 @@ public class AffineTransform extends PolyhedronOp {
 		return new Polyhedron(vertices, faces, faceColors);
 	}
 	
-	public static AffineTransform parse(String[] args) {
-		double m00 = (args.length > 0) ? parseDouble(args[0], 1) : 1;
-		double m10 = (args.length > 1) ? parseDouble(args[1], 0) : 0;
-		double m20 = (args.length > 2) ? parseDouble(args[2], 0) : 0;
-		double m01 = (args.length > 3) ? parseDouble(args[3], 0) : 0;
-		double m11 = (args.length > 4) ? parseDouble(args[4], 1) : 1;
-		double m21 = (args.length > 5) ? parseDouble(args[5], 0) : 0;
-		double m02 = (args.length > 6) ? parseDouble(args[6], 0) : 0;
-		double m12 = (args.length > 7) ? parseDouble(args[7], 0) : 0;
-		double m22 = (args.length > 8) ? parseDouble(args[8], 1) : 1;
-		double m03 = (args.length > 9) ? parseDouble(args[9], 0) : 0;
-		double m13 = (args.length > 10) ? parseDouble(args[10], 0) : 0;
-		double m23 = (args.length > 11) ? parseDouble(args[11], 0) : 0;
-		return new AffineTransform(new AffineTransform3D(
-			m00, m10, m20,
-			m01, m11, m21,
-			m02, m12, m22,
-			m03, m13, m23
-		));
-	}
-	
-	public static Option[] options() {
-		return new Option[] {
-			new Option(Mult.REQUIRED, Type.REAL, "scale X"),
-			new Option(Mult.REQUIRED, Type.REAL, "shear YX"),
-			new Option(Mult.REQUIRED, Type.REAL, "shear ZX"),
-			new Option(Mult.REQUIRED, Type.REAL, "shear XY"),
-			new Option(Mult.REQUIRED, Type.REAL, "scale Y"),
-			new Option(Mult.REQUIRED, Type.REAL, "shear ZY"),
-			new Option(Mult.REQUIRED, Type.REAL, "shear XZ"),
-			new Option(Mult.REQUIRED, Type.REAL, "shear YZ"),
-			new Option(Mult.REQUIRED, Type.REAL, "scale Z"),
-			new Option(Mult.REQUIRED, Type.REAL, "translate X"),
-			new Option(Mult.REQUIRED, Type.REAL, "translate Y"),
-			new Option(Mult.REQUIRED, Type.REAL, "translate Z"),
-		};
+	public static class Factory extends PolyhedronOp.Factory<AffineTransform> {
+		public String name() { return "AffineTransform"; }
+		
+		public AffineTransform parse(String[] args) {
+			double m00 = (args.length > 0) ? parseDouble(args[0], 1) : 1;
+			double m10 = (args.length > 1) ? parseDouble(args[1], 0) : 0;
+			double m20 = (args.length > 2) ? parseDouble(args[2], 0) : 0;
+			double m01 = (args.length > 3) ? parseDouble(args[3], 0) : 0;
+			double m11 = (args.length > 4) ? parseDouble(args[4], 1) : 1;
+			double m21 = (args.length > 5) ? parseDouble(args[5], 0) : 0;
+			double m02 = (args.length > 6) ? parseDouble(args[6], 0) : 0;
+			double m12 = (args.length > 7) ? parseDouble(args[7], 0) : 0;
+			double m22 = (args.length > 8) ? parseDouble(args[8], 1) : 1;
+			double m03 = (args.length > 9) ? parseDouble(args[9], 0) : 0;
+			double m13 = (args.length > 10) ? parseDouble(args[10], 0) : 0;
+			double m23 = (args.length > 11) ? parseDouble(args[11], 0) : 0;
+			return new AffineTransform(new AffineTransform3D(
+				m00, m10, m20,
+				m01, m11, m21,
+				m02, m12, m22,
+				m03, m13, m23
+			));
+		}
+		
+		public Option[] options() {
+			return new Option[] {
+				new Option(Mult.REQUIRED, Type.REAL, "scale X"),
+				new Option(Mult.REQUIRED, Type.REAL, "shear YX"),
+				new Option(Mult.REQUIRED, Type.REAL, "shear ZX"),
+				new Option(Mult.REQUIRED, Type.REAL, "shear XY"),
+				new Option(Mult.REQUIRED, Type.REAL, "scale Y"),
+				new Option(Mult.REQUIRED, Type.REAL, "shear ZY"),
+				new Option(Mult.REQUIRED, Type.REAL, "shear XZ"),
+				new Option(Mult.REQUIRED, Type.REAL, "shear YZ"),
+				new Option(Mult.REQUIRED, Type.REAL, "scale Z"),
+				new Option(Mult.REQUIRED, Type.REAL, "translate X"),
+				new Option(Mult.REQUIRED, Type.REAL, "translate Y"),
+				new Option(Mult.REQUIRED, Type.REAL, "translate Z"),
+			};
+		}
 	}
 	
 	public static void main(String[] args) {
-		main(parse(args));
+		new Factory().main(args);
 	}
 }

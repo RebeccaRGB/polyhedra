@@ -37,34 +37,37 @@ public class Translate extends PolyhedronOp {
 		return new Polyhedron(vertices, faces, faceColors);
 	}
 	
-	public static Translate parse(String[] args) {
-		double tx = 0, ty = 0, tz = 0;
-		int argi = 0;
-		while (argi < args.length) {
-			String arg = args[argi++];
-			if (arg.equalsIgnoreCase("-x") && argi < args.length) {
-				tx = parseDouble(args[argi++], tx);
-			} else if (arg.equalsIgnoreCase("-y") && argi < args.length) {
-				ty = parseDouble(args[argi++], ty);
-			} else if (arg.equalsIgnoreCase("-z") && argi < args.length) {
-				tz = parseDouble(args[argi++], tz);
-			} else {
-				printOptions(options());
-				return null;
+	public static class Factory extends PolyhedronOp.Factory<Translate> {
+		public String name() { return "Translate"; }
+		
+		public Translate parse(String[] args) {
+			double tx = 0, ty = 0, tz = 0;
+			int argi = 0;
+			while (argi < args.length) {
+				String arg = args[argi++];
+				if (arg.equalsIgnoreCase("-x") && argi < args.length) {
+					tx = parseDouble(args[argi++], tx);
+				} else if (arg.equalsIgnoreCase("-y") && argi < args.length) {
+					ty = parseDouble(args[argi++], ty);
+				} else if (arg.equalsIgnoreCase("-z") && argi < args.length) {
+					tz = parseDouble(args[argi++], tz);
+				} else {
+					return null;
+				}
 			}
+			return new Translate(tx, ty, tz);
 		}
-		return new Translate(tx, ty, tz);
-	}
-	
-	public static Option[] options() {
-		return new Option[] {
-			new Option("x", Type.REAL, "translate x axis"),
-			new Option("y", Type.REAL, "translate y axis"),
-			new Option("z", Type.REAL, "translate z axis"),
-		};
+		
+		public Option[] options() {
+			return new Option[] {
+				new Option("x", Type.REAL, "translate x axis"),
+				new Option("y", Type.REAL, "translate y axis"),
+				new Option("z", Type.REAL, "translate z axis"),
+			};
+		}
 	}
 	
 	public static void main(String[] args) {
-		main(parse(args));
+		new Factory().main(args);
 	}
 }

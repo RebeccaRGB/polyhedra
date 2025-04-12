@@ -43,49 +43,52 @@ public class Box extends PolyhedronGen {
 		);
 	}
 	
-	public static Box parse(String[] args) {
-		double sx = 1;
-		double sy = 1;
-		double sz = 1;
-		Color c = Color.GRAY;
-		int argi = 0;
-		while (argi < args.length) {
-			String arg = args[argi++];
-			if (arg.equals("-x") && argi < args.length) {
-				sx = parseDouble(args[argi++], sx);
-			} else if (arg.equals("-y") && argi < args.length) {
-				sy = parseDouble(args[argi++], sy);
-			} else if (arg.equals("-z") && argi < args.length) {
-				sz = parseDouble(args[argi++], sz);
-			} else if (arg.equals("-X") && argi < args.length) {
-				sx = parseDouble(args[argi++], sx * 2) / 2;
-			} else if (arg.equals("-Y") && argi < args.length) {
-				sy = parseDouble(args[argi++], sy * 2) / 2;
-			} else if (arg.equals("-Z") && argi < args.length) {
-				sz = parseDouble(args[argi++], sz * 2) / 2;
-			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
-				c = parseColor(args[argi++], c);
-			} else {
-				printOptions(options());
-				return null;
+	public static class Factory extends PolyhedronGen.Factory<Box> {
+		public String name() { return "Box"; }
+		
+		public Box parse(String[] args) {
+			double sx = 1;
+			double sy = 1;
+			double sz = 1;
+			Color c = Color.GRAY;
+			int argi = 0;
+			while (argi < args.length) {
+				String arg = args[argi++];
+				if (arg.equals("-x") && argi < args.length) {
+					sx = parseDouble(args[argi++], sx);
+				} else if (arg.equals("-y") && argi < args.length) {
+					sy = parseDouble(args[argi++], sy);
+				} else if (arg.equals("-z") && argi < args.length) {
+					sz = parseDouble(args[argi++], sz);
+				} else if (arg.equals("-X") && argi < args.length) {
+					sx = parseDouble(args[argi++], sx * 2) / 2;
+				} else if (arg.equals("-Y") && argi < args.length) {
+					sy = parseDouble(args[argi++], sy * 2) / 2;
+				} else if (arg.equals("-Z") && argi < args.length) {
+					sz = parseDouble(args[argi++], sz * 2) / 2;
+				} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
+					c = parseColor(args[argi++], c);
+				} else {
+					return null;
+				}
 			}
+			return new Box(sx, sy, sz, c);
 		}
-		return new Box(sx, sy, sz, c);
-	}
-	
-	public static Option[] options() {
-		return new Option[] {
-			new Option("X", Type.REAL, "x-axis side length", "x"),
-			new Option("Y", Type.REAL, "y-axis side length", "y"),
-			new Option("Z", Type.REAL, "z-axis side length", "z"),
-			new Option("x", Type.REAL, "x-axis distance", "X"),
-			new Option("y", Type.REAL, "y-axis distance", "Y"),
-			new Option("z", Type.REAL, "z-axis distance", "Z"),
-			new Option("c", Type.COLOR, "color"),
-		};
+		
+		public Option[] options() {
+			return new Option[] {
+				new Option("X", Type.REAL, "x-axis side length", "x"),
+				new Option("Y", Type.REAL, "y-axis side length", "y"),
+				new Option("Z", Type.REAL, "z-axis side length", "z"),
+				new Option("x", Type.REAL, "x-axis distance", "X"),
+				new Option("y", Type.REAL, "y-axis distance", "Y"),
+				new Option("z", Type.REAL, "z-axis distance", "Z"),
+				new Option("c", Type.COLOR, "color"),
+			};
+		}
 	}
 	
 	public static void main(String[] args) {
-		main(parse(args));
+		new Factory().main(args);
 	}
 }

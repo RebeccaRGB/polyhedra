@@ -42,28 +42,31 @@ public class ConvexHull extends PolyhedronOp {
 		return new Polyhedron(vertices, faces, faceColors);
 	}
 	
-	public static ConvexHull parse(String[] args) {
-		Color color = Color.GRAY;
-		int argi = 0;
-		while (argi < args.length) {
-			String arg = args[argi++];
-			if (arg.equalsIgnoreCase("-c") && argi < args.length) {
-				color = parseColor(args[argi++], color);
-			} else {
-				printOptions(options());
-				return null;
+	public static class Factory extends PolyhedronOp.Factory<ConvexHull> {
+		public String name() { return "ConvexHull"; }
+		
+		public ConvexHull parse(String[] args) {
+			Color color = Color.GRAY;
+			int argi = 0;
+			while (argi < args.length) {
+				String arg = args[argi++];
+				if (arg.equalsIgnoreCase("-c") && argi < args.length) {
+					color = parseColor(args[argi++], color);
+				} else {
+					return null;
+				}
 			}
+			return new ConvexHull(color);
 		}
-		return new ConvexHull(color);
-	}
-	
-	public static Option[] options() {
-		return new Option[] {
-			new Option("c", Type.COLOR, "color"),
-		};
+		
+		public Option[] options() {
+			return new Option[] {
+				new Option("c", Type.COLOR, "color"),
+			};
+		}
 	}
 	
 	public static void main(String[] args) {
-		main(parse(args));
+		new Factory().main(args);
 	}
 }

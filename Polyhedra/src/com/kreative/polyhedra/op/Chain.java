@@ -24,22 +24,26 @@ public class Chain extends PolyhedronOp {
 		return seed;
 	}
 	
-	public static Chain parse(String[] args) {
-		List<PolyhedronOp> ops = new ArrayList<PolyhedronOp>();
-		for (String arg : args) {
-			PolyhedronOp op = parseOp(arg);
-			if (op != null) ops.add(op);
+	public static class Factory extends PolyhedronOp.Factory<Chain> {
+		public String name() { return "Chain"; }
+		
+		public Chain parse(String[] args) {
+			List<PolyhedronOp> ops = new ArrayList<PolyhedronOp>();
+			for (String arg : args) {
+				PolyhedronOp op = parseOp(arg);
+				if (op != null) ops.add(op);
+			}
+			return new Chain(ops);
 		}
-		return new Chain(ops);
-	}
-	
-	public static Option[] options() {
-		return new Option[] {
-			new Option(Mult.REPEATED, Type.OP, "operation"),
-		};
+		
+		public Option[] options() {
+			return new Option[] {
+				new Option(Mult.REPEATED, Type.OP, "operation"),
+			};
+		}
 	}
 	
 	public static void main(String[] args) {
-		main(parse(args));
+		new Factory().main(args);
 	}
 }

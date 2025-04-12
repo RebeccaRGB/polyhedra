@@ -127,62 +127,65 @@ public class Expand extends PolyhedronOp {
 		return new Polyhedron(vertices, faces, faceColors);
 	}
 	
-	public static Expand parse(String[] args) {
-		ExpandedFaceGen gen = ExpandedFaceGen.REGULAR;
-		double size = 0;
-		Color edgeColor = Color.GRAY;
-		Color vertexColor = Color.GRAY;
-		int argi = 0;
-		while (argi < args.length) {
-			String arg = args[argi++];
-			if (arg.equalsIgnoreCase("-s")) {
-				gen = ExpandedFaceGen.RELATIVE_DISTANCE_FROM_VERTEX;
-				size = 0.5;
-			} else if (arg.equals("-A") && argi < args.length) {
-				gen = ExpandedFaceGen.RELATIVE_DISTANCE_FROM_VERTEX;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equals("-a") && argi < args.length) {
-				gen = ExpandedFaceGen.FIXED_DISTANCE_FROM_VERTEX;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equals("-D") && argi < args.length) {
-				gen = ExpandedFaceGen.RELATIVE_DISTANCE_FROM_CENTER;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equals("-d") && argi < args.length) {
-				gen = ExpandedFaceGen.FIXED_DISTANCE_FROM_CENTER;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-r")) {
-				gen = ExpandedFaceGen.REGULAR;
-				size = 0;
-			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
-				Color c = parseColor(args[argi++], null);
-				if (c != null) edgeColor = vertexColor = c;
-			} else if (arg.equalsIgnoreCase("-e") && argi < args.length) {
-				edgeColor = parseColor(args[argi++], edgeColor);
-			} else if (arg.equalsIgnoreCase("-v") && argi < args.length) {
-				vertexColor = parseColor(args[argi++], vertexColor);
-			} else {
-				printOptions(options());
-				return null;
+	public static class Factory extends PolyhedronOp.Factory<Expand> {
+		public String name() { return "Expand"; }
+		
+		public Expand parse(String[] args) {
+			ExpandedFaceGen gen = ExpandedFaceGen.REGULAR;
+			double size = 0;
+			Color edgeColor = Color.GRAY;
+			Color vertexColor = Color.GRAY;
+			int argi = 0;
+			while (argi < args.length) {
+				String arg = args[argi++];
+				if (arg.equalsIgnoreCase("-s")) {
+					gen = ExpandedFaceGen.RELATIVE_DISTANCE_FROM_VERTEX;
+					size = 0.5;
+				} else if (arg.equals("-A") && argi < args.length) {
+					gen = ExpandedFaceGen.RELATIVE_DISTANCE_FROM_VERTEX;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equals("-a") && argi < args.length) {
+					gen = ExpandedFaceGen.FIXED_DISTANCE_FROM_VERTEX;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equals("-D") && argi < args.length) {
+					gen = ExpandedFaceGen.RELATIVE_DISTANCE_FROM_CENTER;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equals("-d") && argi < args.length) {
+					gen = ExpandedFaceGen.FIXED_DISTANCE_FROM_CENTER;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equalsIgnoreCase("-r")) {
+					gen = ExpandedFaceGen.REGULAR;
+					size = 0;
+				} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
+					Color c = parseColor(args[argi++], null);
+					if (c != null) edgeColor = vertexColor = c;
+				} else if (arg.equalsIgnoreCase("-e") && argi < args.length) {
+					edgeColor = parseColor(args[argi++], edgeColor);
+				} else if (arg.equalsIgnoreCase("-v") && argi < args.length) {
+					vertexColor = parseColor(args[argi++], vertexColor);
+				} else {
+					return null;
+				}
 			}
+			return new Expand(gen, size, edgeColor, vertexColor);
 		}
-		return new Expand(gen, size, edgeColor, vertexColor);
-	}
-	
-	public static Option[] options() {
-		return new Option[] {
-			new Option("a", Type.REAL, "create vertices at a fixed distance from the original vertices", "A","d","D","r","s"),
-			new Option("A", Type.REAL, "create vertices at a relative distance from the original vertices", "a","d","D","r","s"),
-			new Option("d", Type.REAL, "create vertices at a fixed distance from the face center point", "a","A","D","r","s"),
-			new Option("D", Type.REAL, "create vertices at a relative distance from the face center point", "a","A","d","r","s"),
-			new Option("r", Type.VOID, "attempt to create regular faces (not always possible)", "a","A","d","D","s"),
-			new Option("s", Type.VOID, "create vertices halfway between the center and original vertex", "a","A","d","D","r"),
-			new Option("c", Type.COLOR, "color of new faces generated between original faces", "e","v"),
-			new Option("e", Type.COLOR, "color of new faces generated from original edges", "c"),
-			new Option("v", Type.COLOR, "color of new faces generated from original vertices", "c"),
-		};
+		
+		public Option[] options() {
+			return new Option[] {
+				new Option("a", Type.REAL, "create vertices at a fixed distance from the original vertices", "A","d","D","r","s"),
+				new Option("A", Type.REAL, "create vertices at a relative distance from the original vertices", "a","d","D","r","s"),
+				new Option("d", Type.REAL, "create vertices at a fixed distance from the face center point", "a","A","D","r","s"),
+				new Option("D", Type.REAL, "create vertices at a relative distance from the face center point", "a","A","d","r","s"),
+				new Option("r", Type.VOID, "attempt to create regular faces (not always possible)", "a","A","d","D","s"),
+				new Option("s", Type.VOID, "create vertices halfway between the center and original vertex", "a","A","d","D","r"),
+				new Option("c", Type.COLOR, "color of new faces generated between original faces", "e","v"),
+				new Option("e", Type.COLOR, "color of new faces generated from original edges", "c"),
+				new Option("v", Type.COLOR, "color of new faces generated from original vertices", "c"),
+			};
+		}
 	}
 	
 	public static void main(String[] args) {
-		main(parse(args));
+		new Factory().main(args);
 	}
 }

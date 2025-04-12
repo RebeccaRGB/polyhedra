@@ -16,29 +16,33 @@ public class Constant extends PolyhedronGen {
 		return seed;
 	}
 	
-	public static Constant parse(String[] args) {
-		StringBuffer sb = new StringBuffer();
-		for (String arg : args) {
-			sb.append(arg);
-			sb.append("\n");
+	public static class Factory extends PolyhedronGen.Factory<Constant> {
+		public String name() { return "Constant"; }
+		
+		public Constant parse(String[] args) {
+			StringBuffer sb = new StringBuffer();
+			for (String arg : args) {
+				sb.append(arg);
+				sb.append("\n");
+			}
+			Scanner s = new Scanner(sb.toString());
+			OFFReader r = new OFFReader(s);
+			Polyhedron p = r.readPolyhedron();
+			if (p == null) {
+				System.err.println("Error: No polyhedron found in arguments.");
+				return null;
+			}
+			return new Constant(p);
 		}
-		Scanner s = new Scanner(sb.toString());
-		OFFReader r = new OFFReader(s);
-		Polyhedron p = r.readPolyhedron();
-		if (p == null) {
-			System.err.println("Error: No polyhedron found in arguments.");
-			return null;
+		
+		public Option[] options() {
+			return new Option[] {
+				new Option(Mult.REPEATED_REQUIRED, Type.TEXT, "polyhedron in OFF format"),
+			};
 		}
-		return new Constant(p);
-	}
-	
-	public static Option[] options() {
-		return new Option[] {
-			new Option(Mult.REPEATED_REQUIRED, Type.TEXT, "polyhedron in OFF format"),
-		};
 	}
 	
 	public static void main(String[] args) {
-		main(parse(args));
+		new Factory().main(args);
 	}
 }

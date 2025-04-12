@@ -8,19 +8,20 @@ public class Identity extends PolyhedronOp {
 		return seed;
 	}
 	
-	public static Identity parse(String[] args) {
-		if (args.length > 0) {
-			printOptions(options());
+	public static class Factory extends PolyhedronOp.Factory<Identity> {
+		public String name() { return "Identity"; }
+		
+		public Identity parse(String[] args) {
+			if (args.length > 0) return null;
+			return new Identity();
+		}
+		
+		public Option[] options() {
 			return null;
 		}
-		return new Identity();
-	}
-	
-	public static Option[] options() {
-		return null;
 	}
 	
 	public static void main(String[] args) {
-		main(parse(args));
+		new Factory().main(args);
 	}
 }

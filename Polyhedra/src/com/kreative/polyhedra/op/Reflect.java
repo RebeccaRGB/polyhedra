@@ -26,19 +26,20 @@ public class Reflect extends PolyhedronOp {
 		return new Polyhedron(vertices, faces, faceColors);
 	}
 	
-	public static Reflect parse(String[] args) {
-		if (args.length > 0) {
-			printOptions(options());
+	public static class Factory extends PolyhedronOp.Factory<Reflect> {
+		public String name() { return "Reflect"; }
+		
+		public Reflect parse(String[] args) {
+			if (args.length > 0) return null;
+			return new Reflect();
+		}
+		
+		public Option[] options() {
 			return null;
 		}
-		return new Reflect();
-	}
-	
-	public static Option[] options() {
-		return null;
 	}
 	
 	public static void main(String[] args) {
-		main(parse(args));
+		new Factory().main(args);
 	}
 }

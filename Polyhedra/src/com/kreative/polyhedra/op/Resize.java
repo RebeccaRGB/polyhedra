@@ -132,58 +132,61 @@ public class Resize extends PolyhedronOp {
 		return new Polyhedron(vertices, faces, faceColors);
 	}
 	
-	public static Resize parse(String[] args) {
-		Metric metric = Metric.MAX_MAGNITUDE;
-		double size = 1;
-		int argi = 0;
-		while (argi < args.length) {
-			String arg = args[argi++];
-			if (arg.equalsIgnoreCase("-m") && argi < args.length) {
-				metric = Metric.MAX_MAGNITUDE;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-a") && argi < args.length) {
-				metric = Metric.AVERAGE_MAGNITUDE;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equals("-x") && argi < args.length) {
-				metric = Metric.X_SIZE_PROPORTIONAL;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equals("-y") && argi < args.length) {
-				metric = Metric.Y_SIZE_PROPORTIONAL;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equals("-z") && argi < args.length) {
-				metric = Metric.Z_SIZE_PROPORTIONAL;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equals("-X") && argi < args.length) {
-				metric = Metric.X_SIZE;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equals("-Y") && argi < args.length) {
-				metric = Metric.Y_SIZE;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equals("-Z") && argi < args.length) {
-				metric = Metric.Z_SIZE;
-				size = parseDouble(args[argi++], size);
-			} else {
-				printOptions(options());
-				return null;
+	public static class Factory extends PolyhedronOp.Factory<Resize> {
+		public String name() { return "Resize"; }
+		
+		public Resize parse(String[] args) {
+			Metric metric = Metric.MAX_MAGNITUDE;
+			double size = 1;
+			int argi = 0;
+			while (argi < args.length) {
+				String arg = args[argi++];
+				if (arg.equalsIgnoreCase("-m") && argi < args.length) {
+					metric = Metric.MAX_MAGNITUDE;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equalsIgnoreCase("-a") && argi < args.length) {
+					metric = Metric.AVERAGE_MAGNITUDE;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equals("-x") && argi < args.length) {
+					metric = Metric.X_SIZE_PROPORTIONAL;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equals("-y") && argi < args.length) {
+					metric = Metric.Y_SIZE_PROPORTIONAL;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equals("-z") && argi < args.length) {
+					metric = Metric.Z_SIZE_PROPORTIONAL;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equals("-X") && argi < args.length) {
+					metric = Metric.X_SIZE;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equals("-Y") && argi < args.length) {
+					metric = Metric.Y_SIZE;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equals("-Z") && argi < args.length) {
+					metric = Metric.Z_SIZE;
+					size = parseDouble(args[argi++], size);
+				} else {
+					return null;
+				}
 			}
+			return new Resize(metric, size);
 		}
-		return new Resize(metric, size);
-	}
-	
-	public static Option[] options() {
-		return new Option[] {
-			new Option("m", Type.REAL, "scale uniformly to match the specified maximum magnitude", "a","x","y","z","X","Y","Z"),
-			new Option("a", Type.REAL, "scale uniformly to match the specified average magnitude", "m","x","y","z","X","Y","Z"),
-			new Option("x", Type.REAL, "scale uniformly to match the specified length along the x axis", "m","a","y","z","X","Y","Z"),
-			new Option("y", Type.REAL, "scale uniformly to match the specified length along the y axis", "m","a","x","z","X","Y","Z"),
-			new Option("z", Type.REAL, "scale uniformly to match the specified length along the z axis", "m","a","x","y","X","Y","Z"),
-			new Option("X", Type.REAL, "scale along the x axis only to match the specified length", "m","a","x","y","z"),
-			new Option("Y", Type.REAL, "scale along the y axis only to match the specified length", "m","a","x","y","z"),
-			new Option("Z", Type.REAL, "scale along the z axis only to match the specified length", "m","a","x","y","z"),
-		};
+		
+		public Option[] options() {
+			return new Option[] {
+				new Option("m", Type.REAL, "scale uniformly to match the specified maximum magnitude", "a","x","y","z","X","Y","Z"),
+				new Option("a", Type.REAL, "scale uniformly to match the specified average magnitude", "m","x","y","z","X","Y","Z"),
+				new Option("x", Type.REAL, "scale uniformly to match the specified length along the x axis", "m","a","y","z","X","Y","Z"),
+				new Option("y", Type.REAL, "scale uniformly to match the specified length along the y axis", "m","a","x","z","X","Y","Z"),
+				new Option("z", Type.REAL, "scale uniformly to match the specified length along the z axis", "m","a","x","y","X","Y","Z"),
+				new Option("X", Type.REAL, "scale along the x axis only to match the specified length", "m","a","x","y","z"),
+				new Option("Y", Type.REAL, "scale along the y axis only to match the specified length", "m","a","x","y","z"),
+				new Option("Z", Type.REAL, "scale along the z axis only to match the specified length", "m","a","x","y","z"),
+			};
+		}
 	}
 	
 	public static void main(String[] args) {
-		main(parse(args));
+		new Factory().main(args);
 	}
 }

@@ -1,6 +1,5 @@
 package com.kreative.polyhedra;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 public class ConwayNotationParser {
@@ -17,7 +16,7 @@ public class ConwayNotationParser {
 		}
 	}
 	
-	private final ArrayList<String> classNames = new ArrayList<String>();
+	private final ArrayList<String> factoryNames = new ArrayList<String>();
 	private final ArrayList<String> numericArguments = new ArrayList<String>();
 	private final ArrayList<String[]> stringArguments = new ArrayList<String[]>();
 	private int count = 0;
@@ -27,8 +26,8 @@ public class ConwayNotationParser {
 		while (si < sn && Character.isWhitespace((cp = s.codePointAt(si)))) si += Character.charCount(cp);
 		while (si < sn) {
 			
-			// Get class name.
-			StringBuffer className = new StringBuffer();
+			// Get factory name.
+			StringBuffer factoryName = new StringBuffer();
 			if (s.charAt(si) == '(') {
 				si++;
 				int level = 0;
@@ -40,16 +39,16 @@ public class ConwayNotationParser {
 						if (level == 0) break;
 						level--;
 					}
-					className.append(ch);
+					factoryName.append(ch);
 				}
 			} else if (Character.isLetter((cp = s.codePointAt(si)))) {
 				si += Character.charCount(cp);
-				className.append(Character.toChars(cp));
+				factoryName.append(Character.toChars(cp));
 				if (si < sn && s.charAt(si) == '*') {
-					className.append(s.charAt(si++));
+					factoryName.append(s.charAt(si++));
 				}
 			}
-			if (className.length() == 0) {
+			if (factoryName.length() == 0) {
 				throw new IllegalArgumentException(s);
 			}
 			
@@ -87,47 +86,21 @@ public class ConwayNotationParser {
 			while (si < sn && Character.isWhitespace((cp = s.codePointAt(si)))) si += Character.charCount(cp);
 			
 			// Add to lists.
-			this.classNames.add(className.toString());
+			this.factoryNames.add(factoryName.toString());
 			this.numericArguments.add(numericArgument.toString());
 			this.stringArguments.add(PolyhedronUtils.parseArgs(stringArguments.toString()));
 			this.count++;
 		}
 	}
 	
-	private static PolyhedronGen instantiateGen(Class<? extends PolyhedronGen> genClass, String... args) {
-		try {
-			Method parse = genClass.getMethod("parse", String[].class);
-			Object gen = parse.invoke(null, (Object)args);
-			return (PolyhedronGen)gen;
-		} catch (Exception e) {
-			throw new IllegalArgumentException("Error invoking generator " + genClass.getSimpleName(), e);
-		}
-	}
-	
-	private static PolyhedronOp instantiateOp(Class<? extends PolyhedronOp> opClass, String... args) {
-		try {
-			Method parse = opClass.getMethod("parse", String[].class);
-			Object op = parse.invoke(null, (Object)args);
-			return (PolyhedronOp)op;
-		} catch (Exception e) {
-			throw new IllegalArgumentException("Error invoking operation " + opClass.getSimpleName(), e);
-		}
-	}
-	
-	private static boolean hasNFlag(Class<? extends PolyhedronOp> opClass) {
-		try {
-			Method optionsMethod = opClass.getMethod("options");
-			if (optionsMethod == null) return false;
-			Object options = optionsMethod.invoke(null);
-			if (options == null) return false;
-			for (PolyhedronUtils.Option option : (PolyhedronUtils.Option[])options) {
+	private static boolean hasNFlag(PolyhedronOp.Factory<? extends PolyhedronOp> opFactory) {
+		PolyhedronUtils.Option[] options = opFactory.options();
+		if (options != null) {
+			for (PolyhedronUtils.Option option : options) {
 				if ("-n".equals(option.flag)) return true;
 			}
-			return false;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
 		}
+		return false;
 	}
 	
 	private static String[] mergeArgs(String numericArg, String[] stringArgs) {
@@ -140,73 +113,54 @@ public class ConwayNotationParser {
 	}
 	
 	public PolyhedronGen getGenerator(int index) {
-		String className = classNames.get(index);
+		String factoryName = factoryNames.get(index);
 		String numericArg = numericArguments.get(index);
 		String[] stringArgs = stringArguments.get(index);
-		Class<? extends PolyhedronGen> genClass;
+		PolyhedronGen.Factory<? extends PolyhedronGen> genFactory;
 		
 		if (numericArg.length() > 0) {
-			genClass = com.kreative.polyhedra.gen.BOM.MAP.get(className + numericArg);
-			if (genClass != null) return instantiateGen(genClass, stringArgs);
+			genFactory = com.kreative.polyhedra.gen.BOM.MAP.get(factoryName + numericArg);
+			if (genFactory != null) return genFactory.parse(stringArgs);
 			
 			stringArgs = mergeArgs(numericArg, stringArgs);
 			
-			genClass = com.kreative.polyhedra.gen.BOM.MAP.get(className + "#");
-			if (genClass != null) return instantiateGen(genClass, stringArgs);
+			genFactory = com.kreative.polyhedra.gen.BOM.MAP.get(factoryName + "#");
+			if (genFactory != null) return genFactory.parse(stringArgs);
 		}
 		
-		genClass = com.kreative.polyhedra.gen.BOM.MAP.get(className);
-		if (genClass != null) return instantiateGen(genClass, stringArgs);
+		genFactory = com.kreative.polyhedra.gen.BOM.MAP.get(factoryName);
+		if (genFactory != null) return genFactory.parse(stringArgs);
 		
-		genClass = com.kreative.polyhedra.gen.BOM.MAP.get(className.toLowerCase());
-		if (genClass != null) return instantiateGen(genClass, stringArgs);
-		
-		throw new IllegalArgumentException("Unknown generator " + className);
+		throw new IllegalArgumentException("Unknown generator " + factoryName);
 	}
 	
 	public PolyhedronOp getOperation(int index) {
-		String className = classNames.get(index);
+		String factoryName = factoryNames.get(index);
 		String numericArg = numericArguments.get(index);
 		String[] stringArgs = stringArguments.get(index);
-		Class<? extends PolyhedronOp> opClass;
+		PolyhedronOp.Factory<? extends PolyhedronOp> opFactory;
 		
 		if (numericArg.length() > 0) {
-			opClass = com.kreative.polyhedra.op.BOM.MAP.get(className + numericArg);
-			if (opClass != null) return instantiateOp(opClass, stringArgs);
+			opFactory = com.kreative.polyhedra.op.BOM.MAP.get(factoryName + numericArg);
+			if (opFactory != null) return opFactory.parse(stringArgs);
 			
-			opClass = com.kreative.polyhedra.op.BOM.MAP.get(className + "#");
-			if (opClass != null) return instantiateOp(opClass, mergeArgs(numericArg, stringArgs));
+			opFactory = com.kreative.polyhedra.op.BOM.MAP.get(factoryName + "#");
+			if (opFactory != null) return opFactory.parse(mergeArgs(numericArg, stringArgs));
 		}
 		
-		opClass = com.kreative.polyhedra.op.BOM.MAP.get(className);
-		if (opClass != null) {
+		opFactory = com.kreative.polyhedra.op.BOM.MAP.get(factoryName);
+		if (opFactory != null) {
 			if (numericArg.length() > 0) {
-				try {
-					int repeat = PolyhedronUtils.parseInt(numericArg, 0);
-					if (repeat > 0 && !hasNFlag(opClass)) {
-						return new Repeater(instantiateOp(opClass, stringArgs), repeat);
-					}
-				} catch (NumberFormatException e) {}
+				int repeat = PolyhedronUtils.parseInt(numericArg, 0);
+				if (repeat > 0 && !hasNFlag(opFactory)) {
+					return new Repeater(opFactory.parse(stringArgs), repeat);
+				}
 				stringArgs = mergeArgs(numericArg, stringArgs);
 			}
-			return instantiateOp(opClass, stringArgs);
+			return opFactory.parse(stringArgs);
 		}
 		
-		opClass = com.kreative.polyhedra.op.BOM.MAP.get(className.toLowerCase());
-		if (opClass != null) {
-			if (numericArg.length() > 0) {
-				try {
-					int repeat = PolyhedronUtils.parseInt(numericArg, 0);
-					if (repeat > 0 && !hasNFlag(opClass)) {
-						return new Repeater(instantiateOp(opClass, stringArgs), repeat);
-					}
-				} catch (NumberFormatException e) {}
-				stringArgs = mergeArgs(numericArg, stringArgs);
-			}
-			return instantiateOp(opClass, stringArgs);
-		}
-		
-		throw new IllegalArgumentException("Unknown operation " + className);
+		throw new IllegalArgumentException("Unknown operation " + factoryName);
 	}
 	
 	public boolean isEmpty() {

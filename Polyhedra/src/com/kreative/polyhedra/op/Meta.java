@@ -53,49 +53,52 @@ public class Meta extends PolyhedronOp {
 		return new Polyhedron(vertices, faces, faceColors);
 	}
 	
-	public static Meta parse(String[] args) {
-		FaceVertexGen fvgen = FaceVertexGen.AVERAGE_MAGNITUDE_OFFSET;
-		EdgeVertexGen evgen = EdgeVertexGen.AVERAGE_MAGNITUDE_OFFSET;
-		FaceVertexGen fvtmp;
-		EdgeVertexGen evtmp;
-		Object fvarg = 0;
-		Object evarg = 0;
-		int argi = 0;
-		while (argi < args.length) {
-			String arg = args[argi++];
-			if (arg.equalsIgnoreCase("-s")) {
-				fvgen = FaceVertexGen.FACE_OFFSET;
-				evgen = EdgeVertexGen.FACE_OFFSET;
-				fvarg = 0;
-				evarg = 0;
-			} else if ((fvtmp = FaceVertexGen.forFlag(arg)) != null && (fvtmp.isVoidType() || argi < args.length)) {
-				fvgen = fvtmp;
-				fvarg = fvtmp.isVoidType() ? null : fvtmp.parseArgument(args[argi++]);
-			} else if ((evtmp = EdgeVertexGen.forFlag(arg)) != null && (evtmp.isVoidType() || argi < args.length)) {
-				evgen = evtmp;
-				evarg = evtmp.isVoidType() ? null : evtmp.parseArgument(args[argi++]);
-			} else {
-				printOptions(options());
-				return null;
+	public static class Factory extends PolyhedronOp.Factory<Meta> {
+		public String name() { return "Meta"; }
+		
+		public Meta parse(String[] args) {
+			FaceVertexGen fvgen = FaceVertexGen.AVERAGE_MAGNITUDE_OFFSET;
+			EdgeVertexGen evgen = EdgeVertexGen.AVERAGE_MAGNITUDE_OFFSET;
+			FaceVertexGen fvtmp;
+			EdgeVertexGen evtmp;
+			Object fvarg = 0;
+			Object evarg = 0;
+			int argi = 0;
+			while (argi < args.length) {
+				String arg = args[argi++];
+				if (arg.equalsIgnoreCase("-s")) {
+					fvgen = FaceVertexGen.FACE_OFFSET;
+					evgen = EdgeVertexGen.FACE_OFFSET;
+					fvarg = 0;
+					evarg = 0;
+				} else if ((fvtmp = FaceVertexGen.forFlag(arg)) != null && (fvtmp.isVoidType() || argi < args.length)) {
+					fvgen = fvtmp;
+					fvarg = fvtmp.isVoidType() ? null : fvtmp.parseArgument(args[argi++]);
+				} else if ((evtmp = EdgeVertexGen.forFlag(arg)) != null && (evtmp.isVoidType() || argi < args.length)) {
+					evgen = evtmp;
+					evarg = evtmp.isVoidType() ? null : evtmp.parseArgument(args[argi++]);
+				} else {
+					return null;
+				}
 			}
+			return new Meta(fvgen, fvarg, evgen, evarg);
 		}
-		return new Meta(fvgen, fvarg, evgen, evarg);
-	}
-	
-	public static Option[] options() {
-		return new Option[] {
-			FaceVertexGen.FACE_OFFSET.option("s"),
-			FaceVertexGen.MAX_MAGNITUDE_OFFSET.option("s"),
-			FaceVertexGen.AVERAGE_MAGNITUDE_OFFSET.option("s"),
-			FaceVertexGen.FACE_MAGNITUDE_OFFSET.option("s"),
-			EdgeVertexGen.MAX_MAGNITUDE_OFFSET.option("s"),
-			EdgeVertexGen.AVERAGE_MAGNITUDE_OFFSET.option("s"),
-			EdgeVertexGen.EDGE_MAGNITUDE_OFFSET.option("s"),
-			new Option("s", Type.VOID, "create new vertices at centers of original faces (strict mode)", FaceVertexGen.allOptionMutexes(EdgeVertexGen.allOptionMutexes())),
-		};
+		
+		public Option[] options() {
+			return new Option[] {
+				FaceVertexGen.FACE_OFFSET.option("s"),
+				FaceVertexGen.MAX_MAGNITUDE_OFFSET.option("s"),
+				FaceVertexGen.AVERAGE_MAGNITUDE_OFFSET.option("s"),
+				FaceVertexGen.FACE_MAGNITUDE_OFFSET.option("s"),
+				EdgeVertexGen.MAX_MAGNITUDE_OFFSET.option("s"),
+				EdgeVertexGen.AVERAGE_MAGNITUDE_OFFSET.option("s"),
+				EdgeVertexGen.EDGE_MAGNITUDE_OFFSET.option("s"),
+				new Option("s", Type.VOID, "create new vertices at centers of original faces (strict mode)", FaceVertexGen.allOptionMutexes(EdgeVertexGen.allOptionMutexes())),
+			};
+		}
 	}
 	
 	public static void main(String[] args) {
-		main(parse(args));
+		new Factory().main(args);
 	}
 }

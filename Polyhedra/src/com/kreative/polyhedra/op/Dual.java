@@ -66,38 +66,41 @@ public class Dual extends PolyhedronOp {
 		return new Polyhedron(vertices, faces, faceColors);
 	}
 	
-	public static Dual parse(String[] args) {
-		RescaleMode rescale = RescaleMode.MAX_MAGNITUDE;
-		Color color = Color.GRAY;
-		int argi = 0;
-		while (argi < args.length) {
-			String arg = args[argi++];
-			if (arg.equalsIgnoreCase("-s")) {
-				rescale = RescaleMode.NONE;
-			} else if (arg.equalsIgnoreCase("-m")) {
-				rescale = RescaleMode.MAX_MAGNITUDE;
-			} else if (arg.equalsIgnoreCase("-a")) {
-				rescale = RescaleMode.AVERAGE_MAGNITUDE;
-			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
-				color = parseColor(args[argi++], color);
-			} else {
-				printOptions(options());
-				return null;
+	public static class Factory extends PolyhedronOp.Factory<Dual> {
+		public String name() { return "Dual"; }
+		
+		public Dual parse(String[] args) {
+			RescaleMode rescale = RescaleMode.MAX_MAGNITUDE;
+			Color color = Color.GRAY;
+			int argi = 0;
+			while (argi < args.length) {
+				String arg = args[argi++];
+				if (arg.equalsIgnoreCase("-s")) {
+					rescale = RescaleMode.NONE;
+				} else if (arg.equalsIgnoreCase("-m")) {
+					rescale = RescaleMode.MAX_MAGNITUDE;
+				} else if (arg.equalsIgnoreCase("-a")) {
+					rescale = RescaleMode.AVERAGE_MAGNITUDE;
+				} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
+					color = parseColor(args[argi++], color);
+				} else {
+					return null;
+				}
 			}
+			return new Dual(rescale, color);
 		}
-		return new Dual(rescale, color);
-	}
-	
-	public static Option[] options() {
-		return new Option[] {
-			new Option("m", Type.VOID, "rescale dual polyhedron to match original maximum magnitude", "a","s"),
-			new Option("a", Type.VOID, "rescale dual polyhedron to match original average magnitude", "m","s"),
-			new Option("s", Type.VOID, "do not rescale dual polyhedron (strict mode)", "m","a"),
-			new Option("c", Type.COLOR, "color"),
-		};
+		
+		public Option[] options() {
+			return new Option[] {
+				new Option("m", Type.VOID, "rescale dual polyhedron to match original maximum magnitude", "a","s"),
+				new Option("a", Type.VOID, "rescale dual polyhedron to match original average magnitude", "m","s"),
+				new Option("s", Type.VOID, "do not rescale dual polyhedron (strict mode)", "m","a"),
+				new Option("c", Type.COLOR, "color"),
+			};
+		}
 	}
 	
 	public static void main(String[] args) {
-		main(parse(args));
+		new Factory().main(args);
 	}
 }

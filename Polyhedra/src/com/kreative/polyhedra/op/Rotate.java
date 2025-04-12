@@ -51,37 +51,40 @@ public class Rotate extends PolyhedronOp {
 		return new Polyhedron(seed, tx);
 	}
 	
-	public static Rotate parse(String[] args) {
-		List<Object> rotateArgs = new ArrayList<Object>();
-		int argi = 0;
-		while (argi < args.length) {
-			String arg = args[argi++];
-			if (arg.equalsIgnoreCase("-x") && argi < args.length) {
-				rotateArgs.add(Axis.X);
-				rotateArgs.add(parseDouble(args[argi++], 0));
-			} else if (arg.equalsIgnoreCase("-y") && argi < args.length) {
-				rotateArgs.add(Axis.Y);
-				rotateArgs.add(parseDouble(args[argi++], 0));
-			} else if (arg.equalsIgnoreCase("-z") && argi < args.length) {
-				rotateArgs.add(Axis.Z);
-				rotateArgs.add(parseDouble(args[argi++], 0));
-			} else {
-				printOptions(options());
-				return null;
+	public static class Factory extends PolyhedronOp.Factory<Rotate> {
+		public String name() { return "Rotate"; }
+		
+		public Rotate parse(String[] args) {
+			List<Object> rotateArgs = new ArrayList<Object>();
+			int argi = 0;
+			while (argi < args.length) {
+				String arg = args[argi++];
+				if (arg.equalsIgnoreCase("-x") && argi < args.length) {
+					rotateArgs.add(Axis.X);
+					rotateArgs.add(parseDouble(args[argi++], 0));
+				} else if (arg.equalsIgnoreCase("-y") && argi < args.length) {
+					rotateArgs.add(Axis.Y);
+					rotateArgs.add(parseDouble(args[argi++], 0));
+				} else if (arg.equalsIgnoreCase("-z") && argi < args.length) {
+					rotateArgs.add(Axis.Z);
+					rotateArgs.add(parseDouble(args[argi++], 0));
+				} else {
+					return null;
+				}
 			}
+			return new Rotate(rotateArgs.toArray());
 		}
-		return new Rotate(rotateArgs.toArray());
-	}
-	
-	public static Option[] options() {
-		return new Option[] {
-			new Option("x", Type.REAL, "rotate x axis"),
-			new Option("y", Type.REAL, "rotate y axis"),
-			new Option("z", Type.REAL, "rotate z axis"),
-		};
+		
+		public Option[] options() {
+			return new Option[] {
+				new Option("x", Type.REAL, "rotate x axis"),
+				new Option("y", Type.REAL, "rotate y axis"),
+				new Option("z", Type.REAL, "rotate z axis"),
+			};
+		}
 	}
 	
 	public static void main(String[] args) {
-		main(parse(args));
+		new Factory().main(args);
 	}
 }

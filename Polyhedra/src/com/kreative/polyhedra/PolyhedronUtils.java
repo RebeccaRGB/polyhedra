@@ -1,7 +1,6 @@
 package com.kreative.polyhedra;
 
 import java.awt.Color;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -240,49 +239,27 @@ public abstract class PolyhedronUtils {
 	public static PolyhedronOp parseOp(String s) {
 		String[] args = parseArgs(s);
 		if (args.length == 0) return null;
-		Class<? extends PolyhedronOp> opClass;
-		opClass = com.kreative.polyhedra.op.BOM.MAP.get(args[0]);
-		if (opClass == null) {
-			opClass = com.kreative.polyhedra.op.BOM.MAP.get(args[0].toLowerCase());
-			if (opClass == null) {
-				System.err.println("Unknown operation " + args[0]);
-				return null;
-			}
-		}
-		try {
-			Method parse = opClass.getMethod("parse", String[].class);
-			List<String> cargl = Arrays.asList(args).subList(1, args.length);
-			String[] cargs = cargl.toArray(new String[args.length - 1]);
-			Object op = parse.invoke(null, (Object)cargs);
-			return (PolyhedronOp)op;
-		} catch (Exception e) {
-			System.err.println("Error invoking operation " + args[0] + ": " + e);
+		PolyhedronOp.Factory<? extends PolyhedronOp> opFactory = com.kreative.polyhedra.op.BOM.MAP.get(args[0]);
+		if (opFactory == null) {
+			System.err.println("Unknown operation " + args[0]);
 			return null;
 		}
+		List<String> cargl = Arrays.asList(args).subList(1, args.length);
+		String[] cargs = cargl.toArray(new String[args.length - 1]);
+		return opFactory.parse(cargs);
 	}
 	
 	public static PolyhedronGen parseGen(String s) {
 		String[] args = parseArgs(s);
 		if (args.length == 0) return null;
-		Class<? extends PolyhedronGen> genClass;
-		genClass = com.kreative.polyhedra.gen.BOM.MAP.get(args[0]);
-		if (genClass == null) {
-			genClass = com.kreative.polyhedra.gen.BOM.MAP.get(args[0].toLowerCase());
-			if (genClass == null) {
-				System.err.println("Unknown generator " + args[0]);
-				return null;
-			}
-		}
-		try {
-			Method parse = genClass.getMethod("parse", String[].class);
-			List<String> cargl = Arrays.asList(args).subList(1, args.length);
-			String[] cargs = cargl.toArray(new String[args.length - 1]);
-			Object gen = parse.invoke(null, (Object)cargs);
-			return (PolyhedronGen)gen;
-		} catch (Exception e) {
-			System.err.println("Error invoking generator " + args[0] + ": " + e);
+		PolyhedronGen.Factory<? extends PolyhedronGen> genFactory = com.kreative.polyhedra.gen.BOM.MAP.get(args[0]);
+		if (genFactory == null) {
+			System.err.println("Unknown generator " + args[0]);
 			return null;
 		}
+		List<String> cargl = Arrays.asList(args).subList(1, args.length);
+		String[] cargs = cargl.toArray(new String[args.length - 1]);
+		return genFactory.parse(cargs);
 	}
 	
 	public static enum Mult { OPTIONAL, REQUIRED, REPEATED, REPEATED_REQUIRED }

@@ -158,62 +158,65 @@ public class Bevel extends PolyhedronOp {
 		return new Polyhedron(vertices, faces, faceColors);
 	}
 	
-	public static Bevel parse(String[] args) {
-		VertexGen gen = VertexGen.REGULAR;
-		double size = 0;
-		Color edgeColor = Color.GRAY;
-		Color vertexColor = Color.GRAY;
-		int argi = 0;
-		while (argi < args.length) {
-			String arg = args[argi++];
-			if (arg.equalsIgnoreCase("-s")) {
-				gen = VertexGen.RELATIVE_DISTANCE_FROM_EDGE_ALONG_APOTHEM;
-				size = 1.0 / 3.0;
-			} else if (arg.equals("-A") && argi < args.length) {
-				gen = VertexGen.RELATIVE_DISTANCE_FROM_EDGE_ALONG_APOTHEM;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equals("-a") && argi < args.length) {
-				gen = VertexGen.FIXED_DISTANCE_FROM_EDGE_ALONG_APOTHEM;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equals("-D") && argi < args.length) {
-				gen = VertexGen.RELATIVE_DISTANCE_FROM_CENTER_ALONG_APOTHEM;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equals("-d") && argi < args.length) {
-				gen = VertexGen.FIXED_DISTANCE_FROM_CENTER_ALONG_APOTHEM;
-				size = parseDouble(args[argi++], size);
-			} else if (arg.equalsIgnoreCase("-r")) {
-				gen = VertexGen.REGULAR;
-				size = 0;
-			} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
-				Color c = parseColor(args[argi++], null);
-				if (c != null) edgeColor = vertexColor = c;
-			} else if (arg.equalsIgnoreCase("-e") && argi < args.length) {
-				edgeColor = parseColor(args[argi++], edgeColor);
-			} else if (arg.equalsIgnoreCase("-v") && argi < args.length) {
-				vertexColor = parseColor(args[argi++], vertexColor);
-			} else {
-				printOptions(options());
-				return null;
+	public static class Factory extends PolyhedronOp.Factory<Bevel> {
+		public String name() { return "Bevel"; }
+		
+		public Bevel parse(String[] args) {
+			VertexGen gen = VertexGen.REGULAR;
+			double size = 0;
+			Color edgeColor = Color.GRAY;
+			Color vertexColor = Color.GRAY;
+			int argi = 0;
+			while (argi < args.length) {
+				String arg = args[argi++];
+				if (arg.equalsIgnoreCase("-s")) {
+					gen = VertexGen.RELATIVE_DISTANCE_FROM_EDGE_ALONG_APOTHEM;
+					size = 1.0 / 3.0;
+				} else if (arg.equals("-A") && argi < args.length) {
+					gen = VertexGen.RELATIVE_DISTANCE_FROM_EDGE_ALONG_APOTHEM;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equals("-a") && argi < args.length) {
+					gen = VertexGen.FIXED_DISTANCE_FROM_EDGE_ALONG_APOTHEM;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equals("-D") && argi < args.length) {
+					gen = VertexGen.RELATIVE_DISTANCE_FROM_CENTER_ALONG_APOTHEM;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equals("-d") && argi < args.length) {
+					gen = VertexGen.FIXED_DISTANCE_FROM_CENTER_ALONG_APOTHEM;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equalsIgnoreCase("-r")) {
+					gen = VertexGen.REGULAR;
+					size = 0;
+				} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
+					Color c = parseColor(args[argi++], null);
+					if (c != null) edgeColor = vertexColor = c;
+				} else if (arg.equalsIgnoreCase("-e") && argi < args.length) {
+					edgeColor = parseColor(args[argi++], edgeColor);
+				} else if (arg.equalsIgnoreCase("-v") && argi < args.length) {
+					vertexColor = parseColor(args[argi++], vertexColor);
+				} else {
+					return null;
+				}
 			}
+			return new Bevel(gen, size, edgeColor, vertexColor);
 		}
-		return new Bevel(gen, size, edgeColor, vertexColor);
-	}
-	
-	public static Option[] options() {
-		return new Option[] {
-			new Option("a", Type.REAL, "create edges at a fixed distance from the original edge", "A","d","D","r","s"),
-			new Option("A", Type.REAL, "create edges at a relative distance from the original edge", "a","d","D","r","s"),
-			new Option("d", Type.REAL, "create edges at a fixed distance from the face center point", "a","A","D","r","s"),
-			new Option("D", Type.REAL, "create edges at a relative distance from the face center point", "a","A","d","r","s"),
-			new Option("r", Type.VOID, "attempt to create regular faces (not always possible)", "a","A","d","D","s"),
-			new Option("s", Type.VOID, "create edges at one third of the apothem from the original edge", "a","A","d","D","r"),
-			new Option("c", Type.COLOR, "color of new faces generated between original faces", "e","v"),
-			new Option("e", Type.COLOR, "color of new faces generated from original edges", "c"),
-			new Option("v", Type.COLOR, "color of new faces generated from original vertices", "c"),
-		};
+		
+		public Option[] options() {
+			return new Option[] {
+				new Option("a", Type.REAL, "create edges at a fixed distance from the original edge", "A","d","D","r","s"),
+				new Option("A", Type.REAL, "create edges at a relative distance from the original edge", "a","d","D","r","s"),
+				new Option("d", Type.REAL, "create edges at a fixed distance from the face center point", "a","A","D","r","s"),
+				new Option("D", Type.REAL, "create edges at a relative distance from the face center point", "a","A","d","r","s"),
+				new Option("r", Type.VOID, "attempt to create regular faces (not always possible)", "a","A","d","D","s"),
+				new Option("s", Type.VOID, "create edges at one third of the apothem from the original edge", "a","A","d","D","r"),
+				new Option("c", Type.COLOR, "color of new faces generated between original faces", "e","v"),
+				new Option("e", Type.COLOR, "color of new faces generated from original edges", "c"),
+				new Option("v", Type.COLOR, "color of new faces generated from original vertices", "c"),
+			};
+		}
 	}
 	
 	public static void main(String[] args) {
-		main(parse(args));
+		new Factory().main(args);
 	}
 }
