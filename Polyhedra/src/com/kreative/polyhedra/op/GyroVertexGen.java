@@ -9,7 +9,7 @@ import com.kreative.polyhedra.PolyhedronUtils.Option;
 import com.kreative.polyhedra.PolyhedronUtils.Type;
 
 public enum GyroVertexGen {
-	FIXED_DISTANCE_FROM_VERTEX_ALONG_EDGE("u", Type.REAL, "create vertices along edge at a fixed distance from the vertex") {
+	FIXED_DISTANCE_FROM_VERTEX_ALONG_EDGE("u", Type.REAL, "create vertices along edges at a fixed distance from the vertex") {
 		public Point3D createVertex(
 			Polyhedron seed, List<Point3D> seedVertices,
 			Polyhedron.Face face, List<Point3D> faceVertices,
@@ -21,7 +21,7 @@ public enum GyroVertexGen {
 			return midpoint.subtract(vertex).normalize(size).add(vertex);
 		}
 	},
-	RELATIVE_DISTANCE_FROM_VERTEX_ALONG_EDGE("U", Type.REAL, "create vertices along edge at a relative distance from the vertex") {
+	RELATIVE_DISTANCE_FROM_VERTEX_ALONG_EDGE("U", Type.REAL, "create vertices along edges at a relative distance from the vertex") {
 		public Point3D createVertex(
 			Polyhedron seed, List<Point3D> seedVertices,
 			Polyhedron.Face face, List<Point3D> faceVertices,
@@ -33,7 +33,7 @@ public enum GyroVertexGen {
 			return midpoint.subtract(vertex).multiply(size).add(vertex);
 		}
 	},
-	FIXED_ANGLE_FROM_VERTEX_ALONG_EDGE("W", Type.REAL, "create vertices along edge at a fixed angle from the vertex") {
+	FIXED_ANGLE_FROM_VERTEX_ALONG_EDGE("W", Type.REAL, "create vertices along edges at a fixed angle from the vertex") {
 		public Point3D createVertex(
 			Polyhedron seed, List<Point3D> seedVertices,
 			Polyhedron.Face face, List<Point3D> faceVertices,
@@ -48,7 +48,7 @@ public enum GyroVertexGen {
 			return midpoint.subtract(vertex).normalize(b / c).add(vertex);
 		}
 	},
-	FIXED_DISTANCE_FROM_MIDPOINT_ALONG_EDGE("l", Type.REAL, "create vertices along edge at a fixed distance from the midpoint") {
+	FIXED_DISTANCE_FROM_MIDPOINT_ALONG_EDGE("l", Type.REAL, "create vertices along edges at a fixed distance from the midpoint") {
 		public Point3D createVertex(
 			Polyhedron seed, List<Point3D> seedVertices,
 			Polyhedron.Face face, List<Point3D> faceVertices,
@@ -60,7 +60,7 @@ public enum GyroVertexGen {
 			return vertex.subtract(midpoint).normalize(size).add(midpoint);
 		}
 	},
-	RELATIVE_DISTANCE_FROM_MIDPOINT_ALONG_EDGE("L", Type.REAL, "create vertices along edge at a relative distance from the midpoint") {
+	RELATIVE_DISTANCE_FROM_MIDPOINT_ALONG_EDGE("L", Type.REAL, "create vertices along edges at a relative distance from the midpoint") {
 		public Point3D createVertex(
 			Polyhedron seed, List<Point3D> seedVertices,
 			Polyhedron.Face face, List<Point3D> faceVertices,
@@ -72,7 +72,7 @@ public enum GyroVertexGen {
 			return vertex.subtract(midpoint).multiply(size).add(midpoint);
 		}
 	},
-	FIXED_ANGLE_FROM_MIDPOINT_ALONG_EDGE("N", Type.REAL, "create vertices along edge at a fixed angle from the midpoint") {
+	FIXED_ANGLE_FROM_MIDPOINT_ALONG_EDGE("N", Type.REAL, "create vertices along edges at a fixed angle from the midpoint") {
 		public Point3D createVertex(
 			Polyhedron seed, List<Point3D> seedVertices,
 			Polyhedron.Face face, List<Point3D> faceVertices,
@@ -86,7 +86,7 @@ public enum GyroVertexGen {
 			return vertex.subtract(midpoint).normalize(a).add(midpoint);
 		}
 	},
-	TWIST_ANGLE("t", Type.REAL, "create edge vertices at a fixed twist angle") {
+	TWIST_ANGLE("t", Type.REAL, "create vertices from edges at a fixed twist angle") {
 		public Point3D createVertex(
 			Polyhedron seed, List<Point3D> seedVertices,
 			Polyhedron.Face face, List<Point3D> faceVertices,

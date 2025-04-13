@@ -9,7 +9,7 @@ import com.kreative.polyhedra.PolyhedronUtils.Option;
 import com.kreative.polyhedra.PolyhedronUtils.Type;
 
 public enum EdgeVertexGen {
-	FACE_OFFSET("h", Type.REAL, "create new vertices from edges normal to the original face") {
+	FACE_OFFSET("h", Type.REAL, "create vertices from edges along a normal to the original face (r)") {
 		public Point3D createVertex(
 			Polyhedron seed, List<Point3D> sv,
 			Polyhedron.Face face, List<Point3D> fv,
@@ -20,7 +20,7 @@ public enum EdgeVertexGen {
 			return (size == 0) ? c : c.add(c.normal(fv).multiply(size));
 		}
 	},
-	MAX_MAGNITUDE_OFFSET("m", Type.REAL, "create new vertices from edges relative to the maximum magnitude") {
+	MAX_MAGNITUDE_OFFSET("m", Type.REAL, "create vertices from edges relative to the maximum magnitude") {
 		public Point3D createVertex(
 			Polyhedron seed, List<Point3D> sv,
 			Polyhedron.Face face, List<Point3D> fv,
@@ -30,7 +30,7 @@ public enum EdgeVertexGen {
 			return c.normalize(Point3D.maxMagnitude(sv) + size);
 		}
 	},
-	AVERAGE_MAGNITUDE_OFFSET("a", Type.REAL, "create new vertices from edges relative to the average magnitude") {
+	AVERAGE_MAGNITUDE_OFFSET("a", Type.REAL, "create vertices from edges relative to the average magnitude") {
 		public Point3D createVertex(
 			Polyhedron seed, List<Point3D> sv,
 			Polyhedron.Face face, List<Point3D> fv,
@@ -40,7 +40,7 @@ public enum EdgeVertexGen {
 			return c.normalize(Point3D.averageMagnitude(sv) + size);
 		}
 	},
-	EDGE_MAGNITUDE_OFFSET("e", Type.REAL, "create new vertices from edges relative to the edge magnitude") {
+	EDGE_MAGNITUDE_OFFSET("e", Type.REAL, "create vertices from edges relative to the edge magnitude") {
 		public Point3D createVertex(
 			Polyhedron seed, List<Point3D> sv,
 			Polyhedron.Face face, List<Point3D> fv,
@@ -50,7 +50,7 @@ public enum EdgeVertexGen {
 			return c.normalize(edge.midpoint().magnitude() + size);
 		}
 	},
-	VERTEX_MAGNITUDE_OFFSET("v", Type.REAL, "create new vertices from edges relative to the vertex magnitude") {
+	VERTEX_MAGNITUDE_OFFSET("v", Type.REAL, "create vertices from edges relative to the vertex magnitude") {
 		public Point3D createVertex(
 			Polyhedron seed, List<Point3D> sv,
 			Polyhedron.Face face, List<Point3D> fv,
@@ -58,6 +58,18 @@ public enum EdgeVertexGen {
 		) {
 			double size = (arg instanceof Number) ? ((Number)arg).doubleValue() : 0;
 			return (size == 0) ? c : c.normalize(c.magnitude() + size);
+		}
+	},
+	FACE_OFFSET_FROM_ORIGIN("o", Type.REAL, "create vertices from edges along a normal to the original face (a)") {
+		public Point3D createVertex(
+			Polyhedron seed, List<Point3D> sv,
+			Polyhedron.Face face, List<Point3D> fv,
+			Polyhedron.Edge edge, Point3D c, Object arg
+		) {
+			if (fv == null || fv.isEmpty()) return c;
+			double size = (arg instanceof Number) ? ((Number)arg).doubleValue() : 0;
+			double centerMagnitude = Point3D.average(fv).magnitude();
+			return c.add(c.normal(fv).multiply(size - centerMagnitude));
 		}
 	};
 	

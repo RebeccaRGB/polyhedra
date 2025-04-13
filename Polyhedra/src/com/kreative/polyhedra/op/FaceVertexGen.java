@@ -9,7 +9,7 @@ import com.kreative.polyhedra.PolyhedronUtils.Option;
 import com.kreative.polyhedra.PolyhedronUtils.Type;
 
 public enum FaceVertexGen {
-	FACE_OFFSET("H", Type.REAL, "create new vertices from faces normal to the original face") {
+	FACE_OFFSET("H", Type.REAL, "create vertices from faces along the normal to the original face") {
 		public Point3D createVertex(
 			Polyhedron s, List<Point3D> sv,
 			Polyhedron.Face f, List<Point3D> fv,
@@ -20,7 +20,7 @@ public enum FaceVertexGen {
 			return (size == 0) ? c : c.add(c.normal(fv).multiply(size));
 		}
 	},
-	MAX_MAGNITUDE_OFFSET("M", Type.REAL, "create new vertices from faces relative to the maximum magnitude") {
+	MAX_MAGNITUDE_OFFSET("M", Type.REAL, "create vertices from faces relative to the maximum magnitude") {
 		public Point3D createVertex(
 			Polyhedron s, List<Point3D> sv,
 			Polyhedron.Face f, List<Point3D> fv,
@@ -31,7 +31,7 @@ public enum FaceVertexGen {
 			return c.normalize(Point3D.maxMagnitude(sv) + size);
 		}
 	},
-	AVERAGE_MAGNITUDE_OFFSET("A", Type.REAL, "create new vertices from faces relative to the average magnitude") {
+	AVERAGE_MAGNITUDE_OFFSET("A", Type.REAL, "create vertices from faces relative to the average magnitude") {
 		public Point3D createVertex(
 			Polyhedron s, List<Point3D> sv,
 			Polyhedron.Face f, List<Point3D> fv,
@@ -42,7 +42,7 @@ public enum FaceVertexGen {
 			return c.normalize(Point3D.averageMagnitude(sv) + size);
 		}
 	},
-	FACE_MAGNITUDE_OFFSET("F", Type.REAL, "create new vertices from faces relative to the face magnitude") {
+	FACE_MAGNITUDE_OFFSET("F", Type.REAL, "create vertices from faces relative to the face magnitude") {
 		public Point3D createVertex(
 			Polyhedron s, List<Point3D> sv,
 			Polyhedron.Face f, List<Point3D> fv,
