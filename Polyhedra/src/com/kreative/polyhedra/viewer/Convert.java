@@ -3,7 +3,7 @@ package com.kreative.polyhedra.viewer;
 import java.util.ArrayList;
 import java.util.List;
 import javax.media.j3d.Appearance;
-import javax.media.j3d.Group;
+import javax.media.j3d.BranchGroup;
 import javax.media.j3d.Shape3D;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
@@ -18,9 +18,10 @@ import com.sun.j3d.utils.geometry.Sphere;
 import com.sun.j3d.utils.geometry.Stripifier;
 
 public class Convert {
-	public static Group vertices(Polyhedron p, float r, Appearance a) {
+	public static BranchGroup vertices(Polyhedron p, float r, Appearance a) {
 		if (p == null) return null;
-		Group g = new Group();
+		BranchGroup g = new BranchGroup();
+		g.setCapability(BranchGroup.ALLOW_DETACH);
 		for (Polyhedron.Vertex v : p.vertices) {
 			Point3D pt = v.point;
 			Vector3d vec = new Vector3d(pt.getX(), pt.getY(), pt.getZ());
@@ -32,9 +33,10 @@ public class Convert {
 		return g;
 	}
 	
-	public static Group edges(Polyhedron p, float r, Appearance a) {
+	public static BranchGroup edges(Polyhedron p, float r, Appearance a) {
 		if (p == null) return null;
-		Group g = new Group();
+		BranchGroup g = new BranchGroup();
+		g.setCapability(BranchGroup.ALLOW_DETACH);
 		Vector3d y = new Vector3d(0, 1, 0);
 		for (Polyhedron.Edge e : p.edges) {
 			float h = (float)e.vertex1.point.distance(e.vertex2.point);
@@ -56,7 +58,15 @@ public class Convert {
 		return g;
 	}
 	
-	public static Shape3D faces(Polyhedron p, Appearance a) {
+	public static BranchGroup faces(Polyhedron p, Appearance a) {
+		if (p == null) return null;
+		BranchGroup g = new BranchGroup();
+		g.setCapability(BranchGroup.ALLOW_DETACH);
+		g.addChild(createShape3D(p, a));
+		return g;
+	}
+	
+	private static Shape3D createShape3D(Polyhedron p, Appearance a) {
 		if (p == null) return null;
 		int vertexCount = p.vertices.size();
 		if (vertexCount == 0) return null;

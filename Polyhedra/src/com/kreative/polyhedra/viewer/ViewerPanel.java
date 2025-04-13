@@ -105,6 +105,9 @@ public class ViewerPanel extends JPanel {
 		panBehavior.setSchedulingBounds(new BoundingSphere());
 		panBehavior.setTransformGroup(panGroup);
 		panGroup.addChild(panBehavior);
+		KeyToggleVEFBehavior vefBehavior = new KeyToggleVEFBehavior(this);
+		vefBehavior.setSchedulingBounds(new BoundingSphere());
+		panGroup.addChild(vefBehavior);
 		
 		AmbientLight al = new AmbientLight(new Color3f(1, 1, 1));
 		al.setInfluencingBounds(new BoundingSphere(new Point3d(0, 0, 0), 100));
