@@ -8,12 +8,22 @@ import com.kreative.polyhedra.Polyhedron;
 import com.kreative.polyhedra.PolyhedronOp;
 
 public class NormalizeVertices extends PolyhedronOp {
+	private final double magnitude;
+	
+	public NormalizeVertices() {
+		this.magnitude = 1;
+	}
+	
+	public NormalizeVertices(double magnitude) {
+		this.magnitude = magnitude;
+	}
+	
 	public Polyhedron op(Polyhedron seed) {
 		List<Point3D> vertices = new ArrayList<Point3D>(seed.vertices.size());
 		List<List<Integer>> faces = new ArrayList<List<Integer>>(seed.faces.size());
 		List<Color> faceColors = new ArrayList<Color>(seed.faces.size());
 		for (Polyhedron.Vertex vertex : seed.vertices) {
-			vertices.add(vertex.point.normalize());
+			vertices.add(vertex.point.normalize(magnitude));
 		}
 		for (Polyhedron.Face face : seed.faces) {
 			List<Integer> indices = new ArrayList<Integer>(face.vertices.size());
@@ -28,12 +38,23 @@ public class NormalizeVertices extends PolyhedronOp {
 		public String name() { return "NormalizeVertices"; }
 		
 		public NormalizeVertices parse(String[] args) {
-			if (args.length > 0) return null;
-			return new NormalizeVertices();
+			double magnitude = 1;
+			int argi = 0;
+			while (argi < args.length) {
+				String arg = args[argi++];
+				if (arg.equalsIgnoreCase("-m") && argi < args.length) {
+					magnitude = parseDouble(args[argi++], magnitude);
+				} else {
+					return null;
+				}
+			}
+			return new NormalizeVertices(magnitude);
 		}
 		
 		public Option[] options() {
-			return null;
+			return new Option[] {
+				new Option("m", Type.REAL, "scale normalized vertices to the specified magnitude")
+			};
 		}
 	}
 	

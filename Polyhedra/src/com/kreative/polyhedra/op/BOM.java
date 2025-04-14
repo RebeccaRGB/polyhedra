@@ -38,6 +38,7 @@ public class BOM {
 			new NormalizeVertices.Factory(),
 			// new OppositeLace.Factory(),
 			new Ortho.Factory(),
+			new PlanarizeFaces.Factory(),
 			// new Propeller.Factory(),
 			// new Quinto.Factory(),
 			new Recolor.Factory(),

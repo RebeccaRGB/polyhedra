@@ -11,7 +11,7 @@ import com.kreative.polyhedra.PolyhedronOp;
 public class Resize extends PolyhedronOp {
 	public static enum Metric {
 		MAX_MAGNITUDE {
-			public void resize(List<Point3D> points, double size) {
+			public void resize(Polyhedron seed, List<Point3D> points, double size) {
 				double current = Point3D.maxMagnitude(points);
 				if (current == 0 || current == size) return;
 				for (int i = 0, n = points.size(); i < n; i++) {
@@ -20,7 +20,7 @@ public class Resize extends PolyhedronOp {
 			}
 		},
 		AVERAGE_MAGNITUDE {
-			public void resize(List<Point3D> points, double size) {
+			public void resize(Polyhedron seed, List<Point3D> points, double size) {
 				double current = Point3D.averageMagnitude(points);
 				if (current == 0 || current == size) return;
 				for (int i = 0, n = points.size(); i < n; i++) {
@@ -28,8 +28,55 @@ public class Resize extends PolyhedronOp {
 				}
 			}
 		},
+		MIN_MAGNITUDE {
+			public void resize(Polyhedron seed, List<Point3D> points, double size) {
+				double current = Point3D.minMagnitude(points);
+				if (current == 0 || current == size) return;
+				for (int i = 0, n = points.size(); i < n; i++) {
+					points.set(i, points.get(i).multiply(size / current));
+				}
+			}
+		},
+		MAX_EDGE_LENGTH {
+			public void resize(Polyhedron seed, List<Point3D> points, double size) {
+				Double current = null;
+				for (Polyhedron.Edge e : seed.edges) {
+					double length = e.vertex1.point.distance(e.vertex2.point);
+					if (current == null || length > current) current = length;
+				}
+				if (current == null || current == 0 || current == size) return;
+				for (int i = 0, n = points.size(); i < n; i++) {
+					points.set(i, points.get(i).multiply(size / current));
+				}
+			}
+		},
+		AVERAGE_EDGE_LENGTH {
+			public void resize(Polyhedron seed, List<Point3D> points, double size) {
+				double current = 0;
+				for (Polyhedron.Edge e : seed.edges) {
+					current += e.vertex1.point.distance(e.vertex2.point);
+				}
+				if (current == 0 || (current /= seed.edges.size()) == size) return;
+				for (int i = 0, n = points.size(); i < n; i++) {
+					points.set(i, points.get(i).multiply(size / current));
+				}
+			}
+		},
+		MIN_EDGE_LENGTH {
+			public void resize(Polyhedron seed, List<Point3D> points, double size) {
+				Double current = null;
+				for (Polyhedron.Edge e : seed.edges) {
+					double length = e.vertex1.point.distance(e.vertex2.point);
+					if (current == null || length < current) current = length;
+				}
+				if (current == null || current == 0 || current == size) return;
+				for (int i = 0, n = points.size(); i < n; i++) {
+					points.set(i, points.get(i).multiply(size / current));
+				}
+			}
+		},
 		X_SIZE_PROPORTIONAL {
-			public void resize(List<Point3D> points, double size) {
+			public void resize(Polyhedron seed, List<Point3D> points, double size) {
 				Point3D min = Point3D.min(points);
 				Point3D max = Point3D.max(points);
 				double current = max.getX() - min.getX();
@@ -40,7 +87,7 @@ public class Resize extends PolyhedronOp {
 			}
 		},
 		Y_SIZE_PROPORTIONAL {
-			public void resize(List<Point3D> points, double size) {
+			public void resize(Polyhedron seed, List<Point3D> points, double size) {
 				Point3D min = Point3D.min(points);
 				Point3D max = Point3D.max(points);
 				double current = max.getY() - min.getY();
@@ -51,7 +98,7 @@ public class Resize extends PolyhedronOp {
 			}
 		},
 		Z_SIZE_PROPORTIONAL {
-			public void resize(List<Point3D> points, double size) {
+			public void resize(Polyhedron seed, List<Point3D> points, double size) {
 				Point3D min = Point3D.min(points);
 				Point3D max = Point3D.max(points);
 				double current = max.getZ() - min.getZ();
@@ -62,7 +109,7 @@ public class Resize extends PolyhedronOp {
 			}
 		},
 		X_SIZE {
-			public void resize(List<Point3D> points, double size) {
+			public void resize(Polyhedron seed, List<Point3D> points, double size) {
 				Point3D min = Point3D.min(points);
 				Point3D max = Point3D.max(points);
 				double current = max.getX() - min.getX();
@@ -76,7 +123,7 @@ public class Resize extends PolyhedronOp {
 			}
 		},
 		Y_SIZE {
-			public void resize(List<Point3D> points, double size) {
+			public void resize(Polyhedron seed, List<Point3D> points, double size) {
 				Point3D min = Point3D.min(points);
 				Point3D max = Point3D.max(points);
 				double current = max.getY() - min.getY();
@@ -90,7 +137,7 @@ public class Resize extends PolyhedronOp {
 			}
 		},
 		Z_SIZE {
-			public void resize(List<Point3D> points, double size) {
+			public void resize(Polyhedron seed, List<Point3D> points, double size) {
 				Point3D min = Point3D.min(points);
 				Point3D max = Point3D.max(points);
 				double current = max.getZ() - min.getZ();
@@ -103,7 +150,7 @@ public class Resize extends PolyhedronOp {
 				}
 			}
 		};
-		public abstract void resize(List<Point3D> points, double size);
+		public abstract void resize(Polyhedron seed, List<Point3D> points, double size);
 	}
 	
 	private final Metric metric;
@@ -121,7 +168,7 @@ public class Resize extends PolyhedronOp {
 		List<List<Integer>> faces = new ArrayList<List<Integer>>(seed.faces.size());
 		List<Color> faceColors = new ArrayList<Color>(seed.faces.size());
 		for (Polyhedron.Vertex vertex : seed.vertices) vertices.add(vertex.point);
-		metric.resize(vertices, size);
+		metric.resize(seed, vertices, size);
 		for (Polyhedron.Face face : seed.faces) {
 			List<Integer> indices = new ArrayList<Integer>(face.vertices.size());
 			for (Polyhedron.Vertex v : face.vertices) indices.add(v.index);
@@ -141,11 +188,23 @@ public class Resize extends PolyhedronOp {
 			int argi = 0;
 			while (argi < args.length) {
 				String arg = args[argi++];
-				if (arg.equalsIgnoreCase("-m") && argi < args.length) {
+				if (arg.equalsIgnoreCase("-mmax") && argi < args.length) {
 					metric = Metric.MAX_MAGNITUDE;
 					size = parseDouble(args[argi++], size);
-				} else if (arg.equalsIgnoreCase("-a") && argi < args.length) {
+				} else if (arg.equalsIgnoreCase("-m") && argi < args.length) {
 					metric = Metric.AVERAGE_MAGNITUDE;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equalsIgnoreCase("-mmin") && argi < args.length) {
+					metric = Metric.MIN_MAGNITUDE;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equalsIgnoreCase("-amax") && argi < args.length) {
+					metric = Metric.MAX_EDGE_LENGTH;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equalsIgnoreCase("-a") && argi < args.length) {
+					metric = Metric.AVERAGE_EDGE_LENGTH;
+					size = parseDouble(args[argi++], size);
+				} else if (arg.equalsIgnoreCase("-amin") && argi < args.length) {
+					metric = Metric.MIN_EDGE_LENGTH;
 					size = parseDouble(args[argi++], size);
 				} else if (arg.equals("-x") && argi < args.length) {
 					metric = Metric.X_SIZE_PROPORTIONAL;
@@ -174,14 +233,18 @@ public class Resize extends PolyhedronOp {
 		
 		public Option[] options() {
 			return new Option[] {
-				new Option("m", Type.REAL, "scale uniformly to match the specified maximum magnitude", "a","x","y","z","X","Y","Z"),
-				new Option("a", Type.REAL, "scale uniformly to match the specified average magnitude", "m","x","y","z","X","Y","Z"),
-				new Option("x", Type.REAL, "scale uniformly to match the specified length along the x axis", "m","a","y","z","X","Y","Z"),
-				new Option("y", Type.REAL, "scale uniformly to match the specified length along the y axis", "m","a","x","z","X","Y","Z"),
-				new Option("z", Type.REAL, "scale uniformly to match the specified length along the z axis", "m","a","x","y","X","Y","Z"),
-				new Option("X", Type.REAL, "scale along the x axis only to match the specified length", "m","a","x","y","z"),
-				new Option("Y", Type.REAL, "scale along the y axis only to match the specified length", "m","a","x","y","z"),
-				new Option("Z", Type.REAL, "scale along the z axis only to match the specified length", "m","a","x","y","z"),
+				new Option("mmax", Type.REAL, "scale uniformly to match the specified maximum magnitude", "mmin","m","amax","amin","a","x","y","z","X","Y","Z"),
+				new Option("mmin", Type.REAL, "scale uniformly to match the specified minimum magnitude", "mmax","m","amax","amin","a","x","y","z","X","Y","Z"),
+				new Option("m", Type.REAL, "scale uniformly to match the specified average magnitude", "mmax","mmin","amax","amin","a","x","y","z","X","Y","Z"),
+				new Option("amax", Type.REAL, "scale uniformly to match the specified maximum edge length", "mmax","mmin","m","amin","a","x","y","z","X","Y","Z"),
+				new Option("amin", Type.REAL, "scale uniformly to match the specified minimum edge length", "mmax","mmin","m","amax","a","x","y","z","X","Y","Z"),
+				new Option("a", Type.REAL, "scale uniformly to match the specified average edge length", "mmax","mmin","m","amax","amin","x","y","z","X","Y","Z"),
+				new Option("x", Type.REAL, "scale uniformly to match the specified length along the x axis", "mmax","mmin","m","amax","amin","a","y","z","X","Y","Z"),
+				new Option("y", Type.REAL, "scale uniformly to match the specified length along the y axis", "mmax","mmin","m","amax","amin","a","x","z","X","Y","Z"),
+				new Option("z", Type.REAL, "scale uniformly to match the specified length along the z axis", "mmax","mmin","m","amax","amin","a","x","y","X","Y","Z"),
+				new Option("X", Type.REAL, "scale along the x axis only to match the specified length", "mmax","mmin","m","amax","amin","a","x","y","z"),
+				new Option("Y", Type.REAL, "scale along the y axis only to match the specified length", "mmax","mmin","m","amax","amin","a","x","y","z"),
+				new Option("Z", Type.REAL, "scale along the z axis only to match the specified length", "mmax","mmin","m","amax","amin","a","x","y","z"),
 			};
 		}
 	}
