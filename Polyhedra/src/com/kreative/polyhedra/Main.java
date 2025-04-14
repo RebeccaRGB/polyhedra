@@ -40,6 +40,11 @@ public class Main {
 			return;
 		}
 		
+		if (command.equals("report")) {
+			Report.main(cargs);
+			return;
+		}
+		
 		PolyhedronOp.Factory<? extends PolyhedronOp> opFactory;
 		opFactory = com.kreative.polyhedra.op.BOM.MAP.get(args[0]);
 		if (opFactory != null) { opFactory.main(cargs); return; }
