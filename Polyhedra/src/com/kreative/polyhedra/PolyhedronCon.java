@@ -1,5 +1,6 @@
 package com.kreative.polyhedra;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -22,7 +23,7 @@ public abstract class PolyhedronCon {
 		}
 	}
 	
-	public final void consumeOrReportError(File file) {
+	public final void consumeOFFOrReportError(File file) {
 		try {
 			FileInputStream in = new FileInputStream(file);
 			OFFReader reader = new OFFReader(in);
@@ -34,8 +35,26 @@ public abstract class PolyhedronCon {
 		}
 	}
 	
-	public final void consumeOrReportError(String source, InputStream in) {
+	public final void consumeOFFOrReportError(String source, InputStream in) {
 		OFFReader reader = new OFFReader(in);
+		Polyhedron p = reader.readPolyhedron();
+		consumeOrReportError(source, p);
+	}
+	
+	public final void consumeMcCooeyOrReportError(File file) {
+		try {
+			FileInputStream in = new FileInputStream(file);
+			McCooeyReader reader = new McCooeyReader(in, Color.gray);
+			Polyhedron p = reader.readPolyhedron();
+			in.close();
+			consumeOrReportError(file.toString(), p);
+		} catch (IOException e) {
+			reportError("Error: Cannot read " + file + ": " + e, e);
+		}
+	}
+	
+	public final void consumeMcCooeyOrReportError(String source, InputStream in) {
+		McCooeyReader reader = new McCooeyReader(in, Color.gray);
 		Polyhedron p = reader.readPolyhedron();
 		consumeOrReportError(source, p);
 	}
@@ -69,6 +88,7 @@ public abstract class PolyhedronCon {
 		System.err.println("  -c <text>             consume polyhedron generated from Conway notation");
 		System.err.println("  -f <path>             consume polyhedron in OFF format from file");
 		System.err.println("  -g <text>             consume polyhedron generated from arguments string");
+		System.err.println("  -m <path>             consume polyhedron in McCooey format from file");
 		System.err.println("  -p <text>             consume polyhedron generated from SVG-path-like string");
 		System.err.println("  [ <gen> <arg> ... ]   consume polyhedron generated from arguments between [ ]");
 	}
@@ -83,7 +103,7 @@ public abstract class PolyhedronCon {
 				if (arg.equals("-h") || arg.equals("-help") || arg.equals("--help")) {
 					printOptions();
 				} else if (arg.equals("-")) {
-					consumeOrReportError("standard input", System.in);
+					consumeOFFOrReportError("standard input", System.in);
 				} else if (arg.equals("--") && argi < args.length) {
 					String factoryName = args[argi++];
 					consumeOrReportError(factoryName, args, argi, args.length);
@@ -95,13 +115,15 @@ public abstract class PolyhedronCon {
 					if (p != null) consume(cargs[0], p);
 					else reportError("Invalid parameter for -c: " + cargs[0], null);
 				} else if (arg.equals("-f") && argi < args.length) {
-					consumeOrReportError(new File(args[argi++]));
+					consumeOFFOrReportError(new File(args[argi++]));
 				} else if (arg.equals("-g") && argi < args.length) {
 					String s = args[argi++];
 					PolyhedronGen gen = PolyhedronUtils.parseGen(s);
 					Polyhedron p = (gen != null) ? gen.gen() : null;
 					if (p != null) consume(s, p);
 					else reportError("Invalid parameter for -g: " + s, null);
+				} else if (arg.equals("-m") && argi < args.length) {
+					consumeMcCooeyOrReportError(new File(args[argi++]));
 				} else if (arg.equals("-p") && argi < args.length) {
 					String[] cargs = new String[]{ args[argi++] };
 					PolyhedronGen gen = new Path.Factory().parse(cargs);
@@ -123,7 +145,7 @@ public abstract class PolyhedronCon {
 					}
 					consumeOrReportError(factoryName, args, startIndex, endIndex);
 				} else {
-					consumeOrReportError(new File(arg));
+					consumeOFFOrReportError(new File(arg));
 				}
 			}
 		}
