@@ -12,8 +12,8 @@ import java.util.regex.Pattern;
 
 public class McCooeyReader {
 	private static final String NUMBER = "([+-]?(?:[0-9]+(?:[.][0-9]*)?|[.][0-9]+)(?:[Ee][+-]?[0-9]+)?)";
-	private static final Pattern COORDINATE_LINE = Pattern.compile("(\\w+)\\s*=\\s*" + NUMBER);
 	private static final String COORDINATE = "(" + NUMBER + "|([+-]?\\w+))";
+	private static final Pattern COORDINATE_LINE = Pattern.compile("(\\w+)\\s*=\\s*" + NUMBER);
 	private static final Pattern VERTEX_LINE = Pattern.compile("(\\w+)\\s*=\\s*\\(\\s*" + COORDINATE + "\\s*,\\s*" + COORDINATE + "\\s*,\\s*" + COORDINATE + "\\s*\\)");
 	private static final Pattern FACE_LINE = Pattern.compile("\\{\\s*(\\d+(?:\\s*,\\s*\\d+)*)\\s*\\}");
 	
@@ -23,23 +23,21 @@ public class McCooeyReader {
 	private final List<List<Integer>> faces;
 	private final List<Color> faceColors;
 	private final Scanner scanner;
-	private final Color color;
 	
-	public McCooeyReader(Scanner scanner, Color color) {
+	public McCooeyReader(Scanner scanner) {
 		this.coordinates = new HashMap<String,Double>();
 		this.vertexNames = new ArrayList<String>();
 		this.vertexPoints = new ArrayList<Point3D>();
 		this.faces = new ArrayList<List<Integer>>();
 		this.faceColors = new ArrayList<Color>();
 		this.scanner = scanner;
-		this.color = color;
 	}
 	
-	public McCooeyReader(InputStream in, Color color) {
-		this(new Scanner(in, "UTF-8"), color);
+	public McCooeyReader(InputStream in) {
+		this(new Scanner(in, "UTF-8"));
 	}
 	
-	public Polyhedron readPolyhedron() {
+	public Polyhedron readPolyhedron(Color color) {
 		nextLine: while (scanner.hasNextLine()) {
 			String line = scanner.nextLine().trim();
 			Matcher m = COORDINATE_LINE.matcher(line);

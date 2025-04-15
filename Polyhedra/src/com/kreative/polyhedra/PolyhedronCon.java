@@ -1,6 +1,5 @@
 package com.kreative.polyhedra;
 
-import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -23,39 +22,19 @@ public abstract class PolyhedronCon {
 		}
 	}
 	
-	public final void consumeOFFOrReportError(File file) {
+	public final void consumeOrReportError(Format format, File file) {
 		try {
 			FileInputStream in = new FileInputStream(file);
-			OFFReader reader = new OFFReader(in);
-			Polyhedron p = reader.readPolyhedron();
+			Polyhedron p = format.read(in);
 			in.close();
-			consumeOrReportError(file.toString(), p);
+			consumeOrReportError(file.getName(), p);
 		} catch (IOException e) {
-			reportError("Error: Cannot read " + file + ": " + e, e);
+			reportError("Error: Cannot read from " + file.getName() + ": " + e, e);
 		}
 	}
 	
-	public final void consumeOFFOrReportError(String source, InputStream in) {
-		OFFReader reader = new OFFReader(in);
-		Polyhedron p = reader.readPolyhedron();
-		consumeOrReportError(source, p);
-	}
-	
-	public final void consumeMcCooeyOrReportError(File file) {
-		try {
-			FileInputStream in = new FileInputStream(file);
-			McCooeyReader reader = new McCooeyReader(in, Color.gray);
-			Polyhedron p = reader.readPolyhedron();
-			in.close();
-			consumeOrReportError(file.toString(), p);
-		} catch (IOException e) {
-			reportError("Error: Cannot read " + file + ": " + e, e);
-		}
-	}
-	
-	public final void consumeMcCooeyOrReportError(String source, InputStream in) {
-		McCooeyReader reader = new McCooeyReader(in, Color.gray);
-		Polyhedron p = reader.readPolyhedron();
+	public final void consumeOrReportError(String source, Format format, InputStream in) {
+		Polyhedron p = format.read(in);
 		consumeOrReportError(source, p);
 	}
 	
@@ -86,10 +65,12 @@ public abstract class PolyhedronCon {
 		System.err.println("  -                     consume polyhedron in OFF format from standard input");
 		System.err.println("  -- <gen> <arg> ...    consume polyhedron generated from remaining arguments");
 		System.err.println("  -c <text>             consume polyhedron generated from Conway notation");
-		System.err.println("  -f <path>             consume polyhedron in OFF format from file");
+		System.err.println("  -f <path>             consume polyhedron from file (format from extension)");
 		System.err.println("  -g <text>             consume polyhedron generated from arguments string");
 		System.err.println("  -m <path>             consume polyhedron in McCooey format from file");
-		System.err.println("  -p <text>             consume polyhedron generated from SVG-path-like string");
+		System.err.println("  -o <path>             consume polyhedron in OFF format from file");
+		System.err.println("  -p <text>             consume polyhedron generated from Path3D string");
+		System.err.println("  -q <path>             consume polyhedron in Path3D format from file");
 		System.err.println("  [ <gen> <arg> ... ]   consume polyhedron generated from arguments between [ ]");
 	}
 	
@@ -100,14 +81,12 @@ public abstract class PolyhedronCon {
 			int argi = 0;
 			while (argi < args.length) {
 				String arg = args[argi++];
-				if (arg.equals("-h") || arg.equals("-help") || arg.equals("--help")) {
-					printOptions();
-				} else if (arg.equals("-")) {
-					consumeOFFOrReportError("standard input", System.in);
+				if (arg.equals("-")) {
+					consumeOrReportError(STDIN, Format.OFF, System.in);
 				} else if (arg.equals("--") && argi < args.length) {
 					String factoryName = args[argi++];
 					consumeOrReportError(factoryName, args, argi, args.length);
-					break;
+					return;
 				} else if (arg.equals("-c") && argi < args.length) {
 					String[] cargs = new String[]{ args[argi++] };
 					PolyhedronGen gen = new Construct.Factory().parse(cargs);
@@ -115,21 +94,37 @@ public abstract class PolyhedronCon {
 					if (p != null) consume(cargs[0], p);
 					else reportError("Invalid parameter for -c: " + cargs[0], null);
 				} else if (arg.equals("-f") && argi < args.length) {
-					consumeOFFOrReportError(new File(args[argi++]));
+					File file = new File(args[argi++]);
+					Format format = Format.forFile(file);
+					if (format == null) format = Format.OFF;
+					consumeOrReportError(format, file);
 				} else if (arg.equals("-g") && argi < args.length) {
 					String s = args[argi++];
 					PolyhedronGen gen = PolyhedronUtils.parseGen(s);
 					Polyhedron p = (gen != null) ? gen.gen() : null;
 					if (p != null) consume(s, p);
 					else reportError("Invalid parameter for -g: " + s, null);
+				} else if (arg.equals("-h") || arg.equals("-help") || arg.equals("--help")) {
+					printOptions();
+					return;
 				} else if (arg.equals("-m") && argi < args.length) {
-					consumeMcCooeyOrReportError(new File(args[argi++]));
+					String file = args[argi++];
+					if (file.equals("-")) consumeOrReportError(STDIN, Format.MCCOOEY, System.in);
+					else consumeOrReportError(Format.MCCOOEY, new File(file));
+				} else if (arg.equals("-o") && argi < args.length) {
+					String file = args[argi++];
+					if (file.equals("-")) consumeOrReportError(STDIN, Format.OFF, System.in);
+					else consumeOrReportError(Format.OFF, new File(file));
 				} else if (arg.equals("-p") && argi < args.length) {
 					String[] cargs = new String[]{ args[argi++] };
 					PolyhedronGen gen = new Path.Factory().parse(cargs);
 					Polyhedron p = (gen != null) ? gen.gen() : null;
 					if (p != null) consume(cargs[0], p);
 					else reportError("Invalid parameter for -p: " + cargs[0], null);
+				} else if (arg.equals("-q") && argi < args.length) {
+					String file = args[argi++];
+					if (file.equals("-")) consumeOrReportError(STDIN, Format.PATH3D, System.in);
+					else consumeOrReportError(Format.PATH3D, new File(file));
 				} else if (arg.equals("[") && argi < args.length) {
 					String factoryName = args[argi++];
 					int startIndex = argi, endIndex = argi, level = 0;
@@ -144,10 +139,26 @@ public abstract class PolyhedronCon {
 						endIndex++;
 					}
 					consumeOrReportError(factoryName, args, startIndex, endIndex);
+				} else if (arg.startsWith("-")) {
+					String fs = arg.replaceFirst("^-+", "");
+					Format format = Format.forName(fs);
+					if (format != null && argi < args.length) {
+						String file = args[argi++];
+						if (file.equals("-")) consumeOrReportError(STDIN, format, System.in);
+						else consumeOrReportError(format, new File(file));
+					} else {
+						printOptions();
+						return;
+					}
 				} else {
-					consumeOFFOrReportError(new File(arg));
+					File file = new File(arg);
+					Format format = Format.forFile(file);
+					if (format == null) format = Format.OFF;
+					consumeOrReportError(format, file);
 				}
 			}
 		}
 	}
+	
+	private static final String STDIN = "standard input";
 }

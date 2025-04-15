@@ -22,6 +22,16 @@ public class Main {
 			return;
 		}
 		
+		if (command.equals("report")) {
+			Report.main(cargs);
+			return;
+		}
+		
+		if (command.equals("convert")) {
+			Convert.main(cargs);
+			return;
+		}
+		
 		if (command.equals("ops")) {
 			SortedSet<String> ops = new TreeSet<String>();
 			for (PolyhedronOp.Factory<? extends PolyhedronOp> opFactory : com.kreative.polyhedra.op.BOM.BOM) {
@@ -37,11 +47,6 @@ public class Main {
 				gens.add(genFactory.name());
 			}
 			for (String gen : gens) System.out.println(gen);
-			return;
-		}
-		
-		if (command.equals("report")) {
-			Report.main(cargs);
 			return;
 		}
 		
