@@ -199,11 +199,11 @@ public class Point3D {
 	public double getZ() { return z; }
 	
 	public int hashCode() {
-		return Arrays.asList(
-			Double.valueOf(x),
-			Double.valueOf(y),
-			Double.valueOf(z)
-		).hashCode();
+		long x = (this.x == 0) ? 0 : Double.doubleToLongBits(this.x);
+		long y = (this.y == 0) ? 0 : Double.doubleToLongBits(this.y);
+		long z = (this.z == 0) ? 0 : Double.doubleToLongBits(this.z);
+		long h = (x << 2) + (y << 14) + (z << 26) + (z >> 38) + (y >> 50) + (x >> 62);
+		return (int)h;
 	}
 	
 	public double magnitude() {
