@@ -126,6 +126,17 @@ public abstract class PolyhedronUtils {
 							arg.append(ch);
 						}
 					}
+				} else if (ch == '`') {
+					while (ci < cn) {
+						ch = chars[ci++];
+						if (ch == '`') {
+							break;
+						} else if (ch == '\\' && ci < cn) {
+							ci = parseEscapeSequence(chars, ci, cn, arg);
+						} else {
+							arg.append(ch);
+						}
+					}
 				} else if (ch == '\\') {
 					ci = parseEscapeSequence(chars, ci, cn, arg);
 				} else {
