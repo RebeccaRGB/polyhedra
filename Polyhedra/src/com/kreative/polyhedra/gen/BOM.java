@@ -38,7 +38,7 @@ public class BOM {
 			new Prism.Factory(),
 			new Pyramid.Factory(),
 			// new Quadrille.Factory(),
-			// new SmallStellatedDodecahedron.Factory(),
+			new SmallStellatedDodecahedron.Factory(),
 			new Tetrahedron.Factory(),
 			new Trapezohedron.Factory()
 		)
@@ -54,7 +54,7 @@ public class BOM {
 		con.put("A", new Antiprism.Factory());
 		con.put("C", new Cube.Factory());
 		con.put("D", new Dodecahedron.Factory());
-		// con.put("D*", new SmallStellatedDodecahedron.Factory());
+		con.put("D*", new SmallStellatedDodecahedron.Factory());
 		// con.put("E", new GreatDodecahedron.Factory());
 		// con.put("E*", new GreatStellatedDodecahedron.Factory());
 		// con.put("H", new Hextille.Factory());
