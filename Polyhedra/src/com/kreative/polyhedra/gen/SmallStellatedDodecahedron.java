@@ -9,9 +9,9 @@ import com.kreative.polyhedra.PolyhedronGen;
 public class SmallStellatedDodecahedron extends PolyhedronGen {
 	private static final double PHI = 1.6180339887498948482; // (1+sqrt(5))/2
 	private static final double PHI5 = 1.9021130325903071442; // sqrt(phi*phi+1)
-	private static final double INRADIUS_FACTOR = 11.135163644116067352; // sqrt(250+110*sqrt(5))/2
-	private static final double MIDRADIUS_FACTOR = 1.3090169943749474241; // (3+sqrt(5))/4
-	private static final double CIRCUMRADIUS_FACTOR = 2.4898982848827802734; // sqrt(50+22*sqrt(5))/4
+	private static final double INRADIUS_FACTOR = 0.26286555605956680301; // sqrt(10*(5−sqrt(5)))/20
+	private static final double MIDRADIUS_FACTOR = 0.30901699437494742410; // (sqrt(5)−1)/4
+	private static final double CIRCUMRADIUS_FACTOR = 0.58778525229247312917; // sqrt(2*(5−sqrt(5)))/4
 	
 	public static enum SizeSpecifier {
 		CIRCUMRADIUS {
