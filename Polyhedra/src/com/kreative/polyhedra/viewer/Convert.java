@@ -158,13 +158,13 @@ public class Convert {
 		AffineTransform3D elevationNeg = AffineTransform3D.getRotateXInstance(-elevation);
 		
 		// Transform the face to lie on the XY axis and turn it into a 2D path!
-		HashMap<Point2D,Integer> vertexIndices = new HashMap<Point2D,Integer>();
+		HashMap<Point2D.Float,Integer> vertexIndices = new HashMap<Point2D.Float,Integer>();
 		GeneralPath path = null;
 		for (Polyhedron.Vertex v : face.vertices) {
 			Point3D p = v.point.subtract(center);
 			p = azimuthNeg.transform(p);
 			p = elevationPos.transform(p);
-			Point2D.Double q = new Point2D.Double(p.getX(), p.getY());
+			Point2D.Float q = new Point2D.Float((float)p.getX(), (float)p.getY());
 			vertexIndices.put(q, v.index);
 			if (path == null) {
 				path = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
@@ -188,7 +188,7 @@ public class Convert {
 					currentFace = new ArrayList<Integer>();
 					// fallthrough;
 				case PathIterator.SEG_LINETO:
-					Point2D.Double p = new Point2D.Double(coords[0], coords[1]);
+					Point2D.Float p = new Point2D.Float((float)coords[0], (float)coords[1]);
 					Integer i = vertexIndices.get(p);
 					if (i == null) {
 						i = vertices.size();
