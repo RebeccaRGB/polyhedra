@@ -26,7 +26,7 @@ public class BOM {
 			new Dodecahedron.Factory(),
 			new Frustum.Factory(),
 			new GreatDodecahedron.Factory(),
-			// new GreatIcosahedron.Factory(),
+			new GreatIcosahedron.Factory(),
 			new GreatStellatedDodecahedron.Factory(),
 			// new Hextille.Factory(),
 			new Icosahedron.Factory(),
@@ -59,7 +59,7 @@ public class BOM {
 		con.put("E*", new GreatStellatedDodecahedron.Factory());
 		// con.put("H", new Hextille.Factory());
 		con.put("I", new Icosahedron.Factory());
-		// con.put("J", new GreatIcosahedron.Factory());
+		con.put("J", new GreatIcosahedron.Factory());
 		// con.put("J#", new JohnsonSolid.Factory());
 		con.put("O", new Octahedron.Factory());
 		con.put("P", new Prism.Factory());
