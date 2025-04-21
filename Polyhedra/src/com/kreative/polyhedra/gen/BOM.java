@@ -25,7 +25,7 @@ public class BOM {
 			// new Deltille.Factory(),
 			new Dodecahedron.Factory(),
 			new Frustum.Factory(),
-			// new GreatDodecahedron.Factory(),
+			new GreatDodecahedron.Factory(),
 			// new GreatIcosahedron.Factory(),
 			// new GreatStellatedDodecahedron.Factory(),
 			// new Hextille.Factory(),
@@ -55,7 +55,7 @@ public class BOM {
 		con.put("C", new Cube.Factory());
 		con.put("D", new Dodecahedron.Factory());
 		con.put("D*", new SmallStellatedDodecahedron.Factory());
-		// con.put("E", new GreatDodecahedron.Factory());
+		con.put("E", new GreatDodecahedron.Factory());
 		// con.put("E*", new GreatStellatedDodecahedron.Factory());
 		// con.put("H", new Hextille.Factory());
 		con.put("I", new Icosahedron.Factory());
