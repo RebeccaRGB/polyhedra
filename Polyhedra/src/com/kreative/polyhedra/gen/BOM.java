@@ -22,7 +22,7 @@ public class BOM {
 			new Construct.Factory(),
 			new Cube.Factory(),
 			// new Cupola.Factory(),
-			// new Deltille.Factory(),
+			new Deltille.Factory(),
 			new Dodecahedron.Factory(),
 			new Frustum.Factory(),
 			new GreatDodecahedron.Factory(),
@@ -68,7 +68,7 @@ public class BOM {
 		// con.put("U", new Cupola.Factory());
 		// con.put("V", new Anticupola.Factory());
 		con.put("Y", new Pyramid.Factory());
-		// con.put("Δ", new Deltille.Factory());
+		con.put("Δ", new Deltille.Factory());
 		
 		Map<String,PolyhedronGen.Factory<? extends PolyhedronGen>> map =
 			new HashMap<String,PolyhedronGen.Factory<? extends PolyhedronGen>>(con);
