@@ -10,10 +10,12 @@ import com.kreative.polyhedra.PolyhedronGen;
 public class BOM {
 	public static final List<PolyhedronGen.Factory<? extends PolyhedronGen>> BOM = Collections.unmodifiableList(
 		Arrays.asList(
+			new Antibicupola.Factory(),
 			new Antibifrustum.Factory(),
-			// new Anticupola.Factory(),
+			new Anticupola.Factory(),
 			new Antifrustum.Factory(),
 			new Antiprism.Factory(),
+			new Bicupola.Factory(),
 			new Bifrustum.Factory(),
 			new Bipyramid.Factory(),
 			new Box.Factory(),
@@ -21,7 +23,7 @@ public class BOM {
 			new Constant.Factory(),
 			new Construct.Factory(),
 			new Cube.Factory(),
-			// new Cupola.Factory(),
+			new Cupola.Factory(),
 			new Deltille.Factory(),
 			new Dodecahedron.Factory(),
 			new Frustum.Factory(),
@@ -65,8 +67,8 @@ public class BOM {
 		con.put("P", new Prism.Factory());
 		con.put("Q", new Quadrille.Factory());
 		con.put("T", new Tetrahedron.Factory());
-		// con.put("U", new Cupola.Factory());
-		// con.put("V", new Anticupola.Factory());
+		con.put("U", new Cupola.Factory());
+		con.put("V", new Anticupola.Factory());
 		con.put("Y", new Pyramid.Factory());
 		con.put("Δ", new Deltille.Factory());
 		
