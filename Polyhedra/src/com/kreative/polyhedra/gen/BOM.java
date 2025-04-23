@@ -59,6 +59,10 @@ public class BOM {
 		con.put("D*", new SmallStellatedDodecahedron.Factory());
 		con.put("E", new GreatDodecahedron.Factory());
 		con.put("E*", new GreatStellatedDodecahedron.Factory());
+		con.put("F", new Frustum.Factory()); // extension
+		con.put("FF", new Bifrustum.Factory()); // extension
+		con.put("G", new Antifrustum.Factory()); // extension
+		con.put("GG", new Antibifrustum.Factory()); // extension
 		con.put("H", new Hextille.Factory());
 		con.put("I", new Icosahedron.Factory());
 		con.put("J", new GreatIcosahedron.Factory());
@@ -66,10 +70,15 @@ public class BOM {
 		con.put("O", new Octahedron.Factory());
 		con.put("P", new Prism.Factory());
 		con.put("Q", new Quadrille.Factory());
+		con.put("R", new Trapezohedron.Factory()); // extension
 		con.put("T", new Tetrahedron.Factory());
 		con.put("U", new Cupola.Factory());
+		con.put("UU", new Bicupola.Factory()); // extension
 		con.put("V", new Anticupola.Factory());
+		con.put("VV", new Antibicupola.Factory()); // extension
 		con.put("Y", new Pyramid.Factory());
+		con.put("YY", new Bipyramid.Factory()); // extension
+		con.put("Z", new Polygon.Factory()); // extension
 		con.put("Δ", new Deltille.Factory());
 		
 		Map<String,PolyhedronGen.Factory<? extends PolyhedronGen>> map =
