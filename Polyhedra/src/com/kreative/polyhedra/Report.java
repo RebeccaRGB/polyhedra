@@ -62,6 +62,14 @@ public class Report extends PolyhedronCon {
 			System.out.println("\t\t\tcenter\t" + center + "\tmag=" + center.magnitude());
 			System.out.println("\t\t\tnormal\t" + normal);
 		}
+		System.out.println("\tMetrics:");
+		for (Metric metric : Metric.values()) {
+			System.out.print("\t\t" + metric);
+			for (MetricAggregator agg : MetricAggregator.values()) {
+				System.out.print("\t" + agg + "=" + agg.aggregate(metric.iterator(p)));
+			}
+			System.out.println();
+		}
 	}
 	
 	public void reportError(String message, Exception e) {
