@@ -20,7 +20,7 @@ public class Report extends PolyhedronCon {
 		System.out.println("\tEdges: " + p.edges.size());
 		for (Polyhedron.Edge e : p.edges) {
 			Point3D m = e.midpoint();
-			System.out.println("\t\t#" + e.vertex1.index + "-#" + e.vertex2.index + "\tlen=" + e.vertex1.point.distance(e.vertex2.point));
+			System.out.println("\t\t#" + e.vertex1.index + "-#" + e.vertex2.index + "\tlen=" + e.length());
 			System.out.println("\t\t\tV0: #" + e.vertex1.index + "\t" + e.vertex1.point + "\tmag=" + e.vertex1.point.magnitude());
 			System.out.println("\t\t\tV1: #" + e.vertex2.index + "\t" + e.vertex2.point + "\tmag=" + e.vertex2.point.magnitude());
 			System.out.println("\t\t\tmidpoint\t" + m + "\tmag=" + m.magnitude());
@@ -45,7 +45,7 @@ public class Report extends PolyhedronCon {
 				Polyhedron.Edge e = f.edges.get(i);
 				System.out.println(
 					"\t\t\t\tE" + i + ": #" + e.vertex1.index + "-#" + e.vertex2.index +
-					"\tlen=" + e.vertex1.point.distance(e.vertex2.point)
+					"\tlen=" + e.length()
 				);
 			}
 			System.out.println("\t\t\tAngles: " + f.vertices.size());

@@ -47,7 +47,7 @@ public class Convert {
 		g.setCapability(BranchGroup.ALLOW_DETACH);
 		Vector3d y = new Vector3d(0, 1, 0);
 		for (Polyhedron.Edge e : p.edges) {
-			float h = (float)e.vertex1.point.distance(e.vertex2.point);
+			float h = (float)e.length();
 			// Java3D blows up at zero-length edges,
 			// so don't even bother to generate them.
 			if (h == 0) continue;

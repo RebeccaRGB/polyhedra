@@ -47,6 +47,9 @@ public class Polyhedron {
 		public int hashCode() {
 			return vertex1.index + vertex2.index;
 		}
+		public double length() {
+			return vertex1.point.distance(vertex2.point);
+		}
 		public Point3D midpoint() {
 			return vertex1.point.midpoint(vertex2.point);
 		}

@@ -14,19 +14,19 @@ public class Resize extends PolyhedronOp {
 		MAX_VERTEX_MAGNITUDE("vmax", "rmax", Type.REAL, "scale uniformly to match the specified maximum vertex magnitude") {
 			public boolean resize(Polyhedron seed, List<Point3D> points, Object arg) {
 				double size = (arg instanceof Number) ? ((Number)arg).doubleValue() : 1;
-				return resize(points, size, Point3D.maxMagnitude(points));
+				return resizeChecked(points, size, Point3D.maxMagnitude(points));
 			}
 		},
 		AVERAGE_VERTEX_MAGNITUDE("v", "r", Type.REAL, "scale uniformly to match the specified average vertex magnitude") {
 			public boolean resize(Polyhedron seed, List<Point3D> points, Object arg) {
 				double size = (arg instanceof Number) ? ((Number)arg).doubleValue() : 1;
-				return resize(points, size, Point3D.averageMagnitude(points));
+				return resizeChecked(points, size, Point3D.averageMagnitude(points));
 			}
 		},
 		MIN_VERTEX_MAGNITUDE("vmin", "rmin", Type.REAL, "scale uniformly to match the specified minimum vertex magnitude") {
 			public boolean resize(Polyhedron seed, List<Point3D> points, Object arg) {
 				double size = (arg instanceof Number) ? ((Number)arg).doubleValue() : 1;
-				return resize(points, size, Point3D.minMagnitude(points));
+				return resizeChecked(points, size, Point3D.minMagnitude(points));
 			}
 		},
 		MAX_EDGE_MAGNITUDE("emax", "mmax", Type.REAL, "scale uniformly to match the specified maximum edge magnitude") {
@@ -37,7 +37,7 @@ public class Resize extends PolyhedronOp {
 					if (current == null || length > current) current = length;
 				}
 				double size = (arg instanceof Number) ? ((Number)arg).doubleValue() : 1;
-				return resize(points, size, current);
+				return resizeChecked(points, size, current);
 			}
 		},
 		AVERAGE_EDGE_MAGNITUDE("e", "m", Type.REAL, "scale uniformly to match the specified average edge magnitude") {
@@ -47,7 +47,7 @@ public class Resize extends PolyhedronOp {
 					current += e.midpoint().magnitude();
 				}
 				double size = (arg instanceof Number) ? ((Number)arg).doubleValue() : 1;
-				return resize(points, size, current, seed.edges.size());
+				return resizeChecked(points, size, current, seed.edges.size());
 			}
 		},
 		MIN_EDGE_MAGNITUDE("emin", "mmin", Type.REAL, "scale uniformly to match the specified minimum edge magnitude") {
@@ -58,7 +58,7 @@ public class Resize extends PolyhedronOp {
 					if (current == null || length < current) current = length;
 				}
 				double size = (arg instanceof Number) ? ((Number)arg).doubleValue() : 1;
-				return resize(points, size, current);
+				return resizeChecked(points, size, current);
 			}
 		},
 		MAX_FACE_MAGNITUDE("fmax", "imax", Type.REAL, "scale uniformly to match the specified maximum face magnitude") {
@@ -69,7 +69,7 @@ public class Resize extends PolyhedronOp {
 					if (current == null || length > current) current = length;
 				}
 				double size = (arg instanceof Number) ? ((Number)arg).doubleValue() : 1;
-				return resize(points, size, current);
+				return resizeChecked(points, size, current);
 			}
 		},
 		AVERAGE_FACE_MAGNITUDE("f", "i", Type.REAL, "scale uniformly to match the specified average face magnitude") {
@@ -79,7 +79,7 @@ public class Resize extends PolyhedronOp {
 					current += f.center().magnitude();
 				}
 				double size = (arg instanceof Number) ? ((Number)arg).doubleValue() : 1;
-				return resize(points, size, current, seed.faces.size());
+				return resizeChecked(points, size, current, seed.faces.size());
 			}
 		},
 		MIN_FACE_MAGNITUDE("fmin", "imin", Type.REAL, "scale uniformly to match the specified minimum face magnitude") {
@@ -90,39 +90,39 @@ public class Resize extends PolyhedronOp {
 					if (current == null || length < current) current = length;
 				}
 				double size = (arg instanceof Number) ? ((Number)arg).doubleValue() : 1;
-				return resize(points, size, current);
+				return resizeChecked(points, size, current);
 			}
 		},
 		MAX_EDGE_LENGTH("amax", Type.REAL, "scale uniformly to match the specified maximum edge length") {
 			public boolean resize(Polyhedron seed, List<Point3D> points, Object arg) {
 				Double current = null;
 				for (Polyhedron.Edge e : seed.edges) {
-					double length = e.vertex1.point.distance(e.vertex2.point);
+					double length = e.length();
 					if (current == null || length > current) current = length;
 				}
 				double size = (arg instanceof Number) ? ((Number)arg).doubleValue() : 1;
-				return resize(points, size, current);
+				return resizeChecked(points, size, current);
 			}
 		},
 		AVERAGE_EDGE_LENGTH("a", Type.REAL, "scale uniformly to match the specified average edge length") {
 			public boolean resize(Polyhedron seed, List<Point3D> points, Object arg) {
 				double current = 0;
 				for (Polyhedron.Edge e : seed.edges) {
-					current += e.vertex1.point.distance(e.vertex2.point);
+					current += e.length();
 				}
 				double size = (arg instanceof Number) ? ((Number)arg).doubleValue() : 1;
-				return resize(points, size, current, seed.edges.size());
+				return resizeChecked(points, size, current, seed.edges.size());
 			}
 		},
 		MIN_EDGE_LENGTH("amin", Type.REAL, "scale uniformly to match the specified minimum edge length") {
 			public boolean resize(Polyhedron seed, List<Point3D> points, Object arg) {
 				Double current = null;
 				for (Polyhedron.Edge e : seed.edges) {
-					double length = e.vertex1.point.distance(e.vertex2.point);
+					double length = e.length();
 					if (current == null || length < current) current = length;
 				}
 				double size = (arg instanceof Number) ? ((Number)arg).doubleValue() : 1;
-				return resize(points, size, current);
+				return resizeChecked(points, size, current);
 			}
 		},
 		X_SIZE_PROPORTIONAL("x", Type.REAL, "scale uniformly to match the specified length along the x axis") {
@@ -130,7 +130,7 @@ public class Resize extends PolyhedronOp {
 				double min = Point3D.min(points).getX();
 				double max = Point3D.max(points).getX();
 				double size = (arg instanceof Number) ? ((Number)arg).doubleValue() : 1;
-				return resize(points, size, max - min);
+				return resizeChecked(points, size, max - min);
 			}
 		},
 		Y_SIZE_PROPORTIONAL("y", Type.REAL, "scale uniformly to match the specified length along the y axis") {
@@ -138,7 +138,7 @@ public class Resize extends PolyhedronOp {
 				double min = Point3D.min(points).getY();
 				double max = Point3D.max(points).getY();
 				double size = (arg instanceof Number) ? ((Number)arg).doubleValue() : 1;
-				return resize(points, size, max - min);
+				return resizeChecked(points, size, max - min);
 			}
 		},
 		Z_SIZE_PROPORTIONAL("z", Type.REAL, "scale uniformly to match the specified length along the z axis") {
@@ -146,7 +146,7 @@ public class Resize extends PolyhedronOp {
 				double min = Point3D.min(points).getZ();
 				double max = Point3D.max(points).getZ();
 				double size = (arg instanceof Number) ? ((Number)arg).doubleValue() : 1;
-				return resize(points, size, max - min);
+				return resizeChecked(points, size, max - min);
 			}
 		},
 		X_SIZE("X", Type.REAL, "scale along the x axis only to match the specified length") {
@@ -155,7 +155,7 @@ public class Resize extends PolyhedronOp {
 				Point3D max = Point3D.max(points);
 				double current = max.getX() - min.getX();
 				double size = (arg instanceof Number) ? ((Number)arg).doubleValue() : 1;
-				return current != 0 && current != size && resize(points, size / current, 1, 1);
+				return current != 0 && current != size && resizeUnsafe(points, size / current, 1, 1);
 			}
 		},
 		Y_SIZE("Y", Type.REAL, "scale along the y axis only to match the specified length") {
@@ -164,7 +164,7 @@ public class Resize extends PolyhedronOp {
 				Point3D max = Point3D.max(points);
 				double current = max.getY() - min.getY();
 				double size = (arg instanceof Number) ? ((Number)arg).doubleValue() : 1;
-				return current != 0 && current != size && resize(points, 1, size / current, 1);
+				return current != 0 && current != size && resizeUnsafe(points, 1, size / current, 1);
 			}
 		},
 		Z_SIZE("Z", Type.REAL, "scale along the z axis only to match the specified length") {
@@ -173,7 +173,7 @@ public class Resize extends PolyhedronOp {
 				Point3D max = Point3D.max(points);
 				double current = max.getZ() - min.getZ();
 				double size = (arg instanceof Number) ? ((Number)arg).doubleValue() : 1;
-				return current != 0 && current != size && resize(points, 1, 1, size / current);
+				return current != 0 && current != size && resizeUnsafe(points, 1, 1, size / current);
 			}
 		};
 		
@@ -243,26 +243,26 @@ public class Resize extends PolyhedronOp {
 			return null;
 		}
 		
-		private static boolean resize(List<Point3D> points, double size, double current) {
-			return current != 0 && current != size && resize(points, size / current);
+		private static boolean resizeChecked(List<Point3D> points, double size, double current) {
+			return current != 0 && current != size && resizeUnsafe(points, size / current);
 		}
 		
-		private static boolean resize(List<Point3D> points, double size, Double current) {
-			return current != null && current != 0 && current != size && resize(points, size / current);
+		private static boolean resizeChecked(List<Point3D> points, double size, Double current) {
+			return current != null && current != 0 && current != size && resizeUnsafe(points, size / current);
 		}
 		
-		private static boolean resize(List<Point3D> points, double size, double current, int count) {
-			return current != 0 && count != 0 && (current /= count) != size && resize(points, size / current);
+		private static boolean resizeChecked(List<Point3D> points, double size, double current, int count) {
+			return current != 0 && count != 0 && (current /= count) != size && resizeUnsafe(points, size / current);
 		}
 		
-		private static boolean resize(List<Point3D> points, double m) {
+		private static boolean resizeUnsafe(List<Point3D> points, double m) {
 			for (int i = 0, n = points.size(); i < n; i++) {
 				points.set(i, points.get(i).multiply(m));
 			}
 			return m < 0;
 		}
 		
-		private static boolean resize(List<Point3D> points, double x, double y, double z) {
+		private static boolean resizeUnsafe(List<Point3D> points, double x, double y, double z) {
 			for (int i = 0, n = points.size(); i < n; i++) {
 				double nx = points.get(i).getX() * x;
 				double ny = points.get(i).getY() * y;
