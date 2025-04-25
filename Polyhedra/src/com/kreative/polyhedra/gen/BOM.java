@@ -15,6 +15,7 @@ public class BOM {
 			new Anticupola.Factory(),
 			new Antifrustum.Factory(),
 			new Antiprism.Factory(),
+			new ArchimedeanSolid.Factory(),
 			new Bicupola.Factory(),
 			new Bifrustum.Factory(),
 			new Bipyramid.Factory(),
@@ -76,6 +77,7 @@ public class BOM {
 		con.put("UU", new Bicupola.Factory()); // extension
 		con.put("V", new Anticupola.Factory());
 		con.put("VV", new Antibicupola.Factory()); // extension
+		con.put("X", new ArchimedeanSolid.Factory()); // extension
 		con.put("Y", new Pyramid.Factory());
 		con.put("YY", new Bipyramid.Factory()); // extension
 		con.put("Z", new Polygon.Factory()); // extension

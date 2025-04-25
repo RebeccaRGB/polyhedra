@@ -159,6 +159,13 @@ public class Truncate extends PolyhedronOp {
 	private final double size;
 	private final Color color;
 	
+	public Truncate(TruncatedVertexGen gen, double size, Color color) {
+		this.degrees = new HashSet<Integer>();
+		this.gen = gen;
+		this.size = size;
+		this.color = color;
+	}
+	
 	public Truncate(int[] degrees, TruncatedVertexGen gen, double size, Color color) {
 		this.degrees = new HashSet<Integer>();
 		if (degrees != null) for (int i : degrees) this.degrees.add(i);
@@ -175,9 +182,7 @@ public class Truncate extends PolyhedronOp {
 		this.color = color;
 	}
 	
-	public Truncate(
-		Iterable<? extends Integer> degrees, TruncatedVertexGen gen, double size, Color color
-	) {
+	public Truncate(Iterable<? extends Integer> degrees, TruncatedVertexGen gen, double size, Color color) {
 		this.degrees = new HashSet<Integer>();
 		if (degrees != null) for (int i : degrees) this.degrees.add(i);
 		this.gen = gen;
