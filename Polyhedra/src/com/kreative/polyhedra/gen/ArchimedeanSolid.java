@@ -302,7 +302,10 @@ public class ArchimedeanSolid extends PolyhedronGen {
 				} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 					c = parseColor(args[argi++], c);
 				} else {
-					return null;
+					FormSpecifier f = FormSpecifier.forName(arg);
+					if (f == null) f = FormSpecifier.forIndex(parseInt(arg, 0));
+					if (f == null) return null;
+					form = f;
 				}
 			}
 			return new ArchimedeanSolid(form, spec, size, c);
