@@ -20,6 +20,7 @@ public class BOM {
 			new Bifrustum.Factory(),
 			new Bipyramid.Factory(),
 			new Box.Factory(),
+			new CatalanSolid.Factory(),
 			new Compose.Factory(),
 			new Constant.Factory(),
 			new Construct.Factory(),
@@ -68,6 +69,7 @@ public class BOM {
 		con.put("I", new Icosahedron.Factory());
 		con.put("J", new GreatIcosahedron.Factory());
 		// con.put("J#", new JohnsonSolid.Factory());
+		con.put("K", new CatalanSolid.Factory()); // extension
 		con.put("O", new Octahedron.Factory());
 		con.put("P", new Prism.Factory());
 		con.put("Q", new Quadrille.Factory());
