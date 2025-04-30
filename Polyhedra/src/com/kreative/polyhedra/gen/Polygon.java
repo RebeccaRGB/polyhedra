@@ -73,9 +73,6 @@ public class Polygon extends PolyhedronGen {
 	private final double z;
 	private final Color c;
 	
-	public Polygon(int n, double r, Axis axis, Color c) { this(n, 1, r, axis, 0, c); }
-	public Polygon(int n, int m, double r, Axis axis, Color c) { this(n, m, r, axis, 0, c); }
-	public Polygon(int n, double r, Axis axis, double z, Color c) { this(n, 1, r, axis, z, c); }
 	public Polygon(int n, int m, double r, Axis axis, double z, Color c) {
 		this.n = n;
 		this.m = m;

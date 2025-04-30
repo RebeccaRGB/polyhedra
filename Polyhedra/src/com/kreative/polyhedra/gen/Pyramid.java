@@ -16,39 +16,51 @@ public class Pyramid extends PolyhedronGen {
 	private final double r;
 	private final Axis axis;
 	private final double h;
-	private final Color bc;
-	private final Color jc;
+	private final boolean gyro;
+	private final double e;
+	private final Color baseColor;
+	private final Color prismColor;
+	private final Color pyramidColor;
 	
-	public Pyramid(int n, double r, Axis axis, double h, Color c) {
-		this(n, 1, r, axis, h, c, c);
-	}
-	public Pyramid(int n, int m, double r, Axis axis, double h, Color c) {
-		this(n, m, r, axis, h, c, c);
-	}
-	public Pyramid(int n, double r, Axis axis, double h, Color base, Color join) {
-		this(n, 1, r, axis, h, base, join);
-	}
-	public Pyramid(int n, int m, double r, Axis axis, double h, Color base, Color join) {
+	public Pyramid(int n, int m, double r, Axis axis, double h, boolean gyro, double e, Color base, Color prism, Color pyramid) {
 		this.n = n;
 		this.m = m;
 		this.r = r;
 		this.axis = axis;
 		this.h = h;
-		this.bc = base;
-		this.jc = join;
+		this.gyro = gyro;
+		this.e = e;
+		this.baseColor = base;
+		this.prismColor = prism;
+		this.pyramidColor = pyramid;
 	}
 	
 	public Polyhedron gen() {
 		List<Point3D> vertices = new ArrayList<Point3D>(n);
 		List<List<Integer>> faces = new ArrayList<List<Integer>>(2);
 		List<Color> faceColors = new ArrayList<Color>(2);
-		Polygon.createVertices(vertices, n, r, 0, axis, -h/2);
-		vertices.add(axis.createVertex(0, 0, h/2));
-		Polygon.createFaces(faces, faceColors, n, m, 0, true, bc);
+		Polygon.createVertices(vertices, n, r, 0, axis, -(h+e)/2);
+		if (e != 0) Polygon.createVertices(vertices, n, r, (gyro ? 0.5 : 0), axis, e-(h+e)/2);
+		vertices.add(axis.createVertex(0, 0, (h+e)/2));
+		Polygon.createFaces(faces, faceColors, n, m, 0, true, baseColor);
 		for (int i = 0; i < n; i++) {
 			int j = (i + m) % n;
-			faces.add(Arrays.asList(i, j, n));
-			faceColors.add(jc);
+			if (e != 0) {
+				if (gyro) {
+					faces.add(Arrays.asList(i+n, i, j));
+					faces.add(Arrays.asList(j+n, i+n, j));
+					faceColors.add(prismColor);
+					faceColors.add(prismColor);
+				} else {
+					faces.add(Arrays.asList(j+n, i+n, i, j));
+					faceColors.add(prismColor);
+				}
+				faces.add(Arrays.asList(i+n, j+n, n+n));
+				faceColors.add(pyramidColor);
+			} else {
+				faces.add(Arrays.asList(i, j, n));
+				faceColors.add(pyramidColor);
+			}
 		}
 		return new Polyhedron(vertices, faces, faceColors);
 	}
@@ -63,9 +75,12 @@ public class Pyramid extends PolyhedronGen {
 			double size = 1;
 			Axis axis = Axis.Y;
 			Double h = null;
+			boolean gyro = false;
+			double e = 0;
 			Color c = Color.GRAY;
-			Color bc = null;
-			Color jc = null;
+			Color baseColor = null;
+			Color prismColor = null;
+			Color pyramidColor = null;
 			int argi = 0;
 			while (argi < args.length) {
 				String arg = args[argi++];
@@ -92,20 +107,31 @@ public class Pyramid extends PolyhedronGen {
 				} else if (arg.equalsIgnoreCase("-z")) {
 					axis = Axis.Z;
 				} else if (arg.equalsIgnoreCase("-h") && argi < args.length) {
-					h = parseDouble(args[argi++], ((h == null) ? 1 : h.intValue()));
+					h = parseDouble(args[argi++], ((h == null) ? 1.0 : h.doubleValue()));
+				} else if (arg.equalsIgnoreCase("-e") && argi < args.length) {
+					gyro = false; e = parseDouble(args[argi++], e);
+				} else if (arg.equalsIgnoreCase("-g") && argi < args.length) {
+					gyro = true; e = parseDouble(args[argi++], e);
 				} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 					c = parseColor(args[argi++], c);
 				} else if (arg.equalsIgnoreCase("-b") && argi < args.length) {
-					bc = parseColor(args[argi++], bc);
+					baseColor = parseColor(args[argi++], baseColor);
+				} else if (arg.equalsIgnoreCase("-p") && argi < args.length) {
+					prismColor = parseColor(args[argi++], prismColor);
 				} else if (arg.equalsIgnoreCase("-j") && argi < args.length) {
-					jc = parseColor(args[argi++], jc);
+					pyramidColor = parseColor(args[argi++], pyramidColor);
 				} else {
 					return null;
 				}
 			}
 			double r = spec.toRadius(size, n);
 			if (h == null) h = r;
-			return new Pyramid(n, m, r, axis, h, ((bc != null) ? bc : c), ((jc != null) ? jc : c));
+			return new Pyramid(
+				n, m, r, axis, h, gyro, e,
+				((baseColor != null) ? baseColor : c),
+				((prismColor != null) ? prismColor : c),
+				((pyramidColor != null) ? pyramidColor : c)
+			);
 		}
 		
 		public Option[] options() {
@@ -120,9 +146,12 @@ public class Pyramid extends PolyhedronGen {
 				new Option("y", Type.VOID, "align central axis to Y axis", "x","z"),
 				new Option("z", Type.VOID, "align central axis to Z axis", "x","y"),
 				new Option("h", Type.REAL, "height of pyramid"),
-				new Option("c", Type.COLOR, "color", "b","j"),
+				new Option("e", Type.REAL, "height of prism (elongate)"),
+				new Option("g", Type.REAL, "height of antiprism (gyroelongate)"),
+				new Option("c", Type.COLOR, "color", "b","p","j"),
 				new Option("b", Type.COLOR, "base color", "c"),
-				new Option("j", Type.COLOR, "join color", "c"),
+				new Option("p", Type.COLOR, "prism color", "c"),
+				new Option("j", Type.COLOR, "pyramid color", "c"),
 			};
 		}
 	}
