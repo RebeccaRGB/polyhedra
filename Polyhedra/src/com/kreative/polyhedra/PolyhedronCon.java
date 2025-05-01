@@ -71,6 +71,7 @@ public abstract class PolyhedronCon {
 		System.err.println("  -o <path>             consume polyhedron in OFF format from file");
 		System.err.println("  -p <text>             consume polyhedron generated from Path3D string");
 		System.err.println("  -q <path>             consume polyhedron in Path3D format from file");
+		System.err.println("  -w <path>             consume polyhedron in Wavefront .obj format from file");
 		System.err.println("  [ <gen> <arg> ... ]   consume polyhedron generated from arguments between [ ]");
 	}
 	
@@ -125,6 +126,10 @@ public abstract class PolyhedronCon {
 					String file = args[argi++];
 					if (file.equals("-")) consumeOrReportError(STDIN, Format.PATH3D, System.in);
 					else consumeOrReportError(Format.PATH3D, new File(file));
+				} else if (arg.equals("-w") && argi < args.length) {
+					String file = args[argi++];
+					if (file.equals("-")) consumeOrReportError(STDIN, Format.OBJ, System.in);
+					else consumeOrReportError(Format.OBJ, new File(file));
 				} else if (arg.equals("[") && argi < args.length) {
 					String factoryName = args[argi++];
 					int startIndex = argi, endIndex = argi, level = 0;

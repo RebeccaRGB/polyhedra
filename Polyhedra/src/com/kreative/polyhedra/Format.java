@@ -32,6 +32,14 @@ public enum Format {
 		public void write(Polyhedron p, OutputStream out) {
 			new Path3DWriter(out).writePolyhedron(p);
 		}
+	},
+	OBJ(".obj", "obj", "wavefront") {
+		public Polyhedron read(InputStream in) {
+			return new ObjReader(in).readPolyhedron(Color.gray);
+		}
+		public void write(Polyhedron p, OutputStream out) {
+			new ObjWriter(out).writePolyhedron(p);
+		}
 	};
 	
 	private final List<String> names;
