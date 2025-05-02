@@ -147,7 +147,7 @@ public class Cupola extends PolyhedronGen {
 					return null;
 				}
 			}
-			double R = Spec.toRadius(Size, n);
+			double R = Spec.toRadius(Size, n*2);
 			double r = spec.toRadius(size, n);
 			return new Cupola(
 				n, R, r, axis, h, gyro, e,
@@ -172,8 +172,8 @@ public class Cupola extends PolyhedronGen {
 				new Option("y", Type.VOID, "align central axis to Y axis", "x","z"),
 				new Option("z", Type.VOID, "align central axis to Z axis", "x","y"),
 				new Option("h", Type.REAL, "height of cupola"),
-				new Option("e", Type.REAL, "height of prism (elongate)"),
-				new Option("g", Type.REAL, "height of antiprism (gyroelongate)"),
+				new Option("e", Type.REAL, "height of prism (elongate)", "g"),
+				new Option("g", Type.REAL, "height of antiprism (gyroelongate)", "e"),
 				new Option("c", Type.COLOR, "color", "b","p","j"),
 				new Option("b", Type.COLOR, "base color", "c"),
 				new Option("p", Type.COLOR, "prism color", "c"),

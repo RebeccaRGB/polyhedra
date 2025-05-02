@@ -193,7 +193,7 @@ public class Antibicupola extends PolyhedronGen {
 					return null;
 				}
 			}
-			double R = Spec.toRadius(Size, n);
+			double R = Spec.toRadius(Size, n*2);
 			double r = spec.toRadius(size, n);
 			return new Antibicupola(
 				n, R, r, axis, h, cgyro, egyro, e,
@@ -220,8 +220,8 @@ public class Antibicupola extends PolyhedronGen {
 				new Option("h", Type.REAL, "height of anticupola"),
 				new Option("o", Type.VOID, "specify orthobicupola", "q"),
 				new Option("q", Type.VOID, "specify gyrobicupola", "o"),
-				new Option("e", Type.REAL, "height of prism (elongate)"),
-				new Option("g", Type.REAL, "height of antiprism (gyroelongate)"),
+				new Option("e", Type.REAL, "height of prism (elongate)", "g"),
+				new Option("g", Type.REAL, "height of antiprism (gyroelongate)", "e"),
 				new Option("c", Type.COLOR, "color", "b","p","j"),
 				new Option("b", Type.COLOR, "base color", "c"),
 				new Option("p", Type.COLOR, "prism color", "c"),

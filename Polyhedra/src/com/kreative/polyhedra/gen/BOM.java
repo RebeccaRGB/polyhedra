@@ -42,9 +42,11 @@ public class BOM {
 			new Prism.Factory(),
 			new Pyramid.Factory(),
 			new Quadrille.Factory(),
+			new Rotunda.Factory(),
 			new SmallStellatedDodecahedron.Factory(),
 			new Tetrahedron.Factory(),
 			new Trapezohedron.Factory()
+			// new UniformPolyhedron.Factory()
 		)
 	);
 	
@@ -70,6 +72,7 @@ public class BOM {
 		con.put("J", new GreatIcosahedron.Factory());
 		// con.put("J#", new JohnsonSolid.Factory());
 		con.put("K", new CatalanSolid.Factory()); // extension
+		// con.put("N", new UniformPolyhedron.Factory()); // extension
 		con.put("O", new Octahedron.Factory());
 		con.put("P", new Prism.Factory());
 		con.put("Q", new Quadrille.Factory());
