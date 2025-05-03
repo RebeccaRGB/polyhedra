@@ -43,6 +43,7 @@ public class BOM {
 			// new Quinto.Factory(),
 			new Recolor.Factory(),
 			new Reflect.Factory(),
+			new RemoveVertices.Factory(),
 			new Resize.Factory(),
 			new Rotate.Factory(),
 			new Scale.Factory(),

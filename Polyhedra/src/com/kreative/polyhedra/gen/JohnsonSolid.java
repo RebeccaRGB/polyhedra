@@ -10,6 +10,10 @@ import com.kreative.polyhedra.MetricAggregator;
 import com.kreative.polyhedra.Point3D;
 import com.kreative.polyhedra.Polyhedron;
 import com.kreative.polyhedra.PolyhedronGen;
+import com.kreative.polyhedra.op.Chain;
+import com.kreative.polyhedra.op.FaceVertexGen;
+import com.kreative.polyhedra.op.Kis;
+import com.kreative.polyhedra.op.RemoveVertices;
 
 public class JohnsonSolid extends PolyhedronGen {
 	public static enum FormSpecifier {
@@ -467,82 +471,139 @@ public class JohnsonSolid extends PolyhedronGen {
 		},
 		AUGMENTED_TRIANGULAR_PRISM ("augmentedtriangularprism", "ap3", "j49", "49") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new Kis(Arrays.asList(4), Arrays.asList(1), FaceVertexGen.EQUILATERAL, null),
+					new Prism(3, 1, a*0.57735026918962576451, Polygon.Axis.Y, a, c, c) // sqrt(3)/3
+				);
 			}
 		},
 		BIAUGMENTED_TRIANGULAR_PRISM ("biaugmentedtriangularprism", "bap3", "j50", "50") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new Kis(Arrays.asList(4), Arrays.asList(1,2), FaceVertexGen.EQUILATERAL, null),
+					new Prism(3, 1, a*0.57735026918962576451, Polygon.Axis.Y, a, c, c) // sqrt(3)/3
+				);
 			}
 		},
 		TRIAUGMENTED_TRIANGULAR_PRISM ("triaugmentedtriangularprism", "tap3", "j51", "51") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new Kis(Arrays.asList(4), null, FaceVertexGen.EQUILATERAL, null),
+					new Prism(3, 1, a*0.57735026918962576451, Polygon.Axis.Y, a, c, c) // sqrt(3)/3
+				);
 			}
 		},
 		AUGMENTED_PENTAGONAL_PRISM ("augmentedpentagonalprism", "ap5", "j52", "52") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new Kis(Arrays.asList(4), Arrays.asList(1), FaceVertexGen.EQUILATERAL, null),
+					new Prism(5, 1, a*0.85065080835203993218, Polygon.Axis.Y, a, c, c) // sqrt((sqrt(5)+5)/10)
+				);
 			}
 		},
 		BIAUGMENTED_PENTAGONAL_PRISM ("biaugmentedpentagonalprism", "bap5", "j53", "53") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new Kis(Arrays.asList(4), Arrays.asList(1,3), FaceVertexGen.EQUILATERAL, null),
+					new Prism(5, 1, a*0.85065080835203993218, Polygon.Axis.Y, a, c, c) // sqrt((sqrt(5)+5)/10)
+				);
 			}
 		},
 		AUGMENTED_HEXAGONAL_PRISM ("augmentedhexagonalprism", "ap6", "j54", "54") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new Kis(Arrays.asList(4), Arrays.asList(1), FaceVertexGen.EQUILATERAL, null),
+					new Prism(6, 1, a, Polygon.Axis.Y, a, c, c)
+				);
 			}
 		},
 		PARABIAUGMENTED_HEXAGONAL_PRISM ("parabiaugmentedhexagonalprism", "pap6", "j55", "55") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new Kis(Arrays.asList(4), Arrays.asList(1,4), FaceVertexGen.EQUILATERAL, null),
+					new Prism(6, 1, a, Polygon.Axis.Y, a, c, c)
+				);
 			}
 		},
 		METABIAUGMENTED_HEXAGONAL_PRISM ("metabiaugmentedhexagonalprism", "map6", "j56", "56") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new Kis(Arrays.asList(4), Arrays.asList(1,3), FaceVertexGen.EQUILATERAL, null),
+					new Prism(6, 1, a, Polygon.Axis.Y, a, c, c)
+				);
 			}
 		},
 		TRIAUGMENTED_HEXAGONAL_PRISM ("triaugmentedhexagonalprism", "tap6", "j57", "57") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new Kis(Arrays.asList(4), Arrays.asList(1,3,5), FaceVertexGen.EQUILATERAL, null),
+					new Prism(6, 1, a, Polygon.Axis.Y, a, c, c)
+				);
 			}
 		},
 		AUGMENTED_DODECAHEDRON ("augmenteddodecahedron", "ad", "j58", "58") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new Kis(Arrays.asList(5), Arrays.asList(1), FaceVertexGen.EQUILATERAL, null),
+					new Dodecahedron(Dodecahedron.SizeSpecifier.EDGE_LENGTH, a, c)
+				);
 			}
 		},
 		PARABIAUGMENTED_DODECAHEDRON ("parabiaugmenteddodecahedron", "pad", "j59", "59") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					// IFTTT: If the order of faces in Dodecahedron.java changes, these indices will need to be updated.
+					new Kis(Arrays.asList(5), Arrays.asList(1,8), FaceVertexGen.EQUILATERAL, null),
+					new Dodecahedron(Dodecahedron.SizeSpecifier.EDGE_LENGTH, a, c)
+				);
 			}
 		},
 		METABIAUGMENTED_DODECAHEDRON ("metabiaugmenteddodecahedron", "mad", "j60", "60") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					// IFTTT: If the order of faces in Dodecahedron.java changes, these indices will need to be updated.
+					new Kis(Arrays.asList(5), Arrays.asList(1,4), FaceVertexGen.EQUILATERAL, null),
+					new Dodecahedron(Dodecahedron.SizeSpecifier.EDGE_LENGTH, a, c)
+				);
 			}
 		},
 		TRIAUGMENTED_DODECAHEDRON ("triaugmenteddodecahedron", "tad", "j61", "61") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					// IFTTT: If the order of faces in Dodecahedron.java changes, these indices will need to be updated.
+					new Kis(Arrays.asList(5), Arrays.asList(1,4,7), FaceVertexGen.EQUILATERAL, null),
+					new Dodecahedron(Dodecahedron.SizeSpecifier.EDGE_LENGTH, a, c)
+				);
 			}
 		},
 		METABIDIMINISHED_ICOSAHEDRON ("metabidiminishedicosahedron", "mdi", "j62", "62") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					// IFTTT: If the order of vertices in Icosahedron.java changes, these indices will need to be updated.
+					new RemoveVertices(Arrays.asList(0, 1), c),
+					new Icosahedron(Icosahedron.SizeSpecifier.EDGE_LENGTH, a, c)
+				);
 			}
 		},
 		TRIDIMINISHED_ICOSAHEDRON ("tridiminishedicosahedron", "tdi", "j63", "63") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					// IFTTT: If the order of vertices in Icosahedron.java changes, these indices will need to be updated.
+					new RemoveVertices(Arrays.asList(0, 1, 5), c),
+					new Icosahedron(Icosahedron.SizeSpecifier.EDGE_LENGTH, a, c)
+				);
 			}
 		},
 		AUGMENTED_TRIDIMINISHED_ICOSAHEDRON ("augmentedtridiminishedicosahedron", "atdi", "j64", "64") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new Chain(
+						// IFTTT: If the order of vertices or faces in Icosahedron.java changes, these indices will need to be updated.
+						new Kis(Arrays.asList(3), Arrays.asList(4), FaceVertexGen.EQUILATERAL, null),
+						new RemoveVertices(Arrays.asList(0, 1, 5), c)
+					),
+					new Icosahedron(Icosahedron.SizeSpecifier.EDGE_LENGTH, a, c)
+				);
 			}
 		},
 		AUGMENTED_TRUNCATED_TETRAHEDRON ("augmentedtruncatedtetrahedron", "att", "j65", "65") {

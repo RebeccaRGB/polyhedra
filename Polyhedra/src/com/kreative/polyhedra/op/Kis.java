@@ -12,26 +12,33 @@ import com.kreative.polyhedra.PolyhedronOp;
 
 public class Kis extends PolyhedronOp {
 	private final Set<Integer> sides;
+	private final Set<Integer> indices;
 	private final FaceVertexGen fvgen;
 	private final Object fvarg;
 	
-	public Kis(int[] sides, FaceVertexGen fvgen, Object fvarg) {
+	public Kis(int[] sides, int[] indices, FaceVertexGen fvgen, Object fvarg) {
 		this.sides = new HashSet<Integer>();
 		if (sides != null) for (int i : sides) this.sides.add(i);
+		this.indices = new HashSet<Integer>();
+		if (indices != null) for (int i : indices) this.indices.add(i);
 		this.fvgen = fvgen;
 		this.fvarg = fvarg;
 	}
 	
-	public Kis(Integer[] sides, FaceVertexGen fvgen, Object fvarg) {
+	public Kis(Integer[] sides, Integer[] indices, FaceVertexGen fvgen, Object fvarg) {
 		this.sides = new HashSet<Integer>();
 		if (sides != null) for (int i : sides) this.sides.add(i);
+		this.indices = new HashSet<Integer>();
+		if (indices != null) for (int i : indices) this.indices.add(i);
 		this.fvgen = fvgen;
 		this.fvarg = fvarg;
 	}
 	
-	public Kis(Iterable<? extends Integer> sides, FaceVertexGen fvgen, Object fvarg) {
+	public Kis(Iterable<? extends Integer> sides, Iterable<? extends Integer> indices, FaceVertexGen fvgen, Object fvarg) {
 		this.sides = new HashSet<Integer>();
 		if (sides != null) for (int i : sides) this.sides.add(i);
+		this.indices = new HashSet<Integer>();
+		if (indices != null) for (int i : indices) this.indices.add(i);
 		this.fvgen = fvgen;
 		this.fvarg = fvarg;
 	}
@@ -44,19 +51,23 @@ public class Kis extends PolyhedronOp {
 		List<Point3D> seedVertices = seed.points();
 		vertices.addAll(seedVertices);
 		
+		int currentIndex = 0;
 		for (Polyhedron.Face f : seed.faces) {
 			if (sides.isEmpty() || sides.contains(f.vertices.size())) {
-				Point3D newVertex = fvgen.createVertex(seed, seedVertices, f, f.points(), fvarg);
-				if (newVertex != null) {
-					int i0 = vertices.size();
-					vertices.add(newVertex);
-					for (int i = 0, n = f.vertices.size(); i < n; i++) {
-						int i1 = f.vertices.get(i).index;
-						int i2 = f.vertices.get((i + 1) % n).index;
-						faces.add(Arrays.asList(i0, i1, i2));
-						faceColors.add(f.color);
+				currentIndex++;
+				if (indices.isEmpty() || indices.contains(currentIndex)) {
+					Point3D newVertex = fvgen.createVertex(seed, seedVertices, f, f.points(), fvarg);
+					if (newVertex != null) {
+						int i0 = vertices.size();
+						vertices.add(newVertex);
+						for (int i = 0, n = f.vertices.size(); i < n; i++) {
+							int i1 = f.vertices.get(i).index;
+							int i2 = f.vertices.get((i + 1) % n).index;
+							faces.add(Arrays.asList(i0, i1, i2));
+							faceColors.add(f.color);
+						}
+						continue;
 					}
-					continue;
 				}
 			}
 			List<Integer> face = new ArrayList<Integer>();
@@ -73,6 +84,7 @@ public class Kis extends PolyhedronOp {
 		
 		public Kis parse(String[] args) {
 			List<Integer> sides = null;
+			List<Integer> indices = null;
 			FaceVertexGen fvgen = FaceVertexGen.EQUILATERAL;
 			FaceVertexGen fvtmp;
 			Object fvarg = 0;
@@ -81,6 +93,8 @@ public class Kis extends PolyhedronOp {
 				String arg = args[argi++];
 				if (arg.equalsIgnoreCase("-n") && argi < args.length) {
 					sides = parseIntList(args[argi++]);
+				} else if (arg.equalsIgnoreCase("-i") && argi < args.length) {
+					indices = parseIntList(args[argi++]);
 				} else if (arg.equalsIgnoreCase("-s")) {
 					fvgen = FaceVertexGen.FACE_OFFSET;
 					fvarg = 0;
@@ -91,12 +105,13 @@ public class Kis extends PolyhedronOp {
 					return null;
 				}
 			}
-			return new Kis(sides, fvgen, fvarg);
+			return new Kis(sides, indices, fvgen, fvarg);
 		}
 		
 		public Option[] options() {
 			return new Option[] {
 				new Option("n", Type.INTS, "only operate on faces with the specified number of edges"),
+				new Option("i", Type.INTS, "only operate on faces with the specified indices"),
 				FaceVertexGen.FACE_OFFSET.option("s"),
 				FaceVertexGen.MAX_MAGNITUDE_OFFSET.option("s"),
 				FaceVertexGen.AVERAGE_MAGNITUDE_OFFSET.option("s"),

@@ -51,6 +51,7 @@ public class Icosahedron extends PolyhedronGen {
 	
 	public Polyhedron gen() {
 		return new Polyhedron(
+			// IFTTT: If the order of vertices or faces changes, indices will need to be updated in JohnsonSolid.java.
 			Arrays.asList(
 				new Point3D(0, scale, scale*PHI),
 				new Point3D(0, scale, -scale*PHI),
