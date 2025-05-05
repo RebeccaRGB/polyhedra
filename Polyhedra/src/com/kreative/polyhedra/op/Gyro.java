@@ -72,9 +72,9 @@ public class Gyro extends PolyhedronOp {
 			FaceVertexGen fvgen = new FaceVertexGen.AverageMagnitudeOffset(0);
 			GyroVertexGen gvgen = new GyroVertexGen.RelativeDistanceFromMidpointAlongEdge(1.0/3.0);
 			EdgeVertexGen evgen = new EdgeVertexGen.AverageMagnitudeOffset(0);
-			FaceVertexGen.Builtin fvtmp;
-			GyroVertexGen.Builtin gvtmp;
-			EdgeVertexGen.Builtin evtmp;
+			FaceVertexGen.Builder fvtmp;
+			GyroVertexGen.Builder gvtmp;
+			EdgeVertexGen.Builder evtmp;
 			int argi = 0;
 			while (argi < args.length) {
 				String arg = args[argi++];
@@ -82,12 +82,12 @@ public class Gyro extends PolyhedronOp {
 					fvgen = new FaceVertexGen.FaceOffset(0);
 					gvgen = new GyroVertexGen.RelativeDistanceFromMidpointAlongEdge(1.0/3.0);
 					evgen = new EdgeVertexGen.FaceOffset(0);
-				} else if ((fvtmp = FaceVertexGen.Builtin.forFlag(arg)) != null && (fvtmp.isVoidType() || argi < args.length)) {
-					fvgen = fvtmp.parse(fvtmp.isVoidType() ? null : args[argi++]);
-				} else if ((gvtmp = GyroVertexGen.Builtin.forFlag(arg)) != null && (gvtmp.isVoidType() || argi < args.length)) {
-					gvgen = gvtmp.parse(gvtmp.isVoidType() ? null : args[argi++]);
-				} else if ((evtmp = EdgeVertexGen.Builtin.forFlag(arg)) != null && (evtmp.isVoidType() || argi < args.length)) {
-					evgen = evtmp.parse(evtmp.isVoidType() ? null : args[argi++]);
+				} else if ((fvtmp = FaceVertexGen.Builder.forFlag(arg)) != null && (fvtmp.ignoresArgument() || argi < args.length)) {
+					fvgen = fvtmp.buildFromArgument(fvtmp.ignoresArgument() ? null : args[argi++]);
+				} else if ((gvtmp = GyroVertexGen.Builder.forFlag(arg)) != null && (gvtmp.ignoresArgument() || argi < args.length)) {
+					gvgen = gvtmp.buildFromArgument(gvtmp.ignoresArgument() ? null : args[argi++]);
+				} else if ((evtmp = EdgeVertexGen.Builder.forFlag(arg)) != null && (evtmp.ignoresArgument() || argi < args.length)) {
+					evgen = evtmp.buildFromArgument(evtmp.ignoresArgument() ? null : args[argi++]);
 				} else {
 					return null;
 				}
@@ -97,25 +97,25 @@ public class Gyro extends PolyhedronOp {
 		
 		public Option[] options() {
 			return new Option[] {
-				FaceVertexGen.Builtin.FACE_OFFSET.option("s"),
-				FaceVertexGen.Builtin.MAX_MAGNITUDE_OFFSET.option("s"),
-				FaceVertexGen.Builtin.AVERAGE_MAGNITUDE_OFFSET.option("s"),
-				FaceVertexGen.Builtin.FACE_MAGNITUDE_OFFSET.option("s"),
-				GyroVertexGen.Builtin.FIXED_DISTANCE_FROM_VERTEX_ALONG_EDGE.option("s"),
-				GyroVertexGen.Builtin.RELATIVE_DISTANCE_FROM_VERTEX_ALONG_EDGE.option("s"),
-				GyroVertexGen.Builtin.FIXED_ANGLE_FROM_VERTEX_ALONG_EDGE.option("s"),
-				GyroVertexGen.Builtin.FIXED_DISTANCE_FROM_MIDPOINT_ALONG_EDGE.option("s"),
-				GyroVertexGen.Builtin.RELATIVE_DISTANCE_FROM_MIDPOINT_ALONG_EDGE.option("s"),
-				GyroVertexGen.Builtin.FIXED_ANGLE_FROM_MIDPOINT_ALONG_EDGE.option("s"),
-				GyroVertexGen.Builtin.TWIST_ANGLE.option("s"),
-				EdgeVertexGen.Builtin.FACE_OFFSET.option("s"),
-				EdgeVertexGen.Builtin.MAX_MAGNITUDE_OFFSET.option("s"),
-				EdgeVertexGen.Builtin.AVERAGE_MAGNITUDE_OFFSET.option("s"),
-				EdgeVertexGen.Builtin.EDGE_MAGNITUDE_OFFSET.option("s"),
-				EdgeVertexGen.Builtin.VERTEX_MAGNITUDE_OFFSET.option("s"),
+				FaceVertexGen.Builder.FACE_OFFSET.option("s"),
+				FaceVertexGen.Builder.MAX_MAGNITUDE_OFFSET.option("s"),
+				FaceVertexGen.Builder.AVERAGE_MAGNITUDE_OFFSET.option("s"),
+				FaceVertexGen.Builder.FACE_MAGNITUDE_OFFSET.option("s"),
+				GyroVertexGen.Builder.FIXED_DISTANCE_FROM_VERTEX_ALONG_EDGE.option("s"),
+				GyroVertexGen.Builder.RELATIVE_DISTANCE_FROM_VERTEX_ALONG_EDGE.option("s"),
+				GyroVertexGen.Builder.FIXED_ANGLE_FROM_VERTEX_ALONG_EDGE.option("s"),
+				GyroVertexGen.Builder.FIXED_DISTANCE_FROM_MIDPOINT_ALONG_EDGE.option("s"),
+				GyroVertexGen.Builder.RELATIVE_DISTANCE_FROM_MIDPOINT_ALONG_EDGE.option("s"),
+				GyroVertexGen.Builder.FIXED_ANGLE_FROM_MIDPOINT_ALONG_EDGE.option("s"),
+				GyroVertexGen.Builder.TWIST_ANGLE.option("s"),
+				EdgeVertexGen.Builder.FACE_OFFSET.option("s"),
+				EdgeVertexGen.Builder.MAX_MAGNITUDE_OFFSET.option("s"),
+				EdgeVertexGen.Builder.AVERAGE_MAGNITUDE_OFFSET.option("s"),
+				EdgeVertexGen.Builder.EDGE_MAGNITUDE_OFFSET.option("s"),
+				EdgeVertexGen.Builder.VERTEX_MAGNITUDE_OFFSET.option("s"),
 				new Option(
 					"s", Type.VOID, "create new vertices at centers of original faces (strict mode)",
-					FaceVertexGen.Builtin.allOptionMutexes(GyroVertexGen.Builtin.allOptionMutexes(EdgeVertexGen.Builtin.allOptionMutexes()))
+					FaceVertexGen.Builder.allOptionMutexes(GyroVertexGen.Builder.allOptionMutexes(EdgeVertexGen.Builder.allOptionMutexes()))
 				),
 			};
 		}

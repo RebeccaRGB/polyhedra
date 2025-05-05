@@ -229,15 +229,15 @@ public class Truncate extends PolyhedronOp {
 		
 		public Truncate parse(String[] args) {
 			List<VertexPredicate> predicates = new ArrayList<VertexPredicate>();
-			VertexPredicate.Builtin predtmp;
+			VertexPredicate.Builder predtmp;
 			TruncatedVertexGen gen = TruncatedVertexGen.REGULAR;
 			double size = 0;
 			Color color = Color.GRAY;
 			int argi = 0;
 			while (argi < args.length) {
 				String arg = args[argi++];
-				if ((predtmp = VertexPredicate.Builtin.forFlagIgnoreCase(arg)) != null && (predtmp.isVoidType() || argi < args.length)) {
-					predicates.add(predtmp.parse(predtmp.isVoidType() ? null : args[argi++]));
+				if ((predtmp = VertexPredicate.Builder.forFlagIgnoreCase(arg)) != null && (predtmp.ignoresArgument() || argi < args.length)) {
+					predicates.add(predtmp.buildFromArgument(predtmp.ignoresArgument() ? null : args[argi++]));
 				} else if (arg.equalsIgnoreCase("-s")) {
 					gen = TruncatedVertexGen.RELATIVE_DISTANCE_ALONG_EDGE;
 					size = (double)1 / (double)3;
@@ -267,7 +267,7 @@ public class Truncate extends PolyhedronOp {
 		
 		public Option[] options() {
 			List<Option> options = new ArrayList<Option>();
-			for (VertexPredicate.Builtin bi : VertexPredicate.Builtin.values()) options.add(bi.option());
+			for (VertexPredicate.Builder bi : VertexPredicate.Builder.values()) options.add(bi.option());
 			options.add(new Option("h", Type.REAL, "truncate at a fixed distance from the original vertices", "H","a","A","r","s"));
 			options.add(new Option("H", Type.REAL, "truncate at a relative distance from the original vertices", "h","a","A","r","s"));
 			options.add(new Option("a", Type.REAL, "truncate at a fixed distance along the original edges", "h","H","A","r","s"));

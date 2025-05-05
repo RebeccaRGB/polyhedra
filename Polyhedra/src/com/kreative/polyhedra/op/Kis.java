@@ -64,18 +64,18 @@ public class Kis extends PolyhedronOp {
 		
 		public Kis parse(String[] args) {
 			List<FacePredicate> predicates = new ArrayList<FacePredicate>();
-			FacePredicate.Builtin predtmp;
+			FacePredicate.Builder predtmp;
 			FaceVertexGen fvgen = new FaceVertexGen.Equilateral();
-			FaceVertexGen.Builtin fvtmp;
+			FaceVertexGen.Builder fvtmp;
 			int argi = 0;
 			while (argi < args.length) {
 				String arg = args[argi++];
-				if ((predtmp = FacePredicate.Builtin.forFlagIgnoreCase(arg)) != null && (predtmp.isVoidType() || argi < args.length)) {
-					predicates.add(predtmp.parse(predtmp.isVoidType() ? null : args[argi++]));
+				if ((predtmp = FacePredicate.Builder.forFlagIgnoreCase(arg)) != null && (predtmp.ignoresArgument() || argi < args.length)) {
+					predicates.add(predtmp.buildFromArgument(predtmp.ignoresArgument() ? null : args[argi++]));
 				} else if (arg.equalsIgnoreCase("-s")) {
 					fvgen = new FaceVertexGen.FaceOffset(0);
-				} else if ((fvtmp = FaceVertexGen.Builtin.forFlagIgnoreCase(arg)) != null && (fvtmp.isVoidType() || argi < args.length)) {
-					fvgen = fvtmp.parse(fvtmp.isVoidType() ? null : args[argi++]);
+				} else if ((fvtmp = FaceVertexGen.Builder.forFlagIgnoreCase(arg)) != null && (fvtmp.ignoresArgument() || argi < args.length)) {
+					fvgen = fvtmp.buildFromArgument(fvtmp.ignoresArgument() ? null : args[argi++]);
 				} else {
 					return null;
 				}
@@ -85,13 +85,13 @@ public class Kis extends PolyhedronOp {
 		
 		public Option[] options() {
 			List<Option> options = new ArrayList<Option>();
-			for (FacePredicate.Builtin bi : FacePredicate.Builtin.values()) options.add(bi.option());
-			options.add(FaceVertexGen.Builtin.FACE_OFFSET.option("s"));
-			options.add(FaceVertexGen.Builtin.MAX_MAGNITUDE_OFFSET.option("s"));
-			options.add(FaceVertexGen.Builtin.AVERAGE_MAGNITUDE_OFFSET.option("s"));
-			options.add(FaceVertexGen.Builtin.FACE_MAGNITUDE_OFFSET.option("s"));
-			options.add(FaceVertexGen.Builtin.EQUILATERAL.option("s"));
-			options.add(new Option("s", Type.VOID, "create new vertices at centers of original faces (strict mode)", FaceVertexGen.Builtin.allOptionMutexes()));
+			for (FacePredicate.Builder bi : FacePredicate.Builder.values()) options.add(bi.option());
+			options.add(FaceVertexGen.Builder.FACE_OFFSET.option("s"));
+			options.add(FaceVertexGen.Builder.MAX_MAGNITUDE_OFFSET.option("s"));
+			options.add(FaceVertexGen.Builder.AVERAGE_MAGNITUDE_OFFSET.option("s"));
+			options.add(FaceVertexGen.Builder.FACE_MAGNITUDE_OFFSET.option("s"));
+			options.add(FaceVertexGen.Builder.EQUILATERAL.option("s"));
+			options.add(new Option("s", Type.VOID, "create new vertices at centers of original faces (strict mode)", FaceVertexGen.Builder.allOptionMutexes()));
 			return options.toArray(new Option[options.size()]);
 		}
 	}

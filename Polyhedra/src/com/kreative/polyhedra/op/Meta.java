@@ -55,18 +55,18 @@ public class Meta extends PolyhedronOp {
 		public Meta parse(String[] args) {
 			FaceVertexGen fvgen = new FaceVertexGen.AverageMagnitudeOffset(0);
 			EdgeVertexGen evgen = new EdgeVertexGen.AverageMagnitudeOffset(0);
-			FaceVertexGen.Builtin fvtmp;
-			EdgeVertexGen.Builtin evtmp;
+			FaceVertexGen.Builder fvtmp;
+			EdgeVertexGen.Builder evtmp;
 			int argi = 0;
 			while (argi < args.length) {
 				String arg = args[argi++];
 				if (arg.equalsIgnoreCase("-s")) {
 					fvgen = new FaceVertexGen.FaceOffset(0);
 					evgen = new EdgeVertexGen.FaceOffset(0);
-				} else if ((fvtmp = FaceVertexGen.Builtin.forFlag(arg)) != null && (fvtmp.isVoidType() || argi < args.length)) {
-					fvgen = fvtmp.parse(fvtmp.isVoidType() ? null : args[argi++]);
-				} else if ((evtmp = EdgeVertexGen.Builtin.forFlag(arg)) != null && (evtmp.isVoidType() || argi < args.length)) {
-					evgen = evtmp.parse(evtmp.isVoidType() ? null : args[argi++]);
+				} else if ((fvtmp = FaceVertexGen.Builder.forFlag(arg)) != null && (fvtmp.ignoresArgument() || argi < args.length)) {
+					fvgen = fvtmp.buildFromArgument(fvtmp.ignoresArgument() ? null : args[argi++]);
+				} else if ((evtmp = EdgeVertexGen.Builder.forFlag(arg)) != null && (evtmp.ignoresArgument() || argi < args.length)) {
+					evgen = evtmp.buildFromArgument(evtmp.ignoresArgument() ? null : args[argi++]);
 				} else {
 					return null;
 				}
@@ -76,16 +76,16 @@ public class Meta extends PolyhedronOp {
 		
 		public Option[] options() {
 			return new Option[] {
-				FaceVertexGen.Builtin.FACE_OFFSET.option("s"),
-				FaceVertexGen.Builtin.MAX_MAGNITUDE_OFFSET.option("s"),
-				FaceVertexGen.Builtin.AVERAGE_MAGNITUDE_OFFSET.option("s"),
-				FaceVertexGen.Builtin.FACE_MAGNITUDE_OFFSET.option("s"),
-				EdgeVertexGen.Builtin.MAX_MAGNITUDE_OFFSET.option("s"),
-				EdgeVertexGen.Builtin.AVERAGE_MAGNITUDE_OFFSET.option("s"),
-				EdgeVertexGen.Builtin.EDGE_MAGNITUDE_OFFSET.option("s"),
+				FaceVertexGen.Builder.FACE_OFFSET.option("s"),
+				FaceVertexGen.Builder.MAX_MAGNITUDE_OFFSET.option("s"),
+				FaceVertexGen.Builder.AVERAGE_MAGNITUDE_OFFSET.option("s"),
+				FaceVertexGen.Builder.FACE_MAGNITUDE_OFFSET.option("s"),
+				EdgeVertexGen.Builder.MAX_MAGNITUDE_OFFSET.option("s"),
+				EdgeVertexGen.Builder.AVERAGE_MAGNITUDE_OFFSET.option("s"),
+				EdgeVertexGen.Builder.EDGE_MAGNITUDE_OFFSET.option("s"),
 				new Option(
 					"s", Type.VOID, "create new vertices at centers of original faces (strict mode)",
-					FaceVertexGen.Builtin.allOptionMutexes(EdgeVertexGen.Builtin.allOptionMutexes())
+					FaceVertexGen.Builder.allOptionMutexes(EdgeVertexGen.Builder.allOptionMutexes())
 				),
 			};
 		}

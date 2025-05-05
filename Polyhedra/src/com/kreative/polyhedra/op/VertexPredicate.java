@@ -46,16 +46,16 @@ public abstract class VertexPredicate {
 		}
 	}
 	
-	public static enum Builtin {
+	public static enum Builder {
 		DEGREE ("n", Type.INTS, "only operate on vertices with the specified number of edges") {
 			@SuppressWarnings("unchecked")
-			public VertexPredicate predicate(Object arg) {
+			public VertexPredicate build(Object arg) {
 				return new Degree((Iterable<? extends Integer>)arg);
 			}
 		},
 		INDEX ("i", Type.INTS, "only operate on vertices with the specified indices") {
 			@SuppressWarnings("unchecked")
-			public VertexPredicate predicate(Object arg) {
+			public VertexPredicate build(Object arg) {
 				return new Index((Iterable<? extends Integer>)arg);
 			}
 		};
@@ -63,25 +63,25 @@ public abstract class VertexPredicate {
 		private final String flagWithDash;
 		private final Type argDataType;
 		private final String description;
-		private Builtin(String flagWithoutDash, Type argDataType, String description) {
+		private Builder(String flagWithoutDash, Type argDataType, String description) {
 			this.flagWithoutDash = flagWithoutDash;
 			this.flagWithDash = "-" + flagWithoutDash;
 			this.argDataType = argDataType;
 			this.description = description;
 		}
-		public abstract VertexPredicate predicate(Object arg);
-		public final boolean isVoidType() { return argDataType == Type.VOID; }
+		public abstract VertexPredicate build(Object arg);
+		public final boolean ignoresArgument() { return argDataType == Type.VOID; }
 		public final Object parseArgument(String s) { return argDataType.parse(s); }
-		public final VertexPredicate parse(String s) { return predicate(parseArgument(s)); }
+		public final VertexPredicate buildFromArgument(String s) { return build(parseArgument(s)); }
 		public final Option option(String... mutex) {
 			return new Option(flagWithoutDash, argDataType, description, mutex);
 		}
-		public static Builtin forFlag(String flag) {
-			for (Builtin bi : values()) if (bi.flagWithDash.equals(flag)) return bi;
+		public static Builder forFlag(String flag) {
+			for (Builder bi : values()) if (bi.flagWithDash.equals(flag)) return bi;
 			return null;
 		}
-		public static Builtin forFlagIgnoreCase(String flag) {
-			for (Builtin bi : values()) if (bi.flagWithDash.equalsIgnoreCase(flag)) return bi;
+		public static Builder forFlagIgnoreCase(String flag) {
+			for (Builder bi : values()) if (bi.flagWithDash.equalsIgnoreCase(flag)) return bi;
 			return null;
 		}
 	}

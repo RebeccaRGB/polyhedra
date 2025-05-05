@@ -123,39 +123,39 @@ public abstract class GyroVertexGen {
 		}
 	}
 	
-	public static enum Builtin {
+	public static enum Builder {
 		FIXED_DISTANCE_FROM_VERTEX_ALONG_EDGE ("u", Type.REAL, "create vertices along edges at a fixed distance from the vertex") {
-			public GyroVertexGen gen(Object arg) {
+			public GyroVertexGen build(Object arg) {
 				return new FixedDistanceFromVertexAlongEdge((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
 		RELATIVE_DISTANCE_FROM_VERTEX_ALONG_EDGE ("U", Type.REAL, "create vertices along edges at a relative distance from the vertex") {
-			public GyroVertexGen gen(Object arg) {
+			public GyroVertexGen build(Object arg) {
 				return new RelativeDistanceFromVertexAlongEdge((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
 		FIXED_ANGLE_FROM_VERTEX_ALONG_EDGE ("W", Type.REAL, "create vertices along edges at a fixed angle from the vertex") {
-			public GyroVertexGen gen(Object arg) {
+			public GyroVertexGen build(Object arg) {
 				return new FixedAngleFromVertexAlongEdge((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
 		FIXED_DISTANCE_FROM_MIDPOINT_ALONG_EDGE ("l", Type.REAL, "create vertices along edges at a fixed distance from the midpoint") {
-			public GyroVertexGen gen(Object arg) {
+			public GyroVertexGen build(Object arg) {
 				return new FixedDistanceFromMidpointAlongEdge((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
 		RELATIVE_DISTANCE_FROM_MIDPOINT_ALONG_EDGE ("L", Type.REAL, "create vertices along edges at a relative distance from the midpoint") {
-			public GyroVertexGen gen(Object arg) {
+			public GyroVertexGen build(Object arg) {
 				return new RelativeDistanceFromMidpointAlongEdge((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
 		FIXED_ANGLE_FROM_MIDPOINT_ALONG_EDGE ("N", Type.REAL, "create vertices along edges at a fixed angle from the midpoint") {
-			public GyroVertexGen gen(Object arg) {
+			public GyroVertexGen build(Object arg) {
 				return new FixedAngleFromMidpointAlongEdge((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
 		TWIST_ANGLE ("t", Type.REAL, "create vertices from edges at a fixed twist angle") {
-			public GyroVertexGen gen(Object arg) {
+			public GyroVertexGen build(Object arg) {
 				return new TwistAngle((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		};
@@ -163,31 +163,31 @@ public abstract class GyroVertexGen {
 		private final String flagWithDash;
 		private final Type argDataType;
 		private final String description;
-		private Builtin(String flagWithoutDash, Type argDataType, String description) {
+		private Builder(String flagWithoutDash, Type argDataType, String description) {
 			this.flagWithoutDash = flagWithoutDash;
 			this.flagWithDash = "-" + flagWithoutDash;
 			this.argDataType = argDataType;
 			this.description = description;
 		}
-		public abstract GyroVertexGen gen(Object arg);
-		public final boolean isVoidType() { return argDataType == Type.VOID; }
+		public abstract GyroVertexGen build(Object arg);
+		public final boolean ignoresArgument() { return argDataType == Type.VOID; }
 		public final Object parseArgument(String s) { return argDataType.parse(s); }
-		public final GyroVertexGen parse(String s) { return gen(parseArgument(s)); }
+		public final GyroVertexGen buildFromArgument(String s) { return build(parseArgument(s)); }
 		public final Option option(String... mutex) {
 			return new Option(flagWithoutDash, argDataType, description, optionMutexes(mutex));
 		}
 		public final String[] optionMutexes(String... mutex) {
 			ArrayList<String> mutexes = new ArrayList<String>(Arrays.asList(mutex));
-			for (Builtin bi : values()) if (bi != this) mutexes.add(bi.flagWithoutDash);
+			for (Builder bi : values()) if (bi != this) mutexes.add(bi.flagWithoutDash);
 			return mutexes.toArray(new String[mutexes.size()]);
 		}
 		public static String[] allOptionMutexes(String... mutex) {
 			ArrayList<String> mutexes = new ArrayList<String>(Arrays.asList(mutex));
-			for (Builtin bi : values()) mutexes.add(bi.flagWithoutDash);
+			for (Builder bi : values()) mutexes.add(bi.flagWithoutDash);
 			return mutexes.toArray(new String[mutexes.size()]);
 		}
-		public static Builtin forFlag(String flag) {
-			for (Builtin bi : values()) if (bi.flagWithDash.equals(flag)) return bi;
+		public static Builder forFlag(String flag) {
+			for (Builder bi : values()) if (bi.flagWithDash.equals(flag)) return bi;
 			return null;
 		}
 	}

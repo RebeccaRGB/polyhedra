@@ -102,39 +102,39 @@ public abstract class EdgeVertexGen {
 		}
 	}
 	
-	public static enum Builtin {
+	public static enum Builder {
 		FACE_OFFSET ("h", Type.REAL, "create vertices from edges along a normal to the original face (r)") {
-			public EdgeVertexGen gen(Object arg) {
+			public EdgeVertexGen build(Object arg) {
 				return new FaceOffset((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
 		MAX_MAGNITUDE_OFFSET ("m", Type.REAL, "create vertices from edges relative to the maximum magnitude") {
-			public EdgeVertexGen gen(Object arg) {
+			public EdgeVertexGen build(Object arg) {
 				return new MaxMagnitudeOffset((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
 		AVERAGE_MAGNITUDE_OFFSET ("a", Type.REAL, "create vertices from edges relative to the average magnitude") {
-			public EdgeVertexGen gen(Object arg) {
+			public EdgeVertexGen build(Object arg) {
 				return new AverageMagnitudeOffset((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
 		MIN_MAGNITUDE_OFFSET ("i", Type.REAL, "create vertices from edges relative to the minimum magnitude") {
-			public EdgeVertexGen gen(Object arg) {
+			public EdgeVertexGen build(Object arg) {
 				return new MinMagnitudeOffset((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
 		EDGE_MAGNITUDE_OFFSET ("e", Type.REAL, "create vertices from edges relative to the edge magnitude") {
-			public EdgeVertexGen gen(Object arg) {
+			public EdgeVertexGen build(Object arg) {
 				return new EdgeMagnitudeOffset((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
 		VERTEX_MAGNITUDE_OFFSET ("v", Type.REAL, "create vertices from edges relative to the vertex magnitude") {
-			public EdgeVertexGen gen(Object arg) {
+			public EdgeVertexGen build(Object arg) {
 				return new VertexMagnitudeOffset((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
 		FACE_OFFSET_FROM_ORIGIN ("o", Type.REAL, "create vertices from edges along a normal to the original face (a)") {
-			public EdgeVertexGen gen(Object arg) {
+			public EdgeVertexGen build(Object arg) {
 				return new FaceOffsetFromOrigin((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		};
@@ -142,35 +142,35 @@ public abstract class EdgeVertexGen {
 		private final String flagWithDash;
 		private final Type argDataType;
 		private final String description;
-		private Builtin(String flagWithoutDash, Type argDataType, String description) {
+		private Builder(String flagWithoutDash, Type argDataType, String description) {
 			this.flagWithoutDash = flagWithoutDash;
 			this.flagWithDash = "-" + flagWithoutDash;
 			this.argDataType = argDataType;
 			this.description = description;
 		}
-		public abstract EdgeVertexGen gen(Object arg);
-		public final boolean isVoidType() { return argDataType == Type.VOID; }
+		public abstract EdgeVertexGen build(Object arg);
+		public final boolean ignoresArgument() { return argDataType == Type.VOID; }
 		public final Object parseArgument(String s) { return argDataType.parse(s); }
-		public final EdgeVertexGen parse(String s) { return gen(parseArgument(s)); }
+		public final EdgeVertexGen buildFromArgument(String s) { return build(parseArgument(s)); }
 		public final Option option(String... mutex) {
 			return new Option(flagWithoutDash, argDataType, description, optionMutexes(mutex));
 		}
 		public final String[] optionMutexes(String... mutex) {
 			ArrayList<String> mutexes = new ArrayList<String>(Arrays.asList(mutex));
-			for (Builtin bi : values()) if (bi != this) mutexes.add(bi.flagWithoutDash);
+			for (Builder bi : values()) if (bi != this) mutexes.add(bi.flagWithoutDash);
 			return mutexes.toArray(new String[mutexes.size()]);
 		}
 		public static String[] allOptionMutexes(String... mutex) {
 			ArrayList<String> mutexes = new ArrayList<String>(Arrays.asList(mutex));
-			for (Builtin bi : values()) mutexes.add(bi.flagWithoutDash);
+			for (Builder bi : values()) mutexes.add(bi.flagWithoutDash);
 			return mutexes.toArray(new String[mutexes.size()]);
 		}
-		public static Builtin forFlag(String flag) {
-			for (Builtin bi : values()) if (bi.flagWithDash.equals(flag)) return bi;
+		public static Builder forFlag(String flag) {
+			for (Builder bi : values()) if (bi.flagWithDash.equals(flag)) return bi;
 			return null;
 		}
-		public static Builtin forFlagIgnoreCase(String flag) {
-			for (Builtin bi : values()) if (bi.flagWithDash.equalsIgnoreCase(flag)) return bi;
+		public static Builder forFlagIgnoreCase(String flag) {
+			for (Builder bi : values()) if (bi.flagWithDash.equalsIgnoreCase(flag)) return bi;
 			return null;
 		}
 	}

@@ -56,15 +56,15 @@ public class Join extends PolyhedronOp {
 		
 		public Join parse(String[] args) {
 			FaceVertexGen fvgen = new FaceVertexGen.Planar();
-			FaceVertexGen.Builtin fvtmp;
+			FaceVertexGen.Builder fvtmp;
 			Color color = Color.GRAY;
 			int argi = 0;
 			while (argi < args.length) {
 				String arg = args[argi++];
 				if (arg.equalsIgnoreCase("-s")) {
 					fvgen = new FaceVertexGen.FaceOffset(0);
-				} else if ((fvtmp = FaceVertexGen.Builtin.forFlagIgnoreCase(arg)) != null && (fvtmp.isVoidType() || argi < args.length)) {
-					fvgen = fvtmp.parse(fvtmp.isVoidType() ? null : args[argi++]);
+				} else if ((fvtmp = FaceVertexGen.Builder.forFlagIgnoreCase(arg)) != null && (fvtmp.ignoresArgument() || argi < args.length)) {
+					fvgen = fvtmp.buildFromArgument(fvtmp.ignoresArgument() ? null : args[argi++]);
 				} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 					color = parseColor(args[argi++], color);
 				} else {
@@ -76,12 +76,12 @@ public class Join extends PolyhedronOp {
 		
 		public Option[] options() {
 			return new Option[] {
-				FaceVertexGen.Builtin.FACE_OFFSET.option("s"),
-				FaceVertexGen.Builtin.MAX_MAGNITUDE_OFFSET.option("s"),
-				FaceVertexGen.Builtin.AVERAGE_MAGNITUDE_OFFSET.option("s"),
-				FaceVertexGen.Builtin.FACE_MAGNITUDE_OFFSET.option("s"),
-				FaceVertexGen.Builtin.PLANAR.option("s"),
-				new Option("s", Type.VOID, "create new vertices at centers of original faces (strict mode)", FaceVertexGen.Builtin.allOptionMutexes()),
+				FaceVertexGen.Builder.FACE_OFFSET.option("s"),
+				FaceVertexGen.Builder.MAX_MAGNITUDE_OFFSET.option("s"),
+				FaceVertexGen.Builder.AVERAGE_MAGNITUDE_OFFSET.option("s"),
+				FaceVertexGen.Builder.FACE_MAGNITUDE_OFFSET.option("s"),
+				FaceVertexGen.Builder.PLANAR.option("s"),
+				new Option("s", Type.VOID, "create new vertices at centers of original faces (strict mode)", FaceVertexGen.Builder.allOptionMutexes()),
 				new Option("c", Type.COLOR, "color"),
 			};
 		}

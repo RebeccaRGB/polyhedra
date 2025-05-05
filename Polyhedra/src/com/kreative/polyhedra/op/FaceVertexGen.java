@@ -115,39 +115,39 @@ public abstract class FaceVertexGen {
 		}
 	}
 	
-	public static enum Builtin {
+	public static enum Builder {
 		FACE_OFFSET ("H", Type.REAL, "create vertices from faces along the normal to the original face") {
-			public FaceVertexGen gen(Object arg) {
+			public FaceVertexGen build(Object arg) {
 				return new FaceOffset((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
 		MAX_MAGNITUDE_OFFSET ("M", Type.REAL, "create vertices from faces relative to the maximum magnitude") {
-			public FaceVertexGen gen(Object arg) {
+			public FaceVertexGen build(Object arg) {
 				return new MaxMagnitudeOffset((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
 		AVERAGE_MAGNITUDE_OFFSET ("A", Type.REAL, "create vertices from faces relative to the average magnitude") {
-			public FaceVertexGen gen(Object arg) {
+			public FaceVertexGen build(Object arg) {
 				return new AverageMagnitudeOffset((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
 		MIN_MAGNITUDE_OFFSET ("I", Type.REAL, "create vertices from faces relative to the minimum magnitude") {
-			public FaceVertexGen gen(Object arg) {
+			public FaceVertexGen build(Object arg) {
 				return new MinMagnitudeOffset((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
 		FACE_MAGNITUDE_OFFSET ("F", Type.REAL, "create vertices from faces relative to the face magnitude") {
-			public FaceVertexGen gen(Object arg) {
+			public FaceVertexGen build(Object arg) {
 				return new FaceMagnitudeOffset((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
 		EQUILATERAL ("E", Type.VOID, "attempt to create equilateral faces (not always possible)") {
-			public FaceVertexGen gen(Object arg) {
+			public FaceVertexGen build(Object arg) {
 				return new Equilateral();
 			}
 		},
 		PLANAR ("P", Type.VOID, "attempt to create planar faces (not always possible)") {
-			public FaceVertexGen gen(Object arg) {
+			public FaceVertexGen build(Object arg) {
 				return new Planar();
 			}
 		};
@@ -155,35 +155,35 @@ public abstract class FaceVertexGen {
 		private final String flagWithDash;
 		private final Type argDataType;
 		private final String description;
-		private Builtin(String flagWithoutDash, Type argDataType, String description) {
+		private Builder(String flagWithoutDash, Type argDataType, String description) {
 			this.flagWithoutDash = flagWithoutDash;
 			this.flagWithDash = "-" + flagWithoutDash;
 			this.argDataType = argDataType;
 			this.description = description;
 		}
-		public abstract FaceVertexGen gen(Object arg);
-		public final boolean isVoidType() { return argDataType == Type.VOID; }
+		public abstract FaceVertexGen build(Object arg);
+		public final boolean ignoresArgument() { return argDataType == Type.VOID; }
 		public final Object parseArgument(String s) { return argDataType.parse(s); }
-		public final FaceVertexGen parse(String s) { return gen(parseArgument(s)); }
+		public final FaceVertexGen buildFromArgument(String s) { return build(parseArgument(s)); }
 		public final Option option(String... mutex) {
 			return new Option(flagWithoutDash, argDataType, description, optionMutexes(mutex));
 		}
 		public final String[] optionMutexes(String... mutex) {
 			ArrayList<String> mutexes = new ArrayList<String>(Arrays.asList(mutex));
-			for (Builtin bi : values()) if (bi != this) mutexes.add(bi.flagWithoutDash);
+			for (Builder bi : values()) if (bi != this) mutexes.add(bi.flagWithoutDash);
 			return mutexes.toArray(new String[mutexes.size()]);
 		}
 		public static String[] allOptionMutexes(String... mutex) {
 			ArrayList<String> mutexes = new ArrayList<String>(Arrays.asList(mutex));
-			for (Builtin bi : values()) mutexes.add(bi.flagWithoutDash);
+			for (Builder bi : values()) mutexes.add(bi.flagWithoutDash);
 			return mutexes.toArray(new String[mutexes.size()]);
 		}
-		public static Builtin forFlag(String flag) {
-			for (Builtin bi : values()) if (bi.flagWithDash.equals(flag)) return bi;
+		public static Builder forFlag(String flag) {
+			for (Builder bi : values()) if (bi.flagWithDash.equals(flag)) return bi;
 			return null;
 		}
-		public static Builtin forFlagIgnoreCase(String flag) {
-			for (Builtin bi : values()) if (bi.flagWithDash.equalsIgnoreCase(flag)) return bi;
+		public static Builder forFlagIgnoreCase(String flag) {
+			for (Builder bi : values()) if (bi.flagWithDash.equalsIgnoreCase(flag)) return bi;
 			return null;
 		}
 	}

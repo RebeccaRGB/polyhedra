@@ -148,13 +148,13 @@ public class RemoveVertices extends PolyhedronOp {
 		
 		public RemoveVertices parse(String[] args) {
 			List<VertexPredicate> predicates = new ArrayList<VertexPredicate>();
-			VertexPredicate.Builtin predtmp;
+			VertexPredicate.Builder predtmp;
 			Color color = Color.GRAY;
 			int argi = 0;
 			while (argi < args.length) {
 				String arg = args[argi++];
-				if ((predtmp = VertexPredicate.Builtin.forFlagIgnoreCase(arg)) != null && (predtmp.isVoidType() || argi < args.length)) {
-					predicates.add(predtmp.parse(predtmp.isVoidType() ? null : args[argi++]));
+				if ((predtmp = VertexPredicate.Builder.forFlagIgnoreCase(arg)) != null && (predtmp.ignoresArgument() || argi < args.length)) {
+					predicates.add(predtmp.buildFromArgument(predtmp.ignoresArgument() ? null : args[argi++]));
 				} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 					color = parseColor(args[argi++], color);
 				} else {
@@ -166,7 +166,7 @@ public class RemoveVertices extends PolyhedronOp {
 		
 		public Option[] options() {
 			List<Option> options = new ArrayList<Option>();
-			for (VertexPredicate.Builtin bi : VertexPredicate.Builtin.values()) options.add(bi.option());
+			for (VertexPredicate.Builder bi : VertexPredicate.Builder.values()) options.add(bi.option());
 			options.add(new Option("c", Type.COLOR, "color of replacement faces"));
 			return options.toArray(new Option[options.size()]);
 		}
