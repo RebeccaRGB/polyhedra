@@ -80,7 +80,6 @@ public class Dodecahedron extends PolyhedronGen {
 				new Point3D(-scale*PHI, scale*PHI1, 0),
 				new Point3D(-scale*PHI, -scale*PHI1, 0)
 			),
-			// IFTTT: If the order of faces changes, indices will need to be updated in JohnsonSolid.java.
 			Arrays.asList(
 				Arrays.asList(0, 8, 4, 14, 12),
 				Arrays.asList(0, 12, 2, 17, 16),

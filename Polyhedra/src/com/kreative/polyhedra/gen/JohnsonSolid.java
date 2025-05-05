@@ -506,7 +506,7 @@ public class JohnsonSolid extends PolyhedronGen {
 		BIAUGMENTED_PENTAGONAL_PRISM ("biaugmentedpentagonalprism", "bap5", "j53", "53") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
-					new Kis(Arrays.asList(new FacePredicate.Degree(4), new FacePredicate.Index(0,2)), new FaceVertexGen.Equilateral()),
+					new Kis(Arrays.asList(new FacePredicate.Degree(4), new FacePredicate.AtAngle(144)), new FaceVertexGen.Equilateral()),
 					new Prism(5, 1, a*0.85065080835203993218, Polygon.Axis.Y, a, c, c) // sqrt((sqrt(5)+5)/10)
 				);
 			}
@@ -522,7 +522,7 @@ public class JohnsonSolid extends PolyhedronGen {
 		PARABIAUGMENTED_HEXAGONAL_PRISM ("parabiaugmentedhexagonalprism", "pap6", "j55", "55") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
-					new Kis(Arrays.asList(new FacePredicate.Degree(4), new FacePredicate.Index(0,3)), new FaceVertexGen.Equilateral()),
+					new Kis(Arrays.asList(new FacePredicate.Degree(4), new FacePredicate.AtAngle(180)), new FaceVertexGen.Equilateral()),
 					new Prism(6, 1, a, Polygon.Axis.Y, a, c, c)
 				);
 			}
@@ -530,7 +530,7 @@ public class JohnsonSolid extends PolyhedronGen {
 		METABIAUGMENTED_HEXAGONAL_PRISM ("metabiaugmentedhexagonalprism", "map6", "j56", "56") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
-					new Kis(Arrays.asList(new FacePredicate.Degree(4), new FacePredicate.Index(0,2)), new FaceVertexGen.Equilateral()),
+					new Kis(Arrays.asList(new FacePredicate.Degree(4), new FacePredicate.AtAngle(120), new FacePredicate.Index(0,1)), new FaceVertexGen.Equilateral()),
 					new Prism(6, 1, a, Polygon.Axis.Y, a, c, c)
 				);
 			}
@@ -538,7 +538,7 @@ public class JohnsonSolid extends PolyhedronGen {
 		TRIAUGMENTED_HEXAGONAL_PRISM ("triaugmentedhexagonalprism", "tap6", "j57", "57") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
-					new Kis(Arrays.asList(new FacePredicate.Degree(4), new FacePredicate.Index(0,2,4)), new FaceVertexGen.Equilateral()),
+					new Kis(Arrays.asList(new FacePredicate.Degree(4), new FacePredicate.AtAngle(120)), new FaceVertexGen.Equilateral()),
 					new Prism(6, 1, a, Polygon.Axis.Y, a, c, c)
 				);
 			}
@@ -554,8 +554,7 @@ public class JohnsonSolid extends PolyhedronGen {
 		PARABIAUGMENTED_DODECAHEDRON ("parabiaugmenteddodecahedron", "pad", "j59", "59") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
-					// IFTTT: If the order of faces in Dodecahedron.java changes, these indices will need to be updated.
-					new Kis(Arrays.asList(new FacePredicate.Index(0,7)), new FaceVertexGen.Equilateral()),
+					new Kis(Arrays.asList(new FacePredicate.AtAngle(180)), new FaceVertexGen.Equilateral()),
 					new Dodecahedron(Dodecahedron.SizeSpecifier.EDGE_LENGTH, a, c)
 				);
 			}
@@ -563,8 +562,7 @@ public class JohnsonSolid extends PolyhedronGen {
 		METABIAUGMENTED_DODECAHEDRON ("metabiaugmenteddodecahedron", "mad", "j60", "60") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
-					// IFTTT: If the order of faces in Dodecahedron.java changes, these indices will need to be updated.
-					new Kis(Arrays.asList(new FacePredicate.Index(0,3)), new FaceVertexGen.Equilateral()),
+					new Kis(Arrays.asList(new FacePredicate.AtAngle(116.56505117707799), new FacePredicate.Index(0,1)), new FaceVertexGen.Equilateral()),
 					new Dodecahedron(Dodecahedron.SizeSpecifier.EDGE_LENGTH, a, c)
 				);
 			}
@@ -572,8 +570,7 @@ public class JohnsonSolid extends PolyhedronGen {
 		TRIAUGMENTED_DODECAHEDRON ("triaugmenteddodecahedron", "tad", "j61", "61") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
-					// IFTTT: If the order of faces in Dodecahedron.java changes, these indices will need to be updated.
-					new Kis(Arrays.asList(new FacePredicate.Index(0,3,6)), new FaceVertexGen.Equilateral()),
+					new Kis(Arrays.asList(new FacePredicate.AtAngle(116.56505117707799)), new FaceVertexGen.Equilateral()),
 					new Dodecahedron(Dodecahedron.SizeSpecifier.EDGE_LENGTH, a, c)
 				);
 			}
@@ -581,8 +578,7 @@ public class JohnsonSolid extends PolyhedronGen {
 		METABIDIMINISHED_ICOSAHEDRON ("metabidiminishedicosahedron", "mdi", "j62", "62") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
-					// IFTTT: If the order of vertices in Icosahedron.java changes, these indices will need to be updated.
-					new RemoveVertices(Arrays.asList(new VertexPredicate.Index(0, 1)), c),
+					new RemoveVertices(Arrays.asList(new VertexPredicate.AtAngle(116.56505117707799), new VertexPredicate.Index(0,1)), c),
 					new Icosahedron(Icosahedron.SizeSpecifier.EDGE_LENGTH, a, c)
 				);
 			}
@@ -590,8 +586,7 @@ public class JohnsonSolid extends PolyhedronGen {
 		TRIDIMINISHED_ICOSAHEDRON ("tridiminishedicosahedron", "tdi", "j63", "63") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
-					// IFTTT: If the order of vertices in Icosahedron.java changes, these indices will need to be updated.
-					new RemoveVertices(Arrays.asList(new VertexPredicate.Index(0, 1, 5)), c),
+					new RemoveVertices(Arrays.asList(new VertexPredicate.AtAngle(116.56505117707799)), c),
 					new Icosahedron(Icosahedron.SizeSpecifier.EDGE_LENGTH, a, c)
 				);
 			}
@@ -600,9 +595,8 @@ public class JohnsonSolid extends PolyhedronGen {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new Chain(
-						// IFTTT: If the order of vertices or faces in Icosahedron.java changes, these indices will need to be updated.
-						new Kis(Arrays.asList(new FacePredicate.Degree(3), new FacePredicate.Index(3)), new FaceVertexGen.Equilateral()),
-						new RemoveVertices(Arrays.asList(new VertexPredicate.Index(0, 1, 5)), c)
+						new Kis(Arrays.asList(new FacePredicate.AdjacentVertexDegree(3)), new FaceVertexGen.Equilateral()),
+						new RemoveVertices(Arrays.asList(new VertexPredicate.AtAngle(116.56505117707799)), c)
 					),
 					new Icosahedron(Icosahedron.SizeSpecifier.EDGE_LENGTH, a, c)
 				);
@@ -896,22 +890,50 @@ public class JohnsonSolid extends PolyhedronGen {
 				} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 					color = parseColor(args[argi++], color);
 				} else if (arg.equalsIgnoreCase("--debug")) {
-					List<Float> validAngles = Arrays.asList(60f, 90f, 108f, 120f, 135f, 144f);
+					final int[] vertexCount = {
+						5, 6, 9, 12, 15, 20, 7, 9, 11, 9, 11, 5, 7, 8, 10, 12, 10, 15, 20, 25, 30, 15, 20,
+						25, 30, 8, 12, 16, 16, 20, 20, 25, 25, 30, 18, 18, 24, 30, 30, 35, 35, 40, 40, 18, 24, 30,
+						35, 40, 7, 8, 9, 11, 12, 13, 14, 14, 15, 21, 22, 22, 23, 10, 9, 10, 15, 28, 32, 65, 70,
+						70, 75, 60, 60, 60, 60, 55, 55, 55, 55, 50, 50, 50, 45, 8, 16, 10, 11, 12, 14, 16, 14, 18
+					};
+					final int[] edgeCount = {
+						8, 10, 15, 20, 25, 35, 12, 16, 20, 20, 25, 9, 15, 15, 20, 25, 24, 27, 36, 45, 55, 33, 44,
+						55, 65, 14, 24, 32, 32, 40, 40, 50, 50, 60, 36, 36, 48, 60, 60, 70, 70, 80, 80, 42, 56, 70,
+						80, 90, 13, 17, 21, 19, 23, 22, 26, 26, 30, 35, 40, 40, 45, 20, 15, 18, 27, 48, 60, 105, 120,
+						120, 135, 120, 120, 120, 120, 105, 105, 105, 105, 90, 90, 90, 75, 18, 40, 22, 26, 28, 33, 38, 26, 36
+					};
+					final int[] faceCount = {
+						5, 6, 8, 10, 12, 17, 7, 9, 11, 13, 16, 6, 10, 9, 12, 15, 16, 14, 18, 22, 27, 20, 26,
+						32, 37, 8, 14, 18, 18, 22, 22, 27, 27, 32, 20, 20, 26, 32, 32, 37, 37, 42, 42, 26, 34, 42,
+						47, 52, 8, 11, 14, 10, 13, 11, 14, 14, 17, 16, 20, 20, 24, 12, 8, 10, 14, 22, 30, 42, 52,
+						52, 62, 62, 62, 62, 62, 52, 52, 52, 52, 42, 42, 42, 32, 12, 26, 14, 17, 18, 21, 24, 14, 20
+					};
+					final List<Float> validAngles = Arrays.asList(60f, 90f, 108f, 120f, 135f, 144f);
+					int index = -1;
 					for (FormSpecifier f : FormSpecifier.values()) {
-						System.out.print("\u001B[1;34m" + f + "\u001B[0m");
+						index++;
+						System.out.print("\u001B[1;34m" + (index+1) + "\u001B[0m");
 						Polyhedron p1 = new JohnsonSolid(f, 1, Color.GRAY).gen();
 						Polyhedron p2 = new JohnsonSolid(f, 2, Color.GRAY).gen();
 						if (p1 == null || p2 == null) {
 							System.out.println("\t- \u001B[1;33mNot implemented\u001B[0m");
 							continue;
 						}
+						// Get/check/print vertex/edge/face count
+						System.out.print("\t- VEF:");
+						System.out.print(((p2.vertices.size() == vertexCount[index]) ? " \u001B[1;32m" : " \u001B[1;31m") + p2.vertices.size() + "\u001B[0m");
+						System.out.print(((p2.edges.size() == edgeCount[index]) ? " \u001B[1;32m" : " \u001B[1;31m") + p2.edges.size() + "\u001B[0m");
+						System.out.print(((p2.faces.size() == faceCount[index]) ? " \u001B[1;32m" : " \u001B[1;31m") + p2.faces.size() + "\u001B[0m");
+						// Get edge lengths
 						double elf1 = MetricAggregator.MINIMUM.aggregate(Metric.EDGE_LENGTH.iterator(p1));
 						double elf2 = MetricAggregator.MAXIMUM.aggregate(Metric.EDGE_LENGTH.iterator(p1));
 						double elf3 = MetricAggregator.MINIMUM.aggregate(Metric.EDGE_LENGTH.iterator(p2)) / 2;
 						double elf4 = MetricAggregator.MAXIMUM.aggregate(Metric.EDGE_LENGTH.iterator(p2)) / 2;
 						double[] mtx = {elf1, elf2, elf3, elf4};
+						// Check/print edge lengths
 						System.out.print("\t- Edges:");
 						for (double m : mtx) System.out.print(((1 == (float)m) ? " \u001B[1;32m" : " \u001B[1;31m") + (float)m + "\u001B[0m");
+						// Get edge angles
 						TreeMap<Float,Float> angles = new TreeMap<Float,Float>();
 						for (Polyhedron.Face face : p2.faces) {
 							for (int i = 0, n = face.vertices.size(); i < n; i++) {
@@ -923,6 +945,7 @@ public class JohnsonSolid extends PolyhedronGen {
 								angles.put(key, ((value != null) ? (value + 1) : 1));
 							}
 						}
+						// Check/print edge angles
 						System.out.print("\t- Angles:");
 						for (Map.Entry<Float,Float> e : angles.entrySet()) {
 							System.out.print((validAngles.contains(e.getKey()) ? " \u001B[1;32m" : " \u001B[1;31m") + e.getValue() + "×" + e.getKey() + "°\u001B[0m");
