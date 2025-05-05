@@ -236,7 +236,9 @@ public class Truncate extends PolyhedronOp {
 			int argi = 0;
 			while (argi < args.length) {
 				String arg = args[argi++];
-				if (arg.equalsIgnoreCase("-s")) {
+				if ((predtmp = VertexPredicate.Builtin.forFlagIgnoreCase(arg)) != null && (predtmp.isVoidType() || argi < args.length)) {
+					predicates.add(predtmp.parse(predtmp.isVoidType() ? null : args[argi++]));
+				} else if (arg.equalsIgnoreCase("-s")) {
 					gen = TruncatedVertexGen.RELATIVE_DISTANCE_ALONG_EDGE;
 					size = (double)1 / (double)3;
 				} else if (arg.equals("-A") && argi < args.length) {
@@ -256,8 +258,6 @@ public class Truncate extends PolyhedronOp {
 					size = 0;
 				} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 					color = parseColor(args[argi++], color);
-				} else if ((predtmp = VertexPredicate.Builtin.forFlagIgnoreCase(arg)) != null && (predtmp.isVoidType() || argi < args.length)) {
-					predicates.add(predtmp.parse(predtmp.isVoidType() ? null : args[argi++]));
 				} else {
 					return null;
 				}

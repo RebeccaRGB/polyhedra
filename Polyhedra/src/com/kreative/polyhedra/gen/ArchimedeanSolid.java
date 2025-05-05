@@ -106,8 +106,8 @@ public class ArchimedeanSolid extends PolyhedronGen {
 			public PolyhedronGen gen(Color c) {
 				return new Construct(
 					new Snub(
-						GyroVertexGen.TWIST_ANGLE, 16.4675604003863613990, // ArcCos[Root[8x^6-4x^4-2x^2-1,2]]*180/Pi
-						EdgeVertexGen.FACE_OFFSET, 0.64261350892596209348, c // Root[64x^6+192x^5+176x^4+32x^3-60x^2-44x-11,2]
+						new GyroVertexGen.TwistAngle(16.4675604003863613990), // ArcCos[Root[8x^6-4x^4-2x^2-1,2]]*180/Pi
+						new EdgeVertexGen.FaceOffset(0.64261350892596209348), c // Root[64x^6+192x^5+176x^4+32x^3-60x^2-44x-11,2]
 					),
 					new Cube(Cube.SizeSpecifier.EDGE_LENGTH, 1, c)
 				);
@@ -196,8 +196,8 @@ public class ArchimedeanSolid extends PolyhedronGen {
 			public PolyhedronGen gen(Color c) {
 				return new Construct(
 					new Snub(
-						GyroVertexGen.TWIST_ANGLE, 13.106403376935798910, // 54-ArcCos[Root[64x^6+64x^5+800x^4+240x^3-800x^2-306x+59,3]]*90/Pi
-						EdgeVertexGen.FACE_OFFSET_FROM_ORIGIN, 1.980915947281840739, c // Root[512000x^12-1920000x^10-460800x^8+424000x^6+53040x^4-20600x^2+961,8]
+						new GyroVertexGen.TwistAngle(13.106403376935798910), // 54-ArcCos[Root[64x^6+64x^5+800x^4+240x^3-800x^2-306x+59,3]]*90/Pi
+						new EdgeVertexGen.FaceOffsetFromOrigin(1.980915947281840739), c // Root[512000x^12-1920000x^10-460800x^8+424000x^6+53040x^4-20600x^2+961,8]
 					),
 					new Dodecahedron(Dodecahedron.SizeSpecifier.EDGE_LENGTH, 1, c)
 				);

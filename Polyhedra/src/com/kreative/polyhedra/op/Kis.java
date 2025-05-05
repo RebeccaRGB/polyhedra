@@ -11,12 +11,10 @@ import com.kreative.polyhedra.PolyhedronOp;
 public class Kis extends PolyhedronOp {
 	private final List<FacePredicate> predicates;
 	private final FaceVertexGen fvgen;
-	private final Object fvarg;
 	
-	public Kis(List<FacePredicate> predicates, FaceVertexGen fvgen, Object fvarg) {
+	public Kis(List<FacePredicate> predicates, FaceVertexGen fvgen) {
 		this.predicates = predicates;
 		this.fvgen = fvgen;
-		this.fvarg = fvarg;
 	}
 	
 	public Polyhedron op(Polyhedron seed) {
@@ -39,7 +37,7 @@ public class Kis extends PolyhedronOp {
 				}
 			}
 			if (matches) {
-				Point3D newVertex = fvgen.createVertex(seed, seedVertices, f, f.points(), fvarg);
+				Point3D newVertex = fvgen.createVertex(seed, seedVertices, f, f.points());
 				if (newVertex != null) {
 					int i0 = vertices.size();
 					vertices.add(newVertex);
@@ -67,36 +65,33 @@ public class Kis extends PolyhedronOp {
 		public Kis parse(String[] args) {
 			List<FacePredicate> predicates = new ArrayList<FacePredicate>();
 			FacePredicate.Builtin predtmp;
-			FaceVertexGen fvgen = FaceVertexGen.EQUILATERAL;
-			FaceVertexGen fvtmp;
-			Object fvarg = 0;
+			FaceVertexGen fvgen = new FaceVertexGen.Equilateral();
+			FaceVertexGen.Builtin fvtmp;
 			int argi = 0;
 			while (argi < args.length) {
 				String arg = args[argi++];
-				if (arg.equalsIgnoreCase("-s")) {
-					fvgen = FaceVertexGen.FACE_OFFSET;
-					fvarg = 0;
-				} else if ((fvtmp = FaceVertexGen.forFlagIgnoreCase(arg)) != null && (fvtmp.isVoidType() || argi < args.length)) {
-					fvgen = fvtmp;
-					fvarg = fvtmp.isVoidType() ? null : fvtmp.parseArgument(args[argi++]);
-				} else if ((predtmp = FacePredicate.Builtin.forFlagIgnoreCase(arg)) != null && (predtmp.isVoidType() || argi < args.length)) {
+				if ((predtmp = FacePredicate.Builtin.forFlagIgnoreCase(arg)) != null && (predtmp.isVoidType() || argi < args.length)) {
 					predicates.add(predtmp.parse(predtmp.isVoidType() ? null : args[argi++]));
+				} else if (arg.equalsIgnoreCase("-s")) {
+					fvgen = new FaceVertexGen.FaceOffset(0);
+				} else if ((fvtmp = FaceVertexGen.Builtin.forFlagIgnoreCase(arg)) != null && (fvtmp.isVoidType() || argi < args.length)) {
+					fvgen = fvtmp.parse(fvtmp.isVoidType() ? null : args[argi++]);
 				} else {
 					return null;
 				}
 			}
-			return new Kis(predicates, fvgen, fvarg);
+			return new Kis(predicates, fvgen);
 		}
 		
 		public Option[] options() {
 			List<Option> options = new ArrayList<Option>();
 			for (FacePredicate.Builtin bi : FacePredicate.Builtin.values()) options.add(bi.option());
-			options.add(FaceVertexGen.FACE_OFFSET.option("s"));
-			options.add(FaceVertexGen.MAX_MAGNITUDE_OFFSET.option("s"));
-			options.add(FaceVertexGen.AVERAGE_MAGNITUDE_OFFSET.option("s"));
-			options.add(FaceVertexGen.FACE_MAGNITUDE_OFFSET.option("s"));
-			options.add(FaceVertexGen.EQUILATERAL.option("s"));
-			options.add(new Option("s", Type.VOID, "create new vertices at centers of original faces (strict mode)", FaceVertexGen.allOptionMutexes()));
+			options.add(FaceVertexGen.Builtin.FACE_OFFSET.option("s"));
+			options.add(FaceVertexGen.Builtin.MAX_MAGNITUDE_OFFSET.option("s"));
+			options.add(FaceVertexGen.Builtin.AVERAGE_MAGNITUDE_OFFSET.option("s"));
+			options.add(FaceVertexGen.Builtin.FACE_MAGNITUDE_OFFSET.option("s"));
+			options.add(FaceVertexGen.Builtin.EQUILATERAL.option("s"));
+			options.add(new Option("s", Type.VOID, "create new vertices at centers of original faces (strict mode)", FaceVertexGen.Builtin.allOptionMutexes()));
 			return options.toArray(new Option[options.size()]);
 		}
 	}

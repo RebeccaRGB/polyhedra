@@ -12,12 +12,10 @@ import com.kreative.polyhedra.PolyhedronOp;
 
 public class Join extends PolyhedronOp {
 	private final FaceVertexGen fvgen;
-	private final Object fvarg;
 	private final Color color;
 	
-	public Join(FaceVertexGen fvgen, Object fvarg, Color color) {
+	public Join(FaceVertexGen fvgen, Color color) {
 		this.fvgen = fvgen;
-		this.fvarg = fvarg;
 		this.color = color;
 	}
 	
@@ -32,7 +30,7 @@ public class Join extends PolyhedronOp {
 		
 		Map<Polyhedron.Edge,Integer> edgeVertexMap = new HashMap<Polyhedron.Edge,Integer>();
 		for (Polyhedron.Face f : seed.faces) {
-			Point3D newVertex = fvgen.createVertex(seed, seedVertices, f, f.points(), fvarg);
+			Point3D newVertex = fvgen.createVertex(seed, seedVertices, f, f.points());
 			if (newVertex != null) {
 				int i0 = vertices.size();
 				vertices.add(newVertex);
@@ -57,36 +55,33 @@ public class Join extends PolyhedronOp {
 		public String name() { return "Join"; }
 		
 		public Join parse(String[] args) {
-			FaceVertexGen fvgen = FaceVertexGen.PLANAR;
-			FaceVertexGen fvtmp;
-			Object fvarg = 0;
+			FaceVertexGen fvgen = new FaceVertexGen.Planar();
+			FaceVertexGen.Builtin fvtmp;
 			Color color = Color.GRAY;
 			int argi = 0;
 			while (argi < args.length) {
 				String arg = args[argi++];
 				if (arg.equalsIgnoreCase("-s")) {
-					fvgen = FaceVertexGen.FACE_OFFSET;
-					fvarg = 0;
-				} else if ((fvtmp = FaceVertexGen.forFlagIgnoreCase(arg)) != null && (fvtmp.isVoidType() || argi < args.length)) {
-					fvgen = fvtmp;
-					fvarg = fvtmp.isVoidType() ? null : fvtmp.parseArgument(args[argi++]);
+					fvgen = new FaceVertexGen.FaceOffset(0);
+				} else if ((fvtmp = FaceVertexGen.Builtin.forFlagIgnoreCase(arg)) != null && (fvtmp.isVoidType() || argi < args.length)) {
+					fvgen = fvtmp.parse(fvtmp.isVoidType() ? null : args[argi++]);
 				} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 					color = parseColor(args[argi++], color);
 				} else {
 					return null;
 				}
 			}
-			return new Join(fvgen, fvarg, color);
+			return new Join(fvgen, color);
 		}
 		
 		public Option[] options() {
 			return new Option[] {
-				FaceVertexGen.FACE_OFFSET.option("s"),
-				FaceVertexGen.MAX_MAGNITUDE_OFFSET.option("s"),
-				FaceVertexGen.AVERAGE_MAGNITUDE_OFFSET.option("s"),
-				FaceVertexGen.FACE_MAGNITUDE_OFFSET.option("s"),
-				FaceVertexGen.PLANAR.option("s"),
-				new Option("s", Type.VOID, "create new vertices at centers of original faces (strict mode)", FaceVertexGen.allOptionMutexes()),
+				FaceVertexGen.Builtin.FACE_OFFSET.option("s"),
+				FaceVertexGen.Builtin.MAX_MAGNITUDE_OFFSET.option("s"),
+				FaceVertexGen.Builtin.AVERAGE_MAGNITUDE_OFFSET.option("s"),
+				FaceVertexGen.Builtin.FACE_MAGNITUDE_OFFSET.option("s"),
+				FaceVertexGen.Builtin.PLANAR.option("s"),
+				new Option("s", Type.VOID, "create new vertices at centers of original faces (strict mode)", FaceVertexGen.Builtin.allOptionMutexes()),
 				new Option("c", Type.COLOR, "color"),
 			};
 		}

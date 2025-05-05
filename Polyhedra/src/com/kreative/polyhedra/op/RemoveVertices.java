@@ -153,10 +153,10 @@ public class RemoveVertices extends PolyhedronOp {
 			int argi = 0;
 			while (argi < args.length) {
 				String arg = args[argi++];
-				if (arg.equalsIgnoreCase("-c") && argi < args.length) {
-					color = parseColor(args[argi++], color);
-				} else if ((predtmp = VertexPredicate.Builtin.forFlagIgnoreCase(arg)) != null && (predtmp.isVoidType() || argi < args.length)) {
+				if ((predtmp = VertexPredicate.Builtin.forFlagIgnoreCase(arg)) != null && (predtmp.isVoidType() || argi < args.length)) {
 					predicates.add(predtmp.parse(predtmp.isVoidType() ? null : args[argi++]));
+				} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
+					color = parseColor(args[argi++], color);
 				} else {
 					return null;
 				}

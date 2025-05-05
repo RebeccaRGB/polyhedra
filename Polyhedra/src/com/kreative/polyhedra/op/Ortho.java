@@ -10,15 +10,11 @@ import com.kreative.polyhedra.PolyhedronOp;
 
 public class Ortho extends PolyhedronOp {
 	private final FaceVertexGen fvgen;
-	private final Object fvarg;
 	private final EdgeVertexGen evgen;
-	private final Object evarg;
 	
-	public Ortho(FaceVertexGen fvgen, Object fvarg, EdgeVertexGen evgen, Object evarg) {
+	public Ortho(FaceVertexGen fvgen, EdgeVertexGen evgen) {
 		this.fvgen = fvgen;
-		this.fvarg = fvarg;
 		this.evgen = evgen;
-		this.evarg = evarg;
 	}
 	
 	public Polyhedron op(Polyhedron seed) {
@@ -32,12 +28,12 @@ public class Ortho extends PolyhedronOp {
 		
 		int edgeStartIndex = vertices.size();
 		for (Polyhedron.Edge e : seed.edges) {
-			vertices.add(evgen.createVertex(seed, seedVertices, null, null, e, e.midpoint(), evarg));
+			vertices.add(evgen.createVertex(seed, seedVertices, null, null, e, e.midpoint()));
 		}
 		
 		int faceStartIndex = vertices.size();
 		for (Polyhedron.Face f : seed.faces) {
-			vertices.add(fvgen.createVertex(seed, seedVertices, f, f.points(), fvarg));
+			vertices.add(fvgen.createVertex(seed, seedVertices, f, f.points()));
 			int fi = faceStartIndex + f.index;
 			for (int i = 0, n = f.vertices.size(); i < n; i++) {
 				int vi = f.vertices.get(i).index;
@@ -55,43 +51,40 @@ public class Ortho extends PolyhedronOp {
 		public String name() { return "Ortho"; }
 		
 		public Ortho parse(String[] args) {
-			FaceVertexGen fvgen = FaceVertexGen.AVERAGE_MAGNITUDE_OFFSET;
-			EdgeVertexGen evgen = EdgeVertexGen.AVERAGE_MAGNITUDE_OFFSET;
-			FaceVertexGen fvtmp;
-			EdgeVertexGen evtmp;
-			Object fvarg = 0;
-			Object evarg = 0;
+			FaceVertexGen fvgen = new FaceVertexGen.AverageMagnitudeOffset(0);
+			EdgeVertexGen evgen = new EdgeVertexGen.AverageMagnitudeOffset(0);
+			FaceVertexGen.Builtin fvtmp;
+			EdgeVertexGen.Builtin evtmp;
 			int argi = 0;
 			while (argi < args.length) {
 				String arg = args[argi++];
 				if (arg.equalsIgnoreCase("-s")) {
-					fvgen = FaceVertexGen.FACE_OFFSET;
-					evgen = EdgeVertexGen.FACE_OFFSET;
-					fvarg = 0;
-					evarg = 0;
-				} else if ((fvtmp = FaceVertexGen.forFlag(arg)) != null && (fvtmp.isVoidType() || argi < args.length)) {
-					fvgen = fvtmp;
-					fvarg = fvtmp.isVoidType() ? null : fvtmp.parseArgument(args[argi++]);
-				} else if ((evtmp = EdgeVertexGen.forFlag(arg)) != null && (evtmp.isVoidType() || argi < args.length)) {
-					evgen = evtmp;
-					evarg = evtmp.isVoidType() ? null : evtmp.parseArgument(args[argi++]);
+					fvgen = new FaceVertexGen.FaceOffset(0);
+					evgen = new EdgeVertexGen.FaceOffset(0);
+				} else if ((fvtmp = FaceVertexGen.Builtin.forFlag(arg)) != null && (fvtmp.isVoidType() || argi < args.length)) {
+					fvgen = fvtmp.parse(fvtmp.isVoidType() ? null : args[argi++]);
+				} else if ((evtmp = EdgeVertexGen.Builtin.forFlag(arg)) != null && (evtmp.isVoidType() || argi < args.length)) {
+					evgen = evtmp.parse(evtmp.isVoidType() ? null : args[argi++]);
 				} else {
 					return null;
 				}
 			}
-			return new Ortho(fvgen, fvarg, evgen, evarg);
+			return new Ortho(fvgen, evgen);
 		}
 		
 		public Option[] options() {
 			return new Option[] {
-				FaceVertexGen.FACE_OFFSET.option("s"),
-				FaceVertexGen.MAX_MAGNITUDE_OFFSET.option("s"),
-				FaceVertexGen.AVERAGE_MAGNITUDE_OFFSET.option("s"),
-				FaceVertexGen.FACE_MAGNITUDE_OFFSET.option("s"),
-				EdgeVertexGen.MAX_MAGNITUDE_OFFSET.option("s"),
-				EdgeVertexGen.AVERAGE_MAGNITUDE_OFFSET.option("s"),
-				EdgeVertexGen.EDGE_MAGNITUDE_OFFSET.option("s"),
-				new Option("s", Type.VOID, "create new vertices at centers of original faces (strict mode)", FaceVertexGen.allOptionMutexes(EdgeVertexGen.allOptionMutexes())),
+				FaceVertexGen.Builtin.FACE_OFFSET.option("s"),
+				FaceVertexGen.Builtin.MAX_MAGNITUDE_OFFSET.option("s"),
+				FaceVertexGen.Builtin.AVERAGE_MAGNITUDE_OFFSET.option("s"),
+				FaceVertexGen.Builtin.FACE_MAGNITUDE_OFFSET.option("s"),
+				EdgeVertexGen.Builtin.MAX_MAGNITUDE_OFFSET.option("s"),
+				EdgeVertexGen.Builtin.AVERAGE_MAGNITUDE_OFFSET.option("s"),
+				EdgeVertexGen.Builtin.EDGE_MAGNITUDE_OFFSET.option("s"),
+				new Option(
+					"s", Type.VOID, "create new vertices at centers of original faces (strict mode)",
+					FaceVertexGen.Builtin.allOptionMutexes(EdgeVertexGen.Builtin.allOptionMutexes())
+				),
 			};
 		}
 	}
