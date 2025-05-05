@@ -7,7 +7,7 @@ import com.kreative.polyhedra.PolyhedronUtils.Option;
 import com.kreative.polyhedra.PolyhedronUtils.Type;
 
 public abstract class FacePredicate {
-	public void reset() {}
+	public void reset(Polyhedron seed) {}
 	public abstract boolean matches(Polyhedron.Face face);
 	
 	public static final class Degree extends FacePredicate {
@@ -36,7 +36,7 @@ public abstract class FacePredicate {
 			for (int i : indices) this.indices.add(i);
 		}
 		private int currentIndex = 0;
-		public void reset() { currentIndex = 0; }
+		public void reset(Polyhedron seed) { currentIndex = 0; }
 		public boolean matches(Polyhedron.Face face) {
 			return indices.contains(currentIndex++);
 		}

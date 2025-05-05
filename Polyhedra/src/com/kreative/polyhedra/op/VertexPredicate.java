@@ -3,6 +3,7 @@ package com.kreative.polyhedra.op;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import com.kreative.polyhedra.Polyhedron;
 import com.kreative.polyhedra.Polyhedron.Edge;
 import com.kreative.polyhedra.Polyhedron.Face;
 import com.kreative.polyhedra.Polyhedron.Vertex;
@@ -10,7 +11,7 @@ import com.kreative.polyhedra.PolyhedronUtils.Option;
 import com.kreative.polyhedra.PolyhedronUtils.Type;
 
 public abstract class VertexPredicate {
-	public void reset() {}
+	public void reset(Polyhedron seed) {}
 	public abstract boolean matches(Vertex vertex, List<Edge> edges, List<Face> faces);
 	
 	public static final class Degree extends VertexPredicate {
@@ -40,7 +41,7 @@ public abstract class VertexPredicate {
 			for (int i : indices) this.indices.add(i);
 		}
 		private int currentIndex = 0;
-		public void reset() { currentIndex = 0; }
+		public void reset(Polyhedron seed) { currentIndex = 0; }
 		public boolean matches(Vertex vertex, List<Edge> edges, List<Face> faces) {
 			return indices.contains(currentIndex++);
 		}

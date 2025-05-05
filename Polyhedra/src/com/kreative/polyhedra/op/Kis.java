@@ -25,7 +25,7 @@ public class Kis extends PolyhedronOp {
 		List<Point3D> seedVertices = seed.points();
 		vertices.addAll(seedVertices);
 		
-		if (predicates != null) for (FacePredicate p : predicates) p.reset();
+		if (predicates != null) for (FacePredicate p : predicates) p.reset(seed);
 		for (Polyhedron.Face f : seed.faces) {
 			boolean matches = true;
 			if (predicates != null) {

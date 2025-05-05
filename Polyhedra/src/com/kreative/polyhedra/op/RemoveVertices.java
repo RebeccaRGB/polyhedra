@@ -31,7 +31,7 @@ public class RemoveVertices extends PolyhedronOp {
 		
 		// Get indices of vertices to be removed.
 		Set<Integer> indices = new HashSet<Integer>();
-		for (VertexPredicate p : predicates) p.reset();
+		for (VertexPredicate p : predicates) p.reset(seed);
 		for (Polyhedron.Vertex v : seed.vertices) {
 			List<Polyhedron.Face> seedFaces = seed.getFaces(v);
 			List<Polyhedron.Edge> seedEdges = seed.getEdges(v);
