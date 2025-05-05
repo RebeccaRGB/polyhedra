@@ -14,31 +14,36 @@ import com.kreative.polyhedra.Polyhedron;
 import com.kreative.polyhedra.PolyhedronOp;
 
 public class RemoveVertices extends PolyhedronOp {
-	private final Set<Integer> indices;
+	private final List<VertexPredicate> predicates;
 	private final Color color;
 	
-	public RemoveVertices(int[] indices, Color color) {
-		this.indices = new HashSet<Integer>();
-		if (indices != null) for (int i : indices) this.indices.add(i);
-		this.color = color;
-	}
-	
-	public RemoveVertices(Integer[] indices, Color color) {
-		this.indices = new HashSet<Integer>();
-		if (indices != null) for (int i : indices) this.indices.add(i);
-		this.color = color;
-	}
-	
-	public RemoveVertices(Iterable<? extends Integer> indices, Color color) {
-		this.indices = new HashSet<Integer>();
-		if (indices != null) for (int i : indices) this.indices.add(i);
+	public RemoveVertices(List<VertexPredicate> predicates, Color color) {
+		this.predicates = predicates;
 		this.color = color;
 	}
 	
 	public Polyhedron op(Polyhedron seed) {
+		if (predicates == null || predicates.isEmpty()) return seed;
+		
 		List<Point3D> vertices = new ArrayList<Point3D>();
 		List<List<Integer>> faces = new ArrayList<List<Integer>>();
 		List<Color> faceColors = new ArrayList<Color>();
+		
+		// Get indices of vertices to be removed.
+		Set<Integer> indices = new HashSet<Integer>();
+		for (VertexPredicate p : predicates) p.reset();
+		for (Polyhedron.Vertex v : seed.vertices) {
+			List<Polyhedron.Face> seedFaces = seed.getFaces(v);
+			List<Polyhedron.Edge> seedEdges = seed.getEdges(v);
+			boolean matches = true;
+			for (VertexPredicate p : predicates) {
+				if (!p.matches(v, seedEdges, seedFaces)) {
+					matches = false;
+					break;
+				}
+			}
+			if (matches) indices.add(v.index);
+		}
 		
 		// Group together removed vertices that were once connected. (vertexGroupMap)
 		// Create map of old vertex indices to new vertex indices. (vertexIndexMap)
@@ -142,27 +147,28 @@ public class RemoveVertices extends PolyhedronOp {
 		public String name() { return "RemoveVertices"; }
 		
 		public RemoveVertices parse(String[] args) {
-			Set<Integer> indices = new HashSet<Integer>();
+			List<VertexPredicate> predicates = new ArrayList<VertexPredicate>();
+			VertexPredicate.Builtin predtmp;
 			Color color = Color.GRAY;
 			int argi = 0;
 			while (argi < args.length) {
 				String arg = args[argi++];
-				if (arg.equalsIgnoreCase("-i") && argi < args.length) {
-					indices.addAll(parseIntList(args[argi++]));
-				} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
+				if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 					color = parseColor(args[argi++], color);
+				} else if ((predtmp = VertexPredicate.Builtin.forFlagIgnoreCase(arg)) != null && (predtmp.isVoidType() || argi < args.length)) {
+					predicates.add(predtmp.parse(predtmp.isVoidType() ? null : args[argi++]));
 				} else {
-					indices.addAll(parseIntList(arg));
+					return null;
 				}
 			}
-			return new RemoveVertices(indices, color);
+			return new RemoveVertices(predicates, color);
 		}
 		
 		public Option[] options() {
-			return new Option[] {
-				new Option("i", Type.INTS, "remove vertices at the specified indices"),
-				new Option("c", Type.COLOR, "color of replacement faces")
-			};
+			List<Option> options = new ArrayList<Option>();
+			for (VertexPredicate.Builtin bi : VertexPredicate.Builtin.values()) options.add(bi.option());
+			options.add(new Option("c", Type.COLOR, "color of replacement faces"));
+			return options.toArray(new Option[options.size()]);
 		}
 	}
 	

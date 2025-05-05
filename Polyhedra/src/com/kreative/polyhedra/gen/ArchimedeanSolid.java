@@ -25,7 +25,7 @@ public class ArchimedeanSolid extends PolyhedronGen {
 		) {
 			public PolyhedronGen gen(Color c) {
 				return new Construct(
-					new Truncate(Truncate.TruncatedVertexGen.FIXED_DISTANCE_ALONG_EDGE, 1, c),
+					new Truncate(null, Truncate.TruncatedVertexGen.FIXED_DISTANCE_ALONG_EDGE, 1, c),
 					new Tetrahedron(Tetrahedron.SizeSpecifier.EDGE_LENGTH, 3, c)
 				);
 			}
@@ -47,7 +47,7 @@ public class ArchimedeanSolid extends PolyhedronGen {
 		) {
 			public PolyhedronGen gen(Color c) {
 				return new Construct(
-					new Truncate(Truncate.TruncatedVertexGen.FIXED_DISTANCE_ALONG_EDGE, 1, c),
+					new Truncate(null, Truncate.TruncatedVertexGen.FIXED_DISTANCE_ALONG_EDGE, 1, c),
 					new Octahedron(Octahedron.SizeSpecifier.EDGE_LENGTH, 3, c)
 				);
 			}
@@ -59,7 +59,7 @@ public class ArchimedeanSolid extends PolyhedronGen {
 		) {
 			public PolyhedronGen gen(Color c) {
 				return new Construct(
-					new Truncate(Truncate.TruncatedVertexGen.FIXED_DISTANCE_ALONG_EDGE, 0.70710678118654752440, c), // sqrt(2)/2
+					new Truncate(null, Truncate.TruncatedVertexGen.FIXED_DISTANCE_ALONG_EDGE, 0.70710678118654752440, c), // sqrt(2)/2
 					new Cube(Cube.SizeSpecifier.EDGE_LENGTH, 2.4142135623730950488, c) // sqrt(2)+1
 				);
 			}
@@ -133,7 +133,7 @@ public class ArchimedeanSolid extends PolyhedronGen {
 		) {
 			public PolyhedronGen gen(Color c) {
 				return new Construct(
-					new Truncate(Truncate.TruncatedVertexGen.FIXED_DISTANCE_ALONG_EDGE, 1, c),
+					new Truncate(null, Truncate.TruncatedVertexGen.FIXED_DISTANCE_ALONG_EDGE, 1, c),
 					new Icosahedron(Icosahedron.SizeSpecifier.EDGE_LENGTH, 3, c)
 				);
 			}
@@ -145,7 +145,7 @@ public class ArchimedeanSolid extends PolyhedronGen {
 		) {
 			public PolyhedronGen gen(Color c) {
 				return new Construct(
-					new Truncate(Truncate.TruncatedVertexGen.FIXED_DISTANCE_ALONG_EDGE, 0.61803398874989484820, c), // (sqrt(5)-1)/2
+					new Truncate(null, Truncate.TruncatedVertexGen.FIXED_DISTANCE_ALONG_EDGE, 0.61803398874989484820, c), // (sqrt(5)-1)/2
 					new Dodecahedron(Dodecahedron.SizeSpecifier.EDGE_LENGTH, 2.2360679774997896964, c) // sqrt(5)
 				);
 			}

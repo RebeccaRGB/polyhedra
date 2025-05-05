@@ -4,10 +4,8 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import com.kreative.polyhedra.Point3D;
 import com.kreative.polyhedra.Polyhedron;
 import com.kreative.polyhedra.Polyhedron.Edge;
@@ -154,37 +152,13 @@ public class Truncate extends PolyhedronOp {
 		);
 	}
 	
-	private final Set<Integer> degrees;
+	private final List<VertexPredicate> predicates;
 	private final TruncatedVertexGen gen;
 	private final double size;
 	private final Color color;
 	
-	public Truncate(TruncatedVertexGen gen, double size, Color color) {
-		this.degrees = new HashSet<Integer>();
-		this.gen = gen;
-		this.size = size;
-		this.color = color;
-	}
-	
-	public Truncate(int[] degrees, TruncatedVertexGen gen, double size, Color color) {
-		this.degrees = new HashSet<Integer>();
-		if (degrees != null) for (int i : degrees) this.degrees.add(i);
-		this.gen = gen;
-		this.size = size;
-		this.color = color;
-	}
-	
-	public Truncate(Integer[] degrees, TruncatedVertexGen gen, double size, Color color) {
-		this.degrees = new HashSet<Integer>();
-		if (degrees != null) for (int i : degrees) this.degrees.add(i);
-		this.gen = gen;
-		this.size = size;
-		this.color = color;
-	}
-	
-	public Truncate(Iterable<? extends Integer> degrees, TruncatedVertexGen gen, double size, Color color) {
-		this.degrees = new HashSet<Integer>();
-		if (degrees != null) for (int i : degrees) this.degrees.add(i);
+	public Truncate(List<VertexPredicate> predicates, TruncatedVertexGen gen, double size, Color color) {
+		this.predicates = predicates;
 		this.gen = gen;
 		this.size = size;
 		this.color = color;
@@ -197,10 +171,20 @@ public class Truncate extends PolyhedronOp {
 		List<Color> faceColors = new ArrayList<Color>(vfSize);
 		
 		Map<Vertex,Map<Edge,Integer>> vertexEdgeMap = new HashMap<Vertex,Map<Edge,Integer>>();
+		if (predicates != null) for (VertexPredicate p : predicates) p.reset();
 		for (Vertex vertex : seed.vertices) {
 			List<Face> seedFaces = seed.getFaces(vertex);
 			List<Edge> seedEdges = seed.getEdges(vertex);
-			if (degrees.isEmpty() || degrees.contains(seedEdges.size())) {
+			boolean matches = true;
+			if (predicates != null) {
+				for (VertexPredicate p : predicates) {
+					if (!p.matches(vertex, seedEdges, seedFaces)) {
+						matches = false;
+						break;
+					}
+				}
+			}
+			if (matches) {
 				Map<Edge,Integer> edgeMap = new HashMap<Edge,Integer>();
 				for (TruncatedVertex tv : gen.createVertices(seedEdges, vertex, size)) {
 					edgeMap.put(tv.seedEdge, vertices.size());
@@ -244,16 +228,15 @@ public class Truncate extends PolyhedronOp {
 		public String name() { return "Truncate"; }
 		
 		public Truncate parse(String[] args) {
-			List<Integer> degrees = null;
+			List<VertexPredicate> predicates = new ArrayList<VertexPredicate>();
+			VertexPredicate.Builtin predtmp;
 			TruncatedVertexGen gen = TruncatedVertexGen.REGULAR;
 			double size = 0;
 			Color color = Color.GRAY;
 			int argi = 0;
 			while (argi < args.length) {
 				String arg = args[argi++];
-				if (arg.equalsIgnoreCase("-n") && argi < args.length) {
-					degrees = parseIntList(args[argi++]);
-				} else if (arg.equalsIgnoreCase("-s")) {
+				if (arg.equalsIgnoreCase("-s")) {
 					gen = TruncatedVertexGen.RELATIVE_DISTANCE_ALONG_EDGE;
 					size = (double)1 / (double)3;
 				} else if (arg.equals("-A") && argi < args.length) {
@@ -273,24 +256,26 @@ public class Truncate extends PolyhedronOp {
 					size = 0;
 				} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 					color = parseColor(args[argi++], color);
+				} else if ((predtmp = VertexPredicate.Builtin.forFlagIgnoreCase(arg)) != null && (predtmp.isVoidType() || argi < args.length)) {
+					predicates.add(predtmp.parse(predtmp.isVoidType() ? null : args[argi++]));
 				} else {
 					return null;
 				}
 			}
-			return new Truncate(degrees, gen, size, color);
+			return new Truncate(predicates, gen, size, color);
 		}
 		
 		public Option[] options() {
-			return new Option[] {
-				new Option("n", Type.INTS, "only operate on vertices of the specified degree"),
-				new Option("h", Type.REAL, "truncate at a fixed distance from the original vertices", "H","a","A","r","s"),
-				new Option("H", Type.REAL, "truncate at a relative distance from the original vertices", "h","a","A","r","s"),
-				new Option("a", Type.REAL, "truncate at a fixed distance along the original edges", "h","H","A","r","s"),
-				new Option("A", Type.REAL, "truncate at a relative distance along the original edges", "h","H","a","r","s"),
-				new Option("r", Type.VOID, "attempt to create regular faces (not always possible)", "h","H","a","A","s"),
-				new Option("s", Type.VOID, "truncate at the trisection points of the original edges", "h","H","a","A","r"),
-				new Option("c", Type.COLOR, "color of faces generated from truncated vertices"),
-			};
+			List<Option> options = new ArrayList<Option>();
+			for (VertexPredicate.Builtin bi : VertexPredicate.Builtin.values()) options.add(bi.option());
+			options.add(new Option("h", Type.REAL, "truncate at a fixed distance from the original vertices", "H","a","A","r","s"));
+			options.add(new Option("H", Type.REAL, "truncate at a relative distance from the original vertices", "h","a","A","r","s"));
+			options.add(new Option("a", Type.REAL, "truncate at a fixed distance along the original edges", "h","H","A","r","s"));
+			options.add(new Option("A", Type.REAL, "truncate at a relative distance along the original edges", "h","H","a","r","s"));
+			options.add(new Option("r", Type.VOID, "attempt to create regular faces (not always possible)", "h","H","a","A","s"));
+			options.add(new Option("s", Type.VOID, "truncate at the trisection points of the original edges", "h","H","a","A","r"));
+			options.add(new Option("c", Type.COLOR, "color of faces generated from truncated vertices"));
+			return options.toArray(new Option[options.size()]);
 		}
 	}
 	
