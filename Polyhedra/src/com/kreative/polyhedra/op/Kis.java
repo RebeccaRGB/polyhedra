@@ -25,18 +25,9 @@ public class Kis extends PolyhedronOp {
 		List<Point3D> seedVertices = seed.points();
 		vertices.addAll(seedVertices);
 		
-		if (predicates != null) for (FacePredicate p : predicates) p.reset(seed);
+		FacePredicate.reset(predicates, seed);
 		for (Polyhedron.Face f : seed.faces) {
-			boolean matches = true;
-			if (predicates != null) {
-				for (FacePredicate p : predicates) {
-					if (!p.matches(f)) {
-						matches = false;
-						break;
-					}
-				}
-			}
-			if (matches) {
+			if (FacePredicate.matches(predicates, f)) {
 				Point3D newVertex = fvgen.createVertex(seed, seedVertices, f, f.points());
 				if (newVertex != null) {
 					int i0 = vertices.size();

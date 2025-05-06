@@ -25,25 +25,24 @@ public class RemoveVertices extends PolyhedronOp {
 	public Polyhedron op(Polyhedron seed) {
 		if (predicates == null || predicates.isEmpty()) return seed;
 		
+		// Get indices of vertices to be removed.
+		Set<Integer> indices = new HashSet<Integer>();
+		VertexPredicate.reset(predicates, seed);
+		for (Polyhedron.Vertex v : seed.vertices) {
+			List<Polyhedron.Face> f = seed.getFaces(v);
+			List<Polyhedron.Edge> e = seed.getEdges(v);
+			if (VertexPredicate.matches(predicates, v, e, f)) {
+				indices.add(v.index);
+			}
+		}
+		
+		return removeVertices(seed, indices, color);
+	}
+	
+	public static Polyhedron removeVertices(Polyhedron seed, Set<Integer> indices, Color color) {
 		List<Point3D> vertices = new ArrayList<Point3D>();
 		List<List<Integer>> faces = new ArrayList<List<Integer>>();
 		List<Color> faceColors = new ArrayList<Color>();
-		
-		// Get indices of vertices to be removed.
-		Set<Integer> indices = new HashSet<Integer>();
-		for (VertexPredicate p : predicates) p.reset(seed);
-		for (Polyhedron.Vertex v : seed.vertices) {
-			List<Polyhedron.Face> seedFaces = seed.getFaces(v);
-			List<Polyhedron.Edge> seedEdges = seed.getEdges(v);
-			boolean matches = true;
-			for (VertexPredicate p : predicates) {
-				if (!p.matches(v, seedEdges, seedFaces)) {
-					matches = false;
-					break;
-				}
-			}
-			if (matches) indices.add(v.index);
-		}
 		
 		// Group together removed vertices that were once connected. (vertexGroupMap)
 		// Create map of old vertex indices to new vertex indices. (vertexIndexMap)

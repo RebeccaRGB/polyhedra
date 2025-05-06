@@ -1,5 +1,6 @@
 package com.kreative.polyhedra.op;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -151,5 +152,14 @@ public abstract class VertexPredicate {
 			for (Builder bi : values()) if (bi.flagWithDash.equalsIgnoreCase(flag)) return bi;
 			return null;
 		}
+	}
+	
+	public static void reset(Collection<? extends VertexPredicate> c, Polyhedron seed) {
+		if (c != null) for (VertexPredicate p : c) p.reset(seed);
+	}
+	
+	public static boolean matches(Collection<? extends VertexPredicate> c, Vertex v, List<Edge> e, List<Face> f) {
+		if (c != null) for (VertexPredicate p : c) if (!p.matches(v, e, f)) return false;
+		return true;
 	}
 }

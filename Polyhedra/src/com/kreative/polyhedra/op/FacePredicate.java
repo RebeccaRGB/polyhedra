@@ -1,5 +1,6 @@
 package com.kreative.polyhedra.op;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import com.kreative.polyhedra.Point3D;
@@ -148,5 +149,14 @@ public abstract class FacePredicate {
 			for (Builder bi : values()) if (bi.flagWithDash.equalsIgnoreCase(flag)) return bi;
 			return null;
 		}
+	}
+	
+	public static void reset(Collection<? extends FacePredicate> c, Polyhedron seed) {
+		if (c != null) for (FacePredicate p : c) p.reset(seed);
+	}
+	
+	public static boolean matches(Collection<? extends FacePredicate> c, Polyhedron.Face face) {
+		if (c != null) for (FacePredicate p : c) if (!p.matches(face)) return false;
+		return true;
 	}
 }

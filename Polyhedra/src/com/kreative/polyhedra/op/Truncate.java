@@ -171,20 +171,11 @@ public class Truncate extends PolyhedronOp {
 		List<Color> faceColors = new ArrayList<Color>(vfSize);
 		
 		Map<Vertex,Map<Edge,Integer>> vertexEdgeMap = new HashMap<Vertex,Map<Edge,Integer>>();
-		if (predicates != null) for (VertexPredicate p : predicates) p.reset(seed);
+		VertexPredicate.reset(predicates, seed);
 		for (Vertex vertex : seed.vertices) {
 			List<Face> seedFaces = seed.getFaces(vertex);
 			List<Edge> seedEdges = seed.getEdges(vertex);
-			boolean matches = true;
-			if (predicates != null) {
-				for (VertexPredicate p : predicates) {
-					if (!p.matches(vertex, seedEdges, seedFaces)) {
-						matches = false;
-						break;
-					}
-				}
-			}
-			if (matches) {
+			if (VertexPredicate.matches(predicates, vertex, seedEdges, seedFaces)) {
 				Map<Edge,Integer> edgeMap = new HashMap<Edge,Integer>();
 				for (TruncatedVertex tv : gen.createVertices(seedEdges, vertex, size)) {
 					edgeMap.put(tv.seedEdge, vertices.size());
