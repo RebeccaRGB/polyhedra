@@ -10,10 +10,12 @@ import com.kreative.polyhedra.MetricAggregator;
 import com.kreative.polyhedra.Point3D;
 import com.kreative.polyhedra.Polyhedron;
 import com.kreative.polyhedra.PolyhedronGen;
+import com.kreative.polyhedra.op.Augment;
 import com.kreative.polyhedra.op.Chain;
 import com.kreative.polyhedra.op.FacePredicate;
 import com.kreative.polyhedra.op.FaceVertexGen;
 import com.kreative.polyhedra.op.Kis;
+import com.kreative.polyhedra.op.RemoveFaces;
 import com.kreative.polyhedra.op.RemoveVertices;
 import com.kreative.polyhedra.op.VertexPredicate;
 
@@ -604,97 +606,256 @@ public class JohnsonSolid extends PolyhedronGen {
 		},
 		AUGMENTED_TRUNCATED_TETRAHEDRON ("augmentedtruncatedtetrahedron", "att", "j65", "65") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new Augment(
+						Arrays.asList(new FacePredicate.Degree(6), new FacePredicate.Index(0)),
+						Augment.AugmentationSpec.ORTHO, a * 0.57735026918962576451, a * 0.81649658092772603273
+					),
+					new ArchimedeanSolid(
+						ArchimedeanSolid.FormSpecifier.TRUNCATED_TETRAHEDRON,
+						ArchimedeanSolid.SizeSpecifier.EDGE_LENGTH, a, c
+					)
+				);
 			}
 		},
 		AUGMENTED_TRUNCATED_CUBE ("augmentedtruncatedcube", "atc", "j66", "66") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new Augment(
+						Arrays.asList(new FacePredicate.Degree(8), new FacePredicate.Index(0)),
+						Augment.AugmentationSpec.ORTHO, a * 0.70710678118654752440, a * 0.70710678118654752440
+					),
+					new ArchimedeanSolid(
+						ArchimedeanSolid.FormSpecifier.TRUNCATED_CUBE,
+						ArchimedeanSolid.SizeSpecifier.EDGE_LENGTH, a, c
+					)
+				);
 			}
 		},
 		BIAUGMENTED_TRUNCATED_CUBE ("biaugmentedtruncatedcube", "batc", "j67", "67") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new Augment(
+						Arrays.asList(new FacePredicate.Degree(8), new FacePredicate.AtAngle(180)),
+						Augment.AugmentationSpec.ORTHO, a * 0.70710678118654752440, a * 0.70710678118654752440
+					),
+					new ArchimedeanSolid(
+						ArchimedeanSolid.FormSpecifier.TRUNCATED_CUBE,
+						ArchimedeanSolid.SizeSpecifier.EDGE_LENGTH, a, c
+					)
+				);
 			}
 		},
 		AUGMENTED_TRUNCATED_DODECAHEDRON ("augmentedtruncateddodecahedron", "atd", "j68", "68") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new Augment(
+						Arrays.asList(new FacePredicate.Degree(10), new FacePredicate.Index(0)),
+						Augment.AugmentationSpec.ORTHO, a * 0.85065080835203993218, a * 0.52573111211913360603
+					),
+					new ArchimedeanSolid(
+						ArchimedeanSolid.FormSpecifier.TRUNCATED_DODECAHEDRON,
+						ArchimedeanSolid.SizeSpecifier.EDGE_LENGTH, a, c
+					)
+				);
 			}
 		},
 		PARABIAUGMENTED_TRUNCATED_DODECAHEDRON ("parabiaugmentedtruncateddodecahedron", "patd", "j69", "69") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new Augment(
+						Arrays.asList(new FacePredicate.Degree(10), new FacePredicate.AtAngle(180)),
+						Augment.AugmentationSpec.ORTHO, a * 0.85065080835203993218, a * 0.52573111211913360603
+					),
+					new ArchimedeanSolid(
+						ArchimedeanSolid.FormSpecifier.TRUNCATED_DODECAHEDRON,
+						ArchimedeanSolid.SizeSpecifier.EDGE_LENGTH, a, c
+					)
+				);
 			}
 		},
 		METABIAUGMENTED_TRUNCATED_DODECAHEDRON ("metabiaugmentedtruncateddodecahedron", "matd", "j70", "70") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new Augment(
+						Arrays.asList(new FacePredicate.Degree(10), new FacePredicate.AtAngle(116.56505117707799), new FacePredicate.Index(0,1)),
+						Augment.AugmentationSpec.ORTHO, a * 0.85065080835203993218, a * 0.52573111211913360603
+					),
+					new ArchimedeanSolid(
+						ArchimedeanSolid.FormSpecifier.TRUNCATED_DODECAHEDRON,
+						ArchimedeanSolid.SizeSpecifier.EDGE_LENGTH, a, c
+					)
+				);
 			}
 		},
 		TRIAUGMENTED_TRUNCATED_DODECAHEDRON ("triaugmentedtruncateddodecahedron", "tatd", "j71", "71") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new Augment(
+						Arrays.asList(new FacePredicate.Degree(10), new FacePredicate.AtAngle(116.56505117707799)),
+						Augment.AugmentationSpec.ORTHO, a * 0.85065080835203993218, a * 0.52573111211913360603
+					),
+					new ArchimedeanSolid(
+						ArchimedeanSolid.FormSpecifier.TRUNCATED_DODECAHEDRON,
+						ArchimedeanSolid.SizeSpecifier.EDGE_LENGTH, a, c
+					)
+				);
 			}
 		},
 		GYRATE_RHOMBICOSIDODECAHEDRON ("gyraterhombicosidodecahedron", "gyrid", "j72", "72") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new Chain(
+						new Augment(Arrays.asList(new FacePredicate.Degree(10)), Augment.AugmentationSpec.GYRO, a * 0.85065080835203993218, a * 0.52573111211913360603),
+						new RemoveFaces(Arrays.asList(new FacePredicate.Degree(5), new FacePredicate.Index(0)), c)
+					),
+					new ArchimedeanSolid(
+						ArchimedeanSolid.FormSpecifier.SMALL_RHOMBICOSIDODECAHEDRON,
+						ArchimedeanSolid.SizeSpecifier.EDGE_LENGTH, a, c
+					)
+				);
 			}
 		},
 		PARABIGYRATE_RHOMBICOSIDODECAHEDRON ("parabigyraterhombicosidodecahedron", "pgyrid", "j73", "73") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new Chain(
+						new Augment(Arrays.asList(new FacePredicate.Degree(10)), Augment.AugmentationSpec.GYRO, a * 0.85065080835203993218, a * 0.52573111211913360603),
+						new RemoveFaces(Arrays.asList(new FacePredicate.Degree(5), new FacePredicate.AtAngle(180)), c)
+					),
+					new ArchimedeanSolid(
+						ArchimedeanSolid.FormSpecifier.SMALL_RHOMBICOSIDODECAHEDRON,
+						ArchimedeanSolid.SizeSpecifier.EDGE_LENGTH, a, c
+					)
+				);
 			}
 		},
 		METABIGYRATE_RHOMBICOSIDODECAHEDRON ("metabigyraterhombicosidodecahedron", "mgyrid", "j74", "74") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new Chain(
+						new Augment(Arrays.asList(new FacePredicate.Degree(10)), Augment.AugmentationSpec.GYRO, a * 0.85065080835203993218, a * 0.52573111211913360603),
+						new RemoveFaces(Arrays.asList(new FacePredicate.Degree(5), new FacePredicate.AtAngle(116.56505117707799), new FacePredicate.Index(0,1)), c)
+					),
+					new ArchimedeanSolid(
+						ArchimedeanSolid.FormSpecifier.SMALL_RHOMBICOSIDODECAHEDRON,
+						ArchimedeanSolid.SizeSpecifier.EDGE_LENGTH, a, c
+					)
+				);
 			}
 		},
 		TRIGYRATE_RHOMBICOSIDODECAHEDRON ("trigyraterhombicosidodecahedron", "tgyrid", "j75", "75") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new Chain(
+						new Augment(Arrays.asList(new FacePredicate.Degree(10)), Augment.AugmentationSpec.GYRO, a * 0.85065080835203993218, a * 0.52573111211913360603),
+						new RemoveFaces(Arrays.asList(new FacePredicate.Degree(5), new FacePredicate.AtAngle(116.56505117707799)), c)
+					),
+					new ArchimedeanSolid(
+						ArchimedeanSolid.FormSpecifier.SMALL_RHOMBICOSIDODECAHEDRON,
+						ArchimedeanSolid.SizeSpecifier.EDGE_LENGTH, a, c
+					)
+				);
 			}
 		},
 		DIMINISHED_RHOMBICOSIDODECAHEDRON ("diminishedrhombicosidodecahedron", "drid", "j76", "76") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new RemoveFaces(Arrays.asList(new FacePredicate.Degree(5), new FacePredicate.Index(0)), c),
+					new ArchimedeanSolid(
+						ArchimedeanSolid.FormSpecifier.SMALL_RHOMBICOSIDODECAHEDRON,
+						ArchimedeanSolid.SizeSpecifier.EDGE_LENGTH, a, c
+					)
+				);
 			}
 		},
 		PARAGYRATE_DIMINISHED_RHOMBICOSIDODECAHEDRON ("paragyratediminishedrhombicosidodecahedron", "pgydrid", "j77", "77") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new Chain(
+						new Augment(Arrays.asList(new FacePredicate.Degree(10), new FacePredicate.Index(1)), Augment.AugmentationSpec.GYRO, a * 0.85065080835203993218, a * 0.52573111211913360603),
+						new RemoveFaces(Arrays.asList(new FacePredicate.Degree(5), new FacePredicate.AtAngle(180)), c)
+					),
+					new ArchimedeanSolid(
+						ArchimedeanSolid.FormSpecifier.SMALL_RHOMBICOSIDODECAHEDRON,
+						ArchimedeanSolid.SizeSpecifier.EDGE_LENGTH, a, c
+					)
+				);
 			}
 		},
 		METAGYRATE_DIMINISHED_RHOMBICOSIDODECAHEDRON ("metagyratediminishedrhombicosidodecahedron", "mgydrid", "j78", "78") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new Chain(
+						new Augment(Arrays.asList(new FacePredicate.Degree(10), new FacePredicate.Index(1)), Augment.AugmentationSpec.GYRO, a * 0.85065080835203993218, a * 0.52573111211913360603),
+						new RemoveFaces(Arrays.asList(new FacePredicate.Degree(5), new FacePredicate.AtAngle(116.56505117707799), new FacePredicate.Index(0,1)), c)
+					),
+					new ArchimedeanSolid(
+						ArchimedeanSolid.FormSpecifier.SMALL_RHOMBICOSIDODECAHEDRON,
+						ArchimedeanSolid.SizeSpecifier.EDGE_LENGTH, a, c
+					)
+				);
 			}
 		},
 		BIGYRATE_DIMINISHED_RHOMBICOSIDODECAHEDRON ("bigyratediminishedrhombicosidodecahedron", "bgydrid", "j79", "79") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new Chain(
+						new Augment(Arrays.asList(new FacePredicate.Degree(10), new FacePredicate.Index(0,1)), Augment.AugmentationSpec.GYRO, a * 0.85065080835203993218, a * 0.52573111211913360603),
+						new RemoveFaces(Arrays.asList(new FacePredicate.Degree(5), new FacePredicate.AtAngle(116.56505117707799)), c)
+					),
+					new ArchimedeanSolid(
+						ArchimedeanSolid.FormSpecifier.SMALL_RHOMBICOSIDODECAHEDRON,
+						ArchimedeanSolid.SizeSpecifier.EDGE_LENGTH, a, c
+					)
+				);
 			}
 		},
 		PARABIDIMINISHED_RHOMBICOSIDODECAHEDRON ("parabidiminishedrhombicosidodecahedron", "pdrid", "j80", "80") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new RemoveFaces(Arrays.asList(new FacePredicate.Degree(5), new FacePredicate.AtAngle(180)), c),
+					new ArchimedeanSolid(
+						ArchimedeanSolid.FormSpecifier.SMALL_RHOMBICOSIDODECAHEDRON,
+						ArchimedeanSolid.SizeSpecifier.EDGE_LENGTH, a, c
+					)
+				);
 			}
 		},
 		METABIDIMINISHED_RHOMBICOSIDODECAHEDRON ("metabidiminishedrhombicosidodecahedron", "mdrid", "j81", "81") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new RemoveFaces(Arrays.asList(new FacePredicate.Degree(5), new FacePredicate.AtAngle(116.56505117707799), new FacePredicate.Index(0,1)), c),
+					new ArchimedeanSolid(
+						ArchimedeanSolid.FormSpecifier.SMALL_RHOMBICOSIDODECAHEDRON,
+						ArchimedeanSolid.SizeSpecifier.EDGE_LENGTH, a, c
+					)
+				);
 			}
 		},
 		GYRATE_BIDIMINISHED_RHOMBICOSIDODECAHEDRON ("gyratebidiminishedrhombicosidodecahedron", "gybdrid", "j82", "82") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new Chain(
+						new Augment(Arrays.asList(new FacePredicate.Degree(10), new FacePredicate.Index(1)), Augment.AugmentationSpec.GYRO, a * 0.85065080835203993218, a * 0.52573111211913360603),
+						new RemoveFaces(Arrays.asList(new FacePredicate.Degree(5), new FacePredicate.AtAngle(116.56505117707799)), c)
+					),
+					new ArchimedeanSolid(
+						ArchimedeanSolid.FormSpecifier.SMALL_RHOMBICOSIDODECAHEDRON,
+						ArchimedeanSolid.SizeSpecifier.EDGE_LENGTH, a, c
+					)
+				);
 			}
 		},
 		TRIDIMINISHED_RHOMBICOSIDODECAHEDRON ("tridiminishedrhombicosidodecahedron", "tdrid", "j83", "83") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new RemoveFaces(Arrays.asList(new FacePredicate.Degree(5), new FacePredicate.AtAngle(116.56505117707799)), c),
+					new ArchimedeanSolid(
+						ArchimedeanSolid.FormSpecifier.SMALL_RHOMBICOSIDODECAHEDRON,
+						ArchimedeanSolid.SizeSpecifier.EDGE_LENGTH, a, c
+					)
+				);
 			}
 		},
 		SNUB_DISPHENOID ("snubdisphenoid", "snds", "j84", "84") {

@@ -12,6 +12,7 @@ public class BOM {
 		Arrays.asList(
 			new AffineTransform.Factory(),
 			new Ambo.Factory(),
+			new Augment.Factory(),
 			new Bevel.Factory(),
 			// new Bowtie.Factory(),
 			new Center.Factory(),
