@@ -62,11 +62,20 @@ public class Report extends PolyhedronCon {
 			System.out.println("\t\t\tcenter\t" + center + "\tmag=" + center.magnitude());
 			System.out.println("\t\t\tnormal\t" + normal);
 		}
-		System.out.println("\tMetrics:");
+		System.out.println("\tMetrics About Origin:");
 		for (Metric metric : Metric.values()) {
 			System.out.print("\t\t" + metric);
 			for (MetricAggregator agg : MetricAggregator.values()) {
-				System.out.print("\t" + agg + "=" + agg.aggregate(metric.iterator(p)));
+				System.out.print("\t" + agg + "=" + agg.aggregate(metric.iterator(p, Point3D.ZERO)));
+			}
+			System.out.println();
+		}
+		System.out.println("\tMetrics About Center:");
+		Point3D center = p.center();
+		for (Metric metric : Metric.values()) {
+			System.out.print("\t\t" + metric);
+			for (MetricAggregator agg : MetricAggregator.values()) {
+				System.out.print("\t" + agg + "=" + agg.aggregate(metric.iterator(p, center)));
 			}
 			System.out.println();
 		}

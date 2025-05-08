@@ -16,14 +16,14 @@ public class CatalanSolidTest {
 		for (FormSpecifier f : FormSpecifier.values()) {
 			System.out.println(f);
 			Polyhedron p = new CatalanSolid(f, SizeSpecifier.DUAL_EDGE_LENGTH, 1, Color.GRAY).gen();
-			double irf1 = MetricAggregator.MINIMUM.aggregate(Metric.FACE_MAGNITUDE.iterator(p)) / f.inradiusFactor;
-			double irf2 = MetricAggregator.MAXIMUM.aggregate(Metric.FACE_MAGNITUDE.iterator(p)) / f.inradiusFactor;
-			double mrf1 = MetricAggregator.MINIMUM.aggregate(Metric.EDGE_MAGNITUDE.iterator(p)) / f.midradiusFactor;
-			double mrf2 = MetricAggregator.MAXIMUM.aggregate(Metric.EDGE_MAGNITUDE.iterator(p)) / f.midradiusFactor;
-			double crf1 = MetricAggregator.MINIMUM.aggregate(Metric.VERTEX_MAGNITUDE.iterator(p)) / f.smallCircumradiusFactor;
-			double crf2 = MetricAggregator.MAXIMUM.aggregate(Metric.VERTEX_MAGNITUDE.iterator(p)) / f.largeCircumradiusFactor;
-			double elf1 = MetricAggregator.MINIMUM.aggregate(Metric.EDGE_LENGTH.iterator(p)) / f.shortEdgeLengthFactor;
-			double elf2 = MetricAggregator.MAXIMUM.aggregate(Metric.EDGE_LENGTH.iterator(p)) / f.longEdgeLengthFactor;
+			double irf1 = MetricAggregator.MINIMUM.aggregate(Metric.FACE_MAGNITUDE.iterator(p, Point3D.ZERO)) / f.inradiusFactor;
+			double irf2 = MetricAggregator.MAXIMUM.aggregate(Metric.FACE_MAGNITUDE.iterator(p, Point3D.ZERO)) / f.inradiusFactor;
+			double mrf1 = MetricAggregator.MINIMUM.aggregate(Metric.EDGE_MAGNITUDE.iterator(p, Point3D.ZERO)) / f.midradiusFactor;
+			double mrf2 = MetricAggregator.MAXIMUM.aggregate(Metric.EDGE_MAGNITUDE.iterator(p, Point3D.ZERO)) / f.midradiusFactor;
+			double crf1 = MetricAggregator.MINIMUM.aggregate(Metric.VERTEX_MAGNITUDE.iterator(p, Point3D.ZERO)) / f.smallCircumradiusFactor;
+			double crf2 = MetricAggregator.MAXIMUM.aggregate(Metric.VERTEX_MAGNITUDE.iterator(p, Point3D.ZERO)) / f.largeCircumradiusFactor;
+			double elf1 = MetricAggregator.MINIMUM.aggregate(Metric.EDGE_LENGTH.iterator(p, Point3D.ZERO)) / f.shortEdgeLengthFactor;
+			double elf2 = MetricAggregator.MAXIMUM.aggregate(Metric.EDGE_LENGTH.iterator(p, Point3D.ZERO)) / f.longEdgeLengthFactor;
 			double[] mtx = {irf1, irf2, mrf1, mrf2, crf1, crf2, elf1, elf2};
 			System.out.print("Metrics: ");
 			for (double m : mtx) System.out.print(" " + (float)m);

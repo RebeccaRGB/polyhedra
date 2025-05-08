@@ -90,23 +90,23 @@ public class Resize extends PolyhedronOp {
 		},
 		X_SIZE("X", Type.REAL, "scale along the x axis only to match the specified length") {
 			public boolean resize(Polyhedron seed, List<Point3D> points, Object arg) {
-				double current = MetricAggregator.RANGE.aggregate(Metric.X_POSITION.iterator(seed));
+				double current = MetricAggregator.RANGE.aggregate(Metric.X_POSITION.iterator(seed, seed.center()));
 				double size = (arg instanceof Number) ? ((Number)arg).doubleValue() : 1;
-				return current != 0 && current != size && resizeUnsafe(points, size / current, 1, 1);
+				return current != 0 && current != size && resizeUnsafe(points, Point3D.average(points), size / current, 1, 1);
 			}
 		},
 		Y_SIZE("Y", Type.REAL, "scale along the y axis only to match the specified length") {
 			public boolean resize(Polyhedron seed, List<Point3D> points, Object arg) {
-				double current = MetricAggregator.RANGE.aggregate(Metric.Y_POSITION.iterator(seed));
+				double current = MetricAggregator.RANGE.aggregate(Metric.Y_POSITION.iterator(seed, seed.center()));
 				double size = (arg instanceof Number) ? ((Number)arg).doubleValue() : 1;
-				return current != 0 && current != size && resizeUnsafe(points, 1, size / current, 1);
+				return current != 0 && current != size && resizeUnsafe(points, Point3D.average(points), 1, size / current, 1);
 			}
 		},
 		Z_SIZE("Z", Type.REAL, "scale along the z axis only to match the specified length") {
 			public boolean resize(Polyhedron seed, List<Point3D> points, Object arg) {
-				double current = MetricAggregator.RANGE.aggregate(Metric.Z_POSITION.iterator(seed));
+				double current = MetricAggregator.RANGE.aggregate(Metric.Z_POSITION.iterator(seed, seed.center()));
 				double size = (arg instanceof Number) ? ((Number)arg).doubleValue() : 1;
-				return current != 0 && current != size && resizeUnsafe(points, 1, 1, size / current);
+				return current != 0 && current != size && resizeUnsafe(points, Point3D.average(points), 1, 1, size / current);
 			}
 		};
 		
@@ -177,24 +177,21 @@ public class Resize extends PolyhedronOp {
 		}
 		
 		private static boolean resizeChecked(Polyhedron seed, List<Point3D> points, Object arg, MetricAggregator agg, Metric metric) {
-			double current = agg.aggregate(metric.iterator(seed));
+			double current = agg.aggregate(metric.iterator(seed, seed.center()));
 			double size = (arg instanceof Number) ? ((Number)arg).doubleValue() : 1;
-			return current != 0 && current != size && resizeUnsafe(points, size / current);
+			return current != 0 && current != size && resizeUnsafe(points, Point3D.average(points), size / current);
 		}
 		
-		private static boolean resizeUnsafe(List<Point3D> points, double m) {
+		private static boolean resizeUnsafe(List<Point3D> points, Point3D origin, double m) {
 			for (int i = 0, n = points.size(); i < n; i++) {
-				points.set(i, points.get(i).multiply(m));
+				points.set(i, points.get(i).subtract(origin).multiply(m).add(origin));
 			}
 			return m < 0;
 		}
 		
-		private static boolean resizeUnsafe(List<Point3D> points, double x, double y, double z) {
+		private static boolean resizeUnsafe(List<Point3D> points, Point3D origin, double x, double y, double z) {
 			for (int i = 0, n = points.size(); i < n; i++) {
-				double nx = points.get(i).getX() * x;
-				double ny = points.get(i).getY() * y;
-				double nz = points.get(i).getZ() * z;
-				points.set(i, new Point3D(nx, ny, nz));
+				points.set(i, points.get(i).subtract(origin).multiply(x, y, z).add(origin));
 			}
 			return (x < 0) != (y < 0) != (z < 0);
 		}

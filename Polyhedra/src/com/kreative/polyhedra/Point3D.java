@@ -169,6 +169,10 @@ public class Point3D {
 		return new Point3D(x / factor, y / factor, z / factor);
 	}
 	
+	public Point3D divide(double xfactor, double yfactor, double zfactor) {
+		return new Point3D(x / xfactor, y / yfactor, z / zfactor);
+	}
+	
 	public double dotProduct(double x, double y, double z) {
 		return this.x * x + this.y * y + this.z * z;
 	}
@@ -298,6 +302,10 @@ public class Point3D {
 	
 	public Point3D multiply(double factor) {
 		return new Point3D(x * factor, y * factor, z * factor);
+	}
+	
+	public Point3D multiply(double xfactor, double yfactor, double zfactor) {
+		return new Point3D(x * xfactor, y * yfactor, z * zfactor);
 	}
 	
 	public Point3D negate() {

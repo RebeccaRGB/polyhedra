@@ -149,14 +149,14 @@ public class Dual extends PolyhedronOp {
 		}
 		
 		private static boolean rescaleChecked(Polyhedron seed, Polyhedron dual, List<Point3D> points, MetricAggregator agg, Metric metric) {
-			double seedScale = agg.aggregate(metric.iterator(seed));
-			double dualScale = agg.aggregate(metric.iterator(dual));
-			return seedScale != 0 && dualScale != 0 && seedScale != dualScale && resizeUnsafe(points, seedScale / dualScale);
+			double seedScale = agg.aggregate(metric.iterator(seed, seed.center()));
+			double dualScale = agg.aggregate(metric.iterator(dual, dual.center()));
+			return seedScale != 0 && dualScale != 0 && seedScale != dualScale && resizeUnsafe(points, Point3D.average(points), seedScale / dualScale);
 		}
 		
-		private static boolean resizeUnsafe(List<Point3D> points, double m) {
+		private static boolean resizeUnsafe(List<Point3D> points, Point3D origin, double m) {
 			for (int i = 0, n = points.size(); i < n; i++) {
-				points.set(i, points.get(i).multiply(m));
+				points.set(i, points.get(i).subtract(origin).multiply(m).add(origin));
 			}
 			return true;
 		}

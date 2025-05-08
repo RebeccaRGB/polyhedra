@@ -53,10 +53,10 @@ public class JohnsonSolidTest {
 			System.out.print(((p2.edges.size() == edgeCount[index]) ? " \u001B[1;32m" : " \u001B[1;31m") + p2.edges.size() + "\u001B[0m");
 			System.out.print(((p2.faces.size() == faceCount[index]) ? " \u001B[1;32m" : " \u001B[1;31m") + p2.faces.size() + "\u001B[0m");
 			// Get edge lengths
-			double elf1 = MetricAggregator.MINIMUM.aggregate(Metric.EDGE_LENGTH.iterator(p1));
-			double elf2 = MetricAggregator.MAXIMUM.aggregate(Metric.EDGE_LENGTH.iterator(p1));
-			double elf3 = MetricAggregator.MINIMUM.aggregate(Metric.EDGE_LENGTH.iterator(p2)) / 2;
-			double elf4 = MetricAggregator.MAXIMUM.aggregate(Metric.EDGE_LENGTH.iterator(p2)) / 2;
+			double elf1 = MetricAggregator.MINIMUM.aggregate(Metric.EDGE_LENGTH.iterator(p1, Point3D.ZERO));
+			double elf2 = MetricAggregator.MAXIMUM.aggregate(Metric.EDGE_LENGTH.iterator(p1, Point3D.ZERO));
+			double elf3 = MetricAggregator.MINIMUM.aggregate(Metric.EDGE_LENGTH.iterator(p2, Point3D.ZERO)) / 2;
+			double elf4 = MetricAggregator.MAXIMUM.aggregate(Metric.EDGE_LENGTH.iterator(p2, Point3D.ZERO)) / 2;
 			double[] mtx = {elf1, elf2, elf3, elf4};
 			// Check/print edge lengths
 			System.out.print("\t- Edges:");
