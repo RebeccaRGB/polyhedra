@@ -34,7 +34,7 @@ public class BOM {
 			new GreatStellatedDodecahedron.Factory(),
 			new Hextille.Factory(),
 			new Icosahedron.Factory(),
-			// new JohnsonSolid.Factory(),
+			new JohnsonSolid.Factory(),
 			new Octahedron.Factory(),
 			new Path.Factory(),
 			new PointCloud.Factory(),
@@ -43,6 +43,7 @@ public class BOM {
 			new Pyramid.Factory(),
 			new Quadrille.Factory(),
 			new Rotunda.Factory(),
+			// new Sharpohedron.Factory(),
 			new SmallStellatedDodecahedron.Factory(),
 			new Tetrahedron.Factory(),
 			new Trapezohedron.Factory()
@@ -70,13 +71,14 @@ public class BOM {
 		con.put("H", new Hextille.Factory());
 		con.put("I", new Icosahedron.Factory());
 		con.put("J", new GreatIcosahedron.Factory());
-		// con.put("J#", new JohnsonSolid.Factory());
+		con.put("J#", new JohnsonSolid.Factory());
 		con.put("K", new CatalanSolid.Factory()); // extension
 		// con.put("N", new UniformPolyhedron.Factory()); // extension
 		con.put("O", new Octahedron.Factory());
 		con.put("P", new Prism.Factory());
 		con.put("Q", new Quadrille.Factory());
 		con.put("R", new Trapezohedron.Factory()); // extension
+		// con.put("S", new Sharpohedron.Factory()); // extension
 		con.put("T", new Tetrahedron.Factory());
 		con.put("U", new Cupola.Factory());
 		con.put("UU", new Bicupola.Factory()); // extension

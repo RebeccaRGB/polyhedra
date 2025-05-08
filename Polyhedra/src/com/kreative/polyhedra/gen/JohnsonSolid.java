@@ -12,6 +12,7 @@ import com.kreative.polyhedra.Polyhedron;
 import com.kreative.polyhedra.PolyhedronGen;
 import com.kreative.polyhedra.op.Augment;
 import com.kreative.polyhedra.op.Chain;
+import com.kreative.polyhedra.op.ConvexHull;
 import com.kreative.polyhedra.op.FacePredicate;
 import com.kreative.polyhedra.op.FaceVertexGen;
 import com.kreative.polyhedra.op.Kis;
@@ -860,47 +861,250 @@ public class JohnsonSolid extends PolyhedronGen {
 		},
 		SNUB_DISPHENOID ("snubdisphenoid", "snds", "j84", "84") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				double q = 0.16902222942417583090; // 2*x^3 + 11*x^2 + 4*x - 1 = 0
+				double r = a/2 * Math.sqrt(q);
+				double s = a/2 * Math.sqrt((1-q)/(2*q));
+				double t = a/2 * Math.sqrt(2-2*q);
+				double u = a/2;
+				return new Construct(
+					new ConvexHull(c),
+					new PointCloud(Arrays.asList(
+						new Point3D(+t, +r,  0),
+						new Point3D(-t, +r,  0),
+						new Point3D( 0, -r, +t),
+						new Point3D( 0, -r, -t),
+						new Point3D(+u, -s,  0),
+						new Point3D(-u, -s,  0),
+						new Point3D( 0, +s, +u),
+						new Point3D( 0, +s, -u)
+					))
+				);
 			}
 		},
 		SNUB_SQUARE_ANTIPRISM ("snubsquareantiprism", "sna4", "j85", "85") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				double p = a * 0.18560702128217984757; // sqrt(8192*x^6 + 73728*x^5 + 90880*x^4 - 47872*x^3 + 5632*x^2 - 112*x - 1 = 0)
+				double q = a * 0.67686850903135608229; // sqrt(8192*x^6 + 24576*x^5 + 768*x^4 - 8448*x^3 - 512*x^2 + 688*x - 1 = 0)
+				double r = a * 0.70710678118654752440; // sqrt(2)/2
+				double s = a * 0.85786586845519716687; // 16*x^6 - 16*x^5 - 52*x^4 + 16*x^3 + 32*x^2 - 4*x - 1 = 0
+				double t = a * 1.21320554586631333083; // 2*x^6 + 4*x^5 - 11*x^4 - 12*x^3 + 12*x^2 + 8*x + 1 = 0
+				double u = a * 0.5;
+				return new Construct(
+					new ConvexHull(c),
+					new PointCloud(Arrays.asList(
+						new Point3D( 0, +p, +t),
+						new Point3D( 0, +p, -t),
+						new Point3D(+t, +p,  0),
+						new Point3D(-t, +p,  0),
+						new Point3D(+s, -p, +s),
+						new Point3D(-s, -p, +s),
+						new Point3D(+s, -p, -s),
+						new Point3D(-s, -p, -s),
+						new Point3D( 0, -q, +r),
+						new Point3D( 0, -q, -r),
+						new Point3D(+r, -q,  0),
+						new Point3D(-r, -q,  0),
+						new Point3D(+u, +q, +u),
+						new Point3D(-u, +q, +u),
+						new Point3D(+u, +q, -u),
+						new Point3D(-u, +q, -u)
+					))
+				);
 			}
 		},
 		SPHENOCORONA ("sphenocorona", "sc", "j86", "86") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				double k = 0.85272694284641685541; // (6+sqrt(6)+2*sqrt(213-57*sqrt(6)))/30
+				double u = a/2;
+				double v = a*Math.sqrt(1-k*k);
+				double w = a*k;
+				double x = a*(Math.sqrt(3-4*k*k)/(Math.sqrt(1-k*k)*2)+0.5);
+				double y = a*(1-2*k*k)/(Math.sqrt(1-k*k)*2);
+				double z = a*Math.sqrt(k-k*k+0.5);
+				return new Construct(
+					new ConvexHull(c),
+					new PointCloud(Arrays.asList(
+						new Point3D(+u, +v,  0),
+						new Point3D(-u, +v,  0),
+						new Point3D(+u,  0, +w),
+						new Point3D(-u,  0, +w),
+						new Point3D(+u,  0, -w),
+						new Point3D(-u,  0, -w),
+						new Point3D(+x, +y,  0),
+						new Point3D(-x, +y,  0),
+						new Point3D( 0, -z, +u),
+						new Point3D( 0, -z, -u)
+					))
+				);
 			}
 		},
 		AUGMENTED_SPHENOCORONA ("augmentedsphenocorona", "asc", "j87", "87") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				return new Construct(
+					new Kis(Arrays.asList(new FacePredicate.Degree(4), new FacePredicate.Index(0)), new FaceVertexGen.Equilateral()),
+					new JohnsonSolid(SPHENOCORONA, a, c)
+				);
 			}
 		},
 		SPHENOMEGACORONA ("sphenomegacorona", "smc", "j88", "88") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				double k = 0.59463333563263853005; // 1680*x^16-4800*x^15-3712*x^14+17216*x^13+1568*x^12-24576*x^11+2464*x^10+17248*x^9-3384*x^8-5584*x^7+2000*x^6+240*x^5-776*x^4+304*x^3+200*x^2-56*x-23=0
+				double u = a/2;
+				double v = a*Math.sqrt(1-k*k);
+				double w = a*k;
+				double x = a*(Math.sqrt(3-4*k*k)/(Math.sqrt(1-k*k)*2)+0.5);
+				double y = a*(1-2*k*k)/(Math.sqrt(1-k*k)*2);
+				double z = a*Math.sqrt(4*k-4*k*k+2)/2;
+				double p = a*(Math.sqrt(3-4*k*k)*(2*k*k-1)/(Math.sqrt(1-k*k)*(k*k-1)*2)+0.5);
+				double q = a*(k*k*k*k*2-1)/(Math.sqrt((1-k*k)*(1-k*k)*(1-k*k))*2);
+				return new Construct(
+					new ConvexHull(c),
+					new PointCloud(Arrays.asList(
+						new Point3D(+u, +v,  0),
+						new Point3D(-u, +v,  0),
+						new Point3D(+u,  0, +w),
+						new Point3D(-u,  0, +w),
+						new Point3D(+u,  0, -w),
+						new Point3D(-u,  0, -w),
+						new Point3D(+x, +y,  0),
+						new Point3D(-x, +y,  0),
+						new Point3D( 0, -z, +u),
+						new Point3D( 0, -z, -u),
+						new Point3D(+p, +q,  0),
+						new Point3D(-p, +q,  0)
+					))
+				);
 			}
 		},
 		HEBESPHENOMEGACORONA ("hebesphenomegacorona", "hsmc", "j89", "89") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				double k = 0.21684481571345683717; // 26880*x^10+35328*x^9-25600*x^8-39680*x^7+6112*x^6+13696*x^5+2128*x^4-1808*x^3-1119*x^2+494*x-47=0
+				double u = Math.sqrt(1-k*k);
+				double v = Math.sqrt(2-2*k-4*k*k);
+				double w = Math.sqrt(3-4*k*k);
+				double x = k+0.5;
+				double y = (v/(2*u))+0.5;
+				double z = (v*v)/(4*u);
+				double p = (w*v+k+1)/(4*u*u);
+				double q = (w*(2*k-1)/(4-4*k))-(v/(4*u*u));
+				return new Construct(
+					new ConvexHull(c),
+					new PointCloud(Arrays.asList(
+						new Point3D(+a/2, -a*u, +a/2),
+						new Point3D(-a/2, -a*u, +a/2),
+						new Point3D(+a/2, -a*u, -a/2),
+						new Point3D(-a/2, -a*u, -a/2),
+						new Point3D(0, a*w/2, +a/2),
+						new Point3D(0, a*w/2, -a/2),
+						new Point3D(+a/2, 0, +a*x),
+						new Point3D(-a/2, 0, +a*x),
+						new Point3D(+a/2, 0, -a*x),
+						new Point3D(-a/2, 0, -a*x),
+						new Point3D(+a*y, -a*z, 0),
+						new Point3D(-a*y, -a*z, 0),
+						new Point3D(+a*p, -a*q, 0),
+						new Point3D(-a*p, -a*q, 0)
+					))
+				);
 			}
 		},
 		DISPHENOCINGULUM ("disphenocingulum", "dsc", "j90", "90") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				double k = 0.76713111398346150192; // 256*x^12-512*x^11-1664*x^10+3712*x^9+1552*x^8-6592*x^7+1248*x^6+4352*x^5-2024*x^4-944*x^3+672*x^2-24*x-23=0
+				double u = Math.sqrt(1-k*k);
+				double v = Math.sqrt(2+8*k-8*k*k);
+				double w = Math.sqrt(3-4*k*k);
+				double p = a/2;
+				double q = a*(u+v/4);
+				double r = a*(w/(2*u)+0.5);
+				double s = a*(u-1/(2*u)+v/4);
+				double t = a*v/4;
+				return new Construct(
+					new ConvexHull(c),
+					new PointCloud(Arrays.asList(
+						new Point3D(0, +q, +p),
+						new Point3D(0, +q, -p),
+						new Point3D(0, +s, +r),
+						new Point3D(0, +s, -r),
+						new Point3D(+p, -q, 0),
+						new Point3D(-p, -q, 0),
+						new Point3D(+r, -s, 0),
+						new Point3D(-r, -s, 0),
+						new Point3D(+a*k, +t, +p),
+						new Point3D(-a*k, +t, +p),
+						new Point3D(+a*k, +t, -p),
+						new Point3D(-a*k, +t, -p),
+						new Point3D(+p, -t, +a*k),
+						new Point3D(-p, -t, +a*k),
+						new Point3D(+p, -t, -a*k),
+						new Point3D(-p, -t, -a*k)
+					))
+				);
 			}
 		},
 		BILUNABIROTUNDA ("bilunabirotunda", "blbr", "j91", "91") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				double u = a/2;
+				double v = a*(Math.sqrt(5)+3)/4;
+				double w = a*(Math.sqrt(5)+1)/4;
+				return new Construct(
+					new ConvexHull(c),
+					new PointCloud(Arrays.asList(
+						new Point3D(+u,  0, +v),
+						new Point3D(+u,  0, -v),
+						new Point3D(-u,  0, +v),
+						new Point3D(-u,  0, -v),
+						new Point3D(+w, +u, +u),
+						new Point3D(+w, +u, -u),
+						new Point3D(+w, -u, +u),
+						new Point3D(+w, -u, -u),
+						new Point3D(-w, +u, +u),
+						new Point3D(-w, +u, -u),
+						new Point3D(-w, -u, +u),
+						new Point3D(-w, -u, -u),
+						new Point3D( 0, +w,  0),
+						new Point3D( 0, -w,  0)
+					))
+				);
 			}
 		},
 		TRIANGULAR_HEBESPHENOROTUNDA ("triangularhebesphenorotunda", "thsr", "j92", "92") {
 			public PolyhedronGen gen(double a, Color c) {
-				return null; // TODO stub
+				double o = a/2;
+				double p = a*Math.sqrt(3)/6;
+				double q = a*(Math.sqrt(3)*3+Math.sqrt(15))/6;
+				double r = a*Math.sqrt(3)/3;
+				double s = a*(Math.sqrt(3)*2+Math.sqrt(15))/6;
+				double t = a*(Math.sqrt(3)+Math.sqrt(15))/6;
+				double u = a*(Math.sqrt(5)+3)/4;
+				double v = a*(Math.sqrt(15)-Math.sqrt(3))/12;
+				double w = a*(Math.sqrt(5)+1)/4;
+				double x = a*(Math.sqrt(3)*5+Math.sqrt(15))/12;
+				double y = a*(Math.sqrt(3)*3+Math.sqrt(15))/12;
+				double z = a*Math.sqrt(3)/2;
+				return new Construct(
+					new ConvexHull(c),
+					new PointCloud(Arrays.asList(
+						new Point3D(-p,  +q/2, +o),
+						new Point3D(-p,  +q/2, -o),
+						new Point3D(+r,  +q/2,  0),
+						new Point3D(+s, t-q/2, +o),
+						new Point3D(+s, t-q/2, -o),
+						new Point3D(-v, t-q/2, +u),
+						new Point3D(-v, t-q/2, -u),
+						new Point3D(-x, t-q/2, +w),
+						new Point3D(-x, t-q/2, -w),
+						new Point3D(+y, r-q/2, +u),
+						new Point3D(+y, r-q/2, -u),
+						new Point3D(-q, r-q/2,  0),
+						new Point3D(+z,  -q/2, +o),
+						new Point3D(-z,  -q/2, +o),
+						new Point3D(+z,  -q/2, -o),
+						new Point3D(-z,  -q/2, -o),
+						new Point3D( 0,  -q/2, +a),
+						new Point3D( 0,  -q/2, -a)
+					))
+				);
 			}
 		};
 		private final List<String> names;
