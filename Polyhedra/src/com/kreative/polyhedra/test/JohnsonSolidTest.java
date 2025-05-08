@@ -1,0 +1,84 @@
+package com.kreative.polyhedra.test;
+
+import java.awt.Color;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import com.kreative.polyhedra.Metric;
+import com.kreative.polyhedra.MetricAggregator;
+import com.kreative.polyhedra.Point3D;
+import com.kreative.polyhedra.Polyhedron;
+import com.kreative.polyhedra.gen.JohnsonSolid;
+import com.kreative.polyhedra.gen.JohnsonSolid.FormSpecifier;
+
+public class JohnsonSolidTest {
+	private static final int[] vertexCount = {
+		5, 6, 9, 12, 15, 20, 7, 9, 11, 9, 11, 5, 7, 8, 10, 12, 10, 15, 20, 25, 30, 15, 20,
+		25, 30, 8, 12, 16, 16, 20, 20, 25, 25, 30, 18, 18, 24, 30, 30, 35, 35, 40, 40, 18, 24, 30,
+		35, 40, 7, 8, 9, 11, 12, 13, 14, 14, 15, 21, 22, 22, 23, 10, 9, 10, 15, 28, 32, 65, 70,
+		70, 75, 60, 60, 60, 60, 55, 55, 55, 55, 50, 50, 50, 45, 8, 16, 10, 11, 12, 14, 16, 14, 18
+	};
+	
+	private static final int[] edgeCount = {
+		8, 10, 15, 20, 25, 35, 12, 16, 20, 20, 25, 9, 15, 15, 20, 25, 24, 27, 36, 45, 55, 33, 44,
+		55, 65, 14, 24, 32, 32, 40, 40, 50, 50, 60, 36, 36, 48, 60, 60, 70, 70, 80, 80, 42, 56, 70,
+		80, 90, 13, 17, 21, 19, 23, 22, 26, 26, 30, 35, 40, 40, 45, 20, 15, 18, 27, 48, 60, 105, 120,
+		120, 135, 120, 120, 120, 120, 105, 105, 105, 105, 90, 90, 90, 75, 18, 40, 22, 26, 28, 33, 38, 26, 36
+	};
+	
+	private static final int[] faceCount = {
+		5, 6, 8, 10, 12, 17, 7, 9, 11, 13, 16, 6, 10, 9, 12, 15, 16, 14, 18, 22, 27, 20, 26,
+		32, 37, 8, 14, 18, 18, 22, 22, 27, 27, 32, 20, 20, 26, 32, 32, 37, 37, 42, 42, 26, 34, 42,
+		47, 52, 8, 11, 14, 10, 13, 11, 14, 14, 17, 16, 20, 20, 24, 12, 8, 10, 14, 22, 30, 42, 52,
+		52, 62, 62, 62, 62, 62, 52, 52, 52, 52, 42, 42, 42, 32, 12, 26, 14, 17, 18, 21, 24, 14, 20
+	};
+	
+	private static final List<Float> validAngles = Arrays.asList(60f, 90f, 108f, 120f, 135f, 144f);
+	
+	public static void main(String[] args) {
+		int index = -1;
+		for (FormSpecifier f : FormSpecifier.values()) {
+			index++;
+			System.out.print("\u001B[1;34m" + (index+1) + "\u001B[0m");
+			Polyhedron p1 = new JohnsonSolid(f, 1, Color.GRAY).gen();
+			Polyhedron p2 = new JohnsonSolid(f, 2, Color.GRAY).gen();
+			if (p1 == null || p2 == null) {
+				System.out.println("\t- \u001B[1;33mNot implemented\u001B[0m");
+				continue;
+			}
+			// Get/check/print vertex/edge/face count
+			System.out.print("\t- VEF:");
+			System.out.print(((p2.vertices.size() == vertexCount[index]) ? " \u001B[1;32m" : " \u001B[1;31m") + p2.vertices.size() + "\u001B[0m");
+			System.out.print(((p2.edges.size() == edgeCount[index]) ? " \u001B[1;32m" : " \u001B[1;31m") + p2.edges.size() + "\u001B[0m");
+			System.out.print(((p2.faces.size() == faceCount[index]) ? " \u001B[1;32m" : " \u001B[1;31m") + p2.faces.size() + "\u001B[0m");
+			// Get edge lengths
+			double elf1 = MetricAggregator.MINIMUM.aggregate(Metric.EDGE_LENGTH.iterator(p1));
+			double elf2 = MetricAggregator.MAXIMUM.aggregate(Metric.EDGE_LENGTH.iterator(p1));
+			double elf3 = MetricAggregator.MINIMUM.aggregate(Metric.EDGE_LENGTH.iterator(p2)) / 2;
+			double elf4 = MetricAggregator.MAXIMUM.aggregate(Metric.EDGE_LENGTH.iterator(p2)) / 2;
+			double[] mtx = {elf1, elf2, elf3, elf4};
+			// Check/print edge lengths
+			System.out.print("\t- Edges:");
+			for (double m : mtx) System.out.print(((1 == (float)m) ? " \u001B[1;32m" : " \u001B[1;31m") + (float)m + "\u001B[0m");
+			// Get edge angles
+			TreeMap<Float,Float> angles = new TreeMap<Float,Float>();
+			for (Polyhedron.Face face : p2.faces) {
+				for (int i = 0, n = face.vertices.size(); i < n; i++) {
+					Point3D vp = face.vertices.get(i).point;
+					Point3D np = face.vertices.get((i + 1) % n).point;
+					Point3D pp = face.vertices.get((i + n - 1) % n).point;
+					Float key = (float)vp.angle(pp, np);
+					Float value = angles.get(key);
+					angles.put(key, ((value != null) ? (value + 1) : 1));
+				}
+			}
+			// Check/print edge angles
+			System.out.print("\t- Angles:");
+			for (Map.Entry<Float,Float> e : angles.entrySet()) {
+				System.out.print((validAngles.contains(e.getKey()) ? " \u001B[1;32m" : " \u001B[1;31m") + e.getValue() + "×" + e.getKey() + "°\u001B[0m");
+			}
+			System.out.println();
+		}
+	}
+}
