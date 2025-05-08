@@ -22,7 +22,7 @@ import com.kreative.polyhedra.op.VertexPredicate;
 
 public class JohnsonSolid extends PolyhedronGen {
 	public static enum FormSpecifier {
-		SQUARE_PYRAMID ("squarepyramid", "equilateralsquarepyramid", "y4", "j1", "1") {
+		SQUARE_PYRAMID ("squarepyramid", "equilateralsquarepyramid", "squippy", "spy", "y4", "j1", "1") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Pyramid(
 					4, 1, a * 0.70710678118654752440, // sqrt(2)/2
@@ -31,7 +31,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		PENTAGONAL_PYRAMID ("pentagonalpyramid", "equilateralpentagonalpyramid", "y5", "j2", "2") {
+		PENTAGONAL_PYRAMID ("pentagonalpyramid", "equilateralpentagonalpyramid", "peppy", "ppy", "y5", "j2", "2") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Pyramid(
 					5, 1, a * 0.85065080835203993218, // sqrt((sqrt(5)+5)/10)
@@ -40,7 +40,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		TRIANGULAR_CUPOLA ("triangularcupola", "equilateraltriangularcupola", "u3", "j3", "3") {
+		TRIANGULAR_CUPOLA ("triangularcupola", "equilateraltriangularcupola", "tricu", "tcu", "u3", "j3", "3") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Cupola(
 					3, a, a * 0.57735026918962576451, // 1; sqrt(3)/3
@@ -49,7 +49,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		SQUARE_CUPOLA ("squarecupola", "equilateralsquarecupola", "u4", "j4", "4") {
+		SQUARE_CUPOLA ("squarecupola", "equilateralsquarecupola", "squacu", "scu", "u4", "j4", "4") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Cupola(
 					4, a * 1.3065629648763765279, a * 0.70710678118654752440, // sqrt(sqrt(2)/2+1); sqrt(2)/2
@@ -58,7 +58,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		PENTAGONAL_CUPOLA ("pentagonalcupola", "equilateralpentagonalcupola", "u5", "j5", "5") {
+		PENTAGONAL_CUPOLA ("pentagonalcupola", "equilateralpentagonalcupola", "pecu", "pcu", "u5", "j5", "5") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Cupola(
 					5, a * 1.6180339887498948482, a * 0.85065080835203993218, // (sqrt(5)+1)/2; sqrt((sqrt(5)+5)/10)
@@ -67,7 +67,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		PENTAGONAL_ROTUNDA ("pentagonalrotunda", "r5", "j6", "6") {
+		PENTAGONAL_ROTUNDA ("pentagonalrotunda", "pero", "pro", "r5", "j6", "6") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Rotunda(
 					5, a * 1.6180339887498948482, a * 0.85065080835203993218, // (sqrt(5)+1)/2; sqrt((sqrt(5)+5)/10)
@@ -76,7 +76,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		ELONGATED_TRIANGULAR_PYRAMID ("elongatedtriangularpyramid", "py3", "j7", "7") {
+		ELONGATED_TRIANGULAR_PYRAMID ("elongatedtriangularpyramid", "etripy", "etpy", "py3", "j7", "7") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Pyramid(
 					3, 1, a * 0.57735026918962576451, // sqrt(3)/3
@@ -85,7 +85,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		ELONGATED_SQUARE_PYRAMID ("elongatedsquarepyramid", "py4", "j8", "8") {
+		ELONGATED_SQUARE_PYRAMID ("elongatedsquarepyramid", "esquipy", "espy", "py4", "j8", "8") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Pyramid(
 					4, 1, a * 0.70710678118654752440, // sqrt(2)/2
@@ -94,7 +94,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		ELONGATED_PENTAGONAL_PYRAMID ("elongatedpentagonalpyramid", "py5", "j9", "9") {
+		ELONGATED_PENTAGONAL_PYRAMID ("elongatedpentagonalpyramid", "epeppy", "eppy", "py5", "j9", "9") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Pyramid(
 					5, 1, a * 0.85065080835203993218, // sqrt((sqrt(5)+5)/10)
@@ -103,7 +103,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		GYROELONGATED_SQUARE_PYRAMID ("gyroelongatedsquarepyramid", "ay4", "j10", "10") {
+		GYROELONGATED_SQUARE_PYRAMID ("gyroelongatedsquarepyramid", "gyesp", "gyespy", "gesp", "gespy", "ay4", "j10", "10") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Pyramid(
 					4, 1, a * 0.70710678118654752440, // sqrt(2)/2
@@ -112,7 +112,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		GYROELONGATED_PENTAGONAL_PYRAMID ("gyroelongatedpentagonalpyramid", "ay5", "j11", "11") {
+		GYROELONGATED_PENTAGONAL_PYRAMID ("gyroelongatedpentagonalpyramid", "gyepip", "gyepipy", "gepp", "geppy", "ay5", "j11", "11") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Pyramid(
 					5, 1, a * 0.85065080835203993218, // sqrt((sqrt(5)+5)/10)
@@ -121,7 +121,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		TRIANGULAR_BIPYRAMID ("triangularbipyramid", "yy3", "j12", "12") {
+		TRIANGULAR_BIPYRAMID ("triangularbipyramid", "tridpy", "tbpy", "yy3", "j12", "12") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Bipyramid(
 					3, 1, a * 0.57735026918962576451, // sqrt(3)/3
@@ -130,7 +130,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		PENTAGONAL_BIPYRAMID ("pentagonalbipyramid", "yy5", "j13", "13") {
+		PENTAGONAL_BIPYRAMID ("pentagonalbipyramid", "pedpy", "pbpy", "yy5", "j13", "13") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Bipyramid(
 					5, 1, a * 0.85065080835203993218, // sqrt((sqrt(5)+5)/10)
@@ -139,7 +139,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		ELONGATED_TRIANGULAR_BIPYRAMID ("elongatedtriangularbipyramid", "ypy3", "j14", "14") {
+		ELONGATED_TRIANGULAR_BIPYRAMID ("elongatedtriangularbipyramid", "etidpy", "etbpy", "ypy3", "j14", "14") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Bipyramid(
 					3, 1, a * 0.57735026918962576451, // sqrt(3)/3
@@ -148,7 +148,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		ELONGATED_SQUARE_BIPYRAMID ("elongatedsquarebipyramid", "ypy4", "j15", "15") {
+		ELONGATED_SQUARE_BIPYRAMID ("elongatedsquarebipyramid", "esquidpy", "esbpy", "ypy4", "j15", "15") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Bipyramid(
 					4, 1, a * 0.70710678118654752440, // sqrt(2)/2
@@ -157,7 +157,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		ELONGATED_PENTAGONAL_BIPYRAMID ("elongatedpentagonalbipyramid", "ypy5", "j16", "16") {
+		ELONGATED_PENTAGONAL_BIPYRAMID ("elongatedpentagonalbipyramid", "epedpy", "epbpy", "ypy5", "j16", "16") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Bipyramid(
 					5, 1, a * 0.85065080835203993218, // sqrt((sqrt(5)+5)/10)
@@ -166,7 +166,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		GYROELONGATED_SQUARE_BIPYRAMID ("gyroelongatedsquarebipyramid", "yay4", "j17", "17") {
+		GYROELONGATED_SQUARE_BIPYRAMID ("gyroelongatedsquarebipyramid", "gyesqidpy", "gesbpy", "yay4", "j17", "17") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Bipyramid(
 					4, 1, a * 0.70710678118654752440, // sqrt(2)/2
@@ -175,7 +175,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		ELONGATED_TRIANGULAR_CUPOLA ("elongatedtriangularcupola", "pu3", "j18", "18") {
+		ELONGATED_TRIANGULAR_CUPOLA ("elongatedtriangularcupola", "etcu", "pu3", "j18", "18") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Cupola(
 					3, a, a * 0.57735026918962576451, // 1; sqrt(3)/3
@@ -184,7 +184,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		ELONGATED_SQUARE_CUPOLA ("elongatedsquarecupola", "pu4", "j19", "19") {
+		ELONGATED_SQUARE_CUPOLA ("elongatedsquarecupola", "escu", "pu4", "j19", "19") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Cupola(
 					4, a * 1.3065629648763765279, a * 0.70710678118654752440, // sqrt(sqrt(2)/2+1); sqrt(2)/2
@@ -193,7 +193,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		ELONGATED_PENTAGONAL_CUPOLA ("elongatedpentagonalcupola", "pu5", "j20", "20") {
+		ELONGATED_PENTAGONAL_CUPOLA ("elongatedpentagonalcupola", "epcu", "pu5", "j20", "20") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Cupola(
 					5, a * 1.6180339887498948482, a * 0.85065080835203993218, // (sqrt(5)+1)/2; sqrt((sqrt(5)+5)/10)
@@ -202,7 +202,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		ELONGATED_PENTAGONAL_ROTUNDA ("elongatedpentagonalrotunda", "pr5", "j21", "21") {
+		ELONGATED_PENTAGONAL_ROTUNDA ("elongatedpentagonalrotunda", "epro", "pr5", "j21", "21") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Rotunda(
 					5, a * 1.6180339887498948482, a * 0.85065080835203993218, // (sqrt(5)+1)/2; sqrt((sqrt(5)+5)/10)
@@ -211,7 +211,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		GYROELONGATED_TRIANGULAR_CUPOLA ("gyroelongatedtriangularcupola", "au3", "j22", "22") {
+		GYROELONGATED_TRIANGULAR_CUPOLA ("gyroelongatedtriangularcupola", "gyetcu", "getcu", "au3", "j22", "22") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Cupola(
 					3, a, a * 0.57735026918962576451, // 1; sqrt(3)/3
@@ -220,7 +220,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		GYROELONGATED_SQUARE_CUPOLA ("gyroelongatedsquarecupola", "au4", "j23", "23") {
+		GYROELONGATED_SQUARE_CUPOLA ("gyroelongatedsquarecupola", "gyescu", "gescu", "au4", "j23", "23") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Cupola(
 					4, a * 1.3065629648763765279, a * 0.70710678118654752440, // sqrt(sqrt(2)/2+1); sqrt(2)/2
@@ -229,7 +229,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		GYROELONGATED_PENTAGONAL_CUPOLA ("gyroelongatedpentagonalcupola", "au5", "j24", "24") {
+		GYROELONGATED_PENTAGONAL_CUPOLA ("gyroelongatedpentagonalcupola", "gyepcu", "gepcu", "au5", "j24", "24") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Cupola(
 					5, a * 1.6180339887498948482, a * 0.85065080835203993218, // (sqrt(5)+1)/2; sqrt((sqrt(5)+5)/10)
@@ -238,7 +238,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		GYROELONGATED_PENTAGONAL_ROTUNDA ("gyroelongatedpentagonalrotunda", "ar5", "j25", "25") {
+		GYROELONGATED_PENTAGONAL_ROTUNDA ("gyroelongatedpentagonalrotunda", "gyepro", "gepro", "ar5", "j25", "25") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Rotunda(
 					5, a * 1.6180339887498948482, a * 0.85065080835203993218, // (sqrt(5)+1)/2; sqrt((sqrt(5)+5)/10)
@@ -247,7 +247,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		GYROBIFASTIGIUM ("gyrobifastigium", "pgp3", "j26", "26") {
+		GYROBIFASTIGIUM ("gyrobifastigium", "gybef", "gbf", "pgp3", "j26", "26") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Constant(new Polyhedron(
 					Arrays.asList(
@@ -274,7 +274,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				));
 			}
 		},
-		TRIANGULAR_ORTHOBICUPOLA ("triangularorthobicupola", "uu3", "j27", "27") {
+		TRIANGULAR_ORTHOBICUPOLA ("triangularorthobicupola", "tobcu", "uu3", "j27", "27") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Bicupola(
 					3, a, a * 0.57735026918962576451, // 1; sqrt(3)/3
@@ -283,7 +283,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		SQUARE_ORTHOBICUPOLA ("squareorthobicupola", "uu4", "j28", "28") {
+		SQUARE_ORTHOBICUPOLA ("squareorthobicupola", "squobcu", "sobcu", "uu4", "j28", "28") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Bicupola(
 					4, a * 1.3065629648763765279, a * 0.70710678118654752440, // sqrt(sqrt(2)/2+1); sqrt(2)/2
@@ -292,7 +292,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		SQUARE_GYROBICUPOLA ("squaregyrobicupola", "ugu4", "j29", "29") {
+		SQUARE_GYROBICUPOLA ("squaregyrobicupola", "squigybcu", "sgbcu", "ugu4", "j29", "29") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Bicupola(
 					4, a * 1.3065629648763765279, a * 0.70710678118654752440, // sqrt(sqrt(2)/2+1); sqrt(2)/2
@@ -301,7 +301,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		PENTAGONAL_ORTHOBICUPOLA ("pentagonalorthobicupola", "uu5", "j30", "30") {
+		PENTAGONAL_ORTHOBICUPOLA ("pentagonalorthobicupola", "pobcu", "uu5", "j30", "30") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Bicupola(
 					5, a * 1.6180339887498948482, a * 0.85065080835203993218, // (sqrt(5)+1)/2; sqrt((sqrt(5)+5)/10)
@@ -310,7 +310,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		PENTAGONAL_GYROBICUPOLA ("pentagonalgyrobicupola", "ugu5", "j31", "31") {
+		PENTAGONAL_GYROBICUPOLA ("pentagonalgyrobicupola", "pegybcu", "pgbcu", "ugu5", "j31", "31") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Bicupola(
 					5, a * 1.6180339887498948482, a * 0.85065080835203993218, // (sqrt(5)+1)/2; sqrt((sqrt(5)+5)/10)
@@ -319,7 +319,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		PENTAGONAL_ORTHOCUPOLAROTUNDA ("pentagonalorthocupolarotunda", "ur5", "j32", "32") {
+		PENTAGONAL_ORTHOCUPOLAROTUNDA ("pentagonalorthocupolarotunda", "pocuro", "ur5", "j32", "32") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Rotunda(
 					5, a * 1.6180339887498948482, a * 0.85065080835203993218, // (sqrt(5)+1)/2; sqrt((sqrt(5)+5)/10)
@@ -328,7 +328,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		PENTAGONAL_GYROCUPOLAROTUNDA ("pentagonalgyrocupolarotunda", "ugr5", "j33", "33") {
+		PENTAGONAL_GYROCUPOLAROTUNDA ("pentagonalgyrocupolarotunda", "pegycuro", "pgcuro", "ugr5", "j33", "33") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Rotunda(
 					5, a * 1.6180339887498948482, a * 0.85065080835203993218, // (sqrt(5)+1)/2; sqrt((sqrt(5)+5)/10)
@@ -337,7 +337,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		PENTAGONAL_ORTHOBIROTUNDA ("pentagonalorthobirotunda", "rr5", "j34", "34") {
+		PENTAGONAL_ORTHOBIROTUNDA ("pentagonalorthobirotunda", "pobro", "rr5", "j34", "34") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Rotunda(
 					5, a * 1.6180339887498948482, a * 0.85065080835203993218, // (sqrt(5)+1)/2; sqrt((sqrt(5)+5)/10)
@@ -346,7 +346,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		ELONGATED_TRIANGULAR_ORTHOBICUPOLA ("elongatedtriangularorthobicupola", "upu3", "j35", "35") {
+		ELONGATED_TRIANGULAR_ORTHOBICUPOLA ("elongatedtriangularorthobicupola", "etobcu", "upu3", "j35", "35") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Bicupola(
 					3, a, a * 0.57735026918962576451, // 1; sqrt(3)/3
@@ -355,7 +355,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		ELONGATED_TRIANGULAR_GYROBICUPOLA ("elongatedtriangulargyrobicupola", "upgu3", "j36", "36") {
+		ELONGATED_TRIANGULAR_GYROBICUPOLA ("elongatedtriangulargyrobicupola", "etigybcu", "etgbcu", "upgu3", "j36", "36") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Bicupola(
 					3, a, a * 0.57735026918962576451, // 1; sqrt(3)/3
@@ -364,7 +364,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		ELONGATED_SQUARE_GYROBICUPOLA ("elongatedsquaregyrobicupola", "upgu4", "j37", "37") {
+		ELONGATED_SQUARE_GYROBICUPOLA ("elongatedsquaregyrobicupola", "esquigybcu", "esgbcu", "upgu4", "j37", "37") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Bicupola(
 					4, a * 1.3065629648763765279, a * 0.70710678118654752440, // sqrt(sqrt(2)/2+1); sqrt(2)/2
@@ -373,7 +373,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		ELONGATED_PENTAGONAL_ORTHOBICUPOLA ("elongatedpentagonalorthobicupola", "upu5", "j38", "38") {
+		ELONGATED_PENTAGONAL_ORTHOBICUPOLA ("elongatedpentagonalorthobicupola", "epobcu", "upu5", "j38", "38") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Bicupola(
 					5, a * 1.6180339887498948482, a * 0.85065080835203993218, // (sqrt(5)+1)/2; sqrt((sqrt(5)+5)/10)
@@ -382,7 +382,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		ELONGATED_PENTAGONAL_GYROBICUPOLA ("elongatedpentagonalgyrobicupola", "upgu5", "j39", "39") {
+		ELONGATED_PENTAGONAL_GYROBICUPOLA ("elongatedpentagonalgyrobicupola", "epigybcu", "epgbcu", "upgu5", "j39", "39") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Bicupola(
 					5, a * 1.6180339887498948482, a * 0.85065080835203993218, // (sqrt(5)+1)/2; sqrt((sqrt(5)+5)/10)
@@ -391,7 +391,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		ELONGATED_PENTAGONAL_ORTHOCUPOLAROTUNDA ("elongatedpentagonalorthocupolarotunda", "upr5", "j40", "40") {
+		ELONGATED_PENTAGONAL_ORTHOCUPOLAROTUNDA ("elongatedpentagonalorthocupolarotunda", "epocuro", "upr5", "j40", "40") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Rotunda(
 					5, a * 1.6180339887498948482, a * 0.85065080835203993218, // (sqrt(5)+1)/2; sqrt((sqrt(5)+5)/10)
@@ -400,7 +400,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		ELONGATED_PENTAGONAL_GYROCUPOLAROTUNDA ("elongatedpentagonalgyrocupolarotunda", "upgr5", "j41", "41") {
+		ELONGATED_PENTAGONAL_GYROCUPOLAROTUNDA ("elongatedpentagonalgyrocupolarotunda", "epgycuro", "epgcuro", "upgr5", "j41", "41") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Rotunda(
 					5, a * 1.6180339887498948482, a * 0.85065080835203993218, // (sqrt(5)+1)/2; sqrt((sqrt(5)+5)/10)
@@ -409,7 +409,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		ELONGATED_PENTAGONAL_ORTHOBIROTUNDA ("elongatedpentagonalorthobirotunda", "rpr5", "j42", "42") {
+		ELONGATED_PENTAGONAL_ORTHOBIROTUNDA ("elongatedpentagonalorthobirotunda", "epobro", "rpr5", "j42", "42") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Rotunda(
 					5, a * 1.6180339887498948482, a * 0.85065080835203993218, // (sqrt(5)+1)/2; sqrt((sqrt(5)+5)/10)
@@ -418,7 +418,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		ELONGATED_PENTAGONAL_GYROBIROTUNDA ("elongatedpentagonalgyrobirotunda", "rpgr5", "j43", "43") {
+		ELONGATED_PENTAGONAL_GYROBIROTUNDA ("elongatedpentagonalgyrobirotunda", "epgybro", "epgbro", "rpgr5", "j43", "43") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Rotunda(
 					5, a * 1.6180339887498948482, a * 0.85065080835203993218, // (sqrt(5)+1)/2; sqrt((sqrt(5)+5)/10)
@@ -427,7 +427,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		GYROELONGATED_TRIANGULAR_BICUPOLA ("gyroelongatedtriangularbicupola", "uau3", "j44", "44") {
+		GYROELONGATED_TRIANGULAR_BICUPOLA ("gyroelongatedtriangularbicupola", "gyetibcu", "getbcu", "uau3", "j44", "44") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Bicupola(
 					3, a, a * 0.57735026918962576451, // 1; sqrt(3)/3
@@ -436,7 +436,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		GYROELONGATED_SQUARE_BICUPOLA ("gyroelongatedsquarebicupola", "uau4", "j45", "45") {
+		GYROELONGATED_SQUARE_BICUPOLA ("gyroelongatedsquarebicupola", "gyesquibcu", "gesbcu", "uau4", "j45", "45") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Bicupola(
 					4, a * 1.3065629648763765279, a * 0.70710678118654752440, // sqrt(sqrt(2)/2+1); sqrt(2)/2
@@ -445,7 +445,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		GYROELONGATED_PENTAGONAL_BICUPOLA ("gyroelongatedpentagonalbicupola", "uau5", "j46", "46") {
+		GYROELONGATED_PENTAGONAL_BICUPOLA ("gyroelongatedpentagonalbicupola", "gyepibcu", "gepbcu", "uau5", "j46", "46") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Bicupola(
 					5, a * 1.6180339887498948482, a * 0.85065080835203993218, // (sqrt(5)+1)/2; sqrt((sqrt(5)+5)/10)
@@ -454,7 +454,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		GYROELONGATED_PENTAGONAL_CUPOLAROTUNDA ("gyroelongatedpentagonalcupolarotunda", "uar5", "j47", "47") {
+		GYROELONGATED_PENTAGONAL_CUPOLAROTUNDA ("gyroelongatedpentagonalcupolarotunda", "gyepcuro", "gepcuro", "uar5", "j47", "47") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Rotunda(
 					5, a * 1.6180339887498948482, a * 0.85065080835203993218, // (sqrt(5)+1)/2; sqrt((sqrt(5)+5)/10)
@@ -464,7 +464,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		GYROELONGATED_PENTAGONAL_BIROTUNDA ("gyroelongatedpentagonalbirotunda", "rar5", "j48", "48") {
+		GYROELONGATED_PENTAGONAL_BIROTUNDA ("gyroelongatedpentagonalbirotunda", "gyepabro", "gepbro", "rar5", "j48", "48") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Rotunda(
 					5, a * 1.6180339887498948482, a * 0.85065080835203993218, // (sqrt(5)+1)/2; sqrt((sqrt(5)+5)/10)
@@ -474,7 +474,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		AUGMENTED_TRIANGULAR_PRISM ("augmentedtriangularprism", "ap3", "j49", "49") {
+		AUGMENTED_TRIANGULAR_PRISM ("augmentedtriangularprism", "autip", "atp", "ap3", "j49", "49") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new Kis(Arrays.asList(new FacePredicate.Degree(4), new FacePredicate.Index(0)), new FaceVertexGen.Equilateral()),
@@ -482,7 +482,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		BIAUGMENTED_TRIANGULAR_PRISM ("biaugmentedtriangularprism", "bap3", "j50", "50") {
+		BIAUGMENTED_TRIANGULAR_PRISM ("biaugmentedtriangularprism", "bautip", "batp", "bap3", "j50", "50") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new Kis(Arrays.asList(new FacePredicate.Degree(4), new FacePredicate.Index(0,1)), new FaceVertexGen.Equilateral()),
@@ -490,7 +490,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		TRIAUGMENTED_TRIANGULAR_PRISM ("triaugmentedtriangularprism", "tap3", "j51", "51") {
+		TRIAUGMENTED_TRIANGULAR_PRISM ("triaugmentedtriangularprism", "tautip", "tatp", "tap3", "j51", "51") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new Kis(Arrays.asList(new FacePredicate.Degree(4)), new FaceVertexGen.Equilateral()),
@@ -498,7 +498,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		AUGMENTED_PENTAGONAL_PRISM ("augmentedpentagonalprism", "ap5", "j52", "52") {
+		AUGMENTED_PENTAGONAL_PRISM ("augmentedpentagonalprism", "aupip", "app", "ap5", "j52", "52") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new Kis(Arrays.asList(new FacePredicate.Degree(4), new FacePredicate.Index(0)), new FaceVertexGen.Equilateral()),
@@ -506,7 +506,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		BIAUGMENTED_PENTAGONAL_PRISM ("biaugmentedpentagonalprism", "bap5", "j53", "53") {
+		BIAUGMENTED_PENTAGONAL_PRISM ("biaugmentedpentagonalprism", "baupip", "bapp", "bap5", "j53", "53") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new Kis(Arrays.asList(new FacePredicate.Degree(4), new FacePredicate.AtAngle(144)), new FaceVertexGen.Equilateral()),
@@ -514,7 +514,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		AUGMENTED_HEXAGONAL_PRISM ("augmentedhexagonalprism", "ap6", "j54", "54") {
+		AUGMENTED_HEXAGONAL_PRISM ("augmentedhexagonalprism", "auhip", "ahp", "ap6", "j54", "54") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new Kis(Arrays.asList(new FacePredicate.Degree(4), new FacePredicate.Index(0)), new FaceVertexGen.Equilateral()),
@@ -522,7 +522,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		PARABIAUGMENTED_HEXAGONAL_PRISM ("parabiaugmentedhexagonalprism", "pap6", "j55", "55") {
+		PARABIAUGMENTED_HEXAGONAL_PRISM ("parabiaugmentedhexagonalprism", "pabauhip", "pahp", "pap6", "j55", "55") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new Kis(Arrays.asList(new FacePredicate.Degree(4), new FacePredicate.AtAngle(180)), new FaceVertexGen.Equilateral()),
@@ -530,7 +530,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		METABIAUGMENTED_HEXAGONAL_PRISM ("metabiaugmentedhexagonalprism", "map6", "j56", "56") {
+		METABIAUGMENTED_HEXAGONAL_PRISM ("metabiaugmentedhexagonalprism", "mabauhip", "mahp", "map6", "j56", "56") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new Kis(Arrays.asList(new FacePredicate.Degree(4), new FacePredicate.AtAngle(120), new FacePredicate.Index(0,1)), new FaceVertexGen.Equilateral()),
@@ -538,7 +538,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		TRIAUGMENTED_HEXAGONAL_PRISM ("triaugmentedhexagonalprism", "tap6", "j57", "57") {
+		TRIAUGMENTED_HEXAGONAL_PRISM ("triaugmentedhexagonalprism", "tauhip", "tahp", "tap6", "j57", "57") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new Kis(Arrays.asList(new FacePredicate.Degree(4), new FacePredicate.AtAngle(120)), new FaceVertexGen.Equilateral()),
@@ -546,7 +546,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		AUGMENTED_DODECAHEDRON ("augmenteddodecahedron", "ad", "j58", "58") {
+		AUGMENTED_DODECAHEDRON ("augmenteddodecahedron", "aud", "ad", "j58", "58") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new Kis(Arrays.asList(new FacePredicate.Index(0)), new FaceVertexGen.Equilateral()),
@@ -554,7 +554,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		PARABIAUGMENTED_DODECAHEDRON ("parabiaugmenteddodecahedron", "pad", "j59", "59") {
+		PARABIAUGMENTED_DODECAHEDRON ("parabiaugmenteddodecahedron", "pabaud", "pad", "j59", "59") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new Kis(Arrays.asList(new FacePredicate.AtAngle(180)), new FaceVertexGen.Equilateral()),
@@ -562,7 +562,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		METABIAUGMENTED_DODECAHEDRON ("metabiaugmenteddodecahedron", "mad", "j60", "60") {
+		METABIAUGMENTED_DODECAHEDRON ("metabiaugmenteddodecahedron", "mabaud", "mad", "j60", "60") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new Kis(Arrays.asList(new FacePredicate.AtAngle(116.56505117707799), new FacePredicate.Index(0,1)), new FaceVertexGen.Equilateral()),
@@ -570,7 +570,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		TRIAUGMENTED_DODECAHEDRON ("triaugmenteddodecahedron", "tad", "j61", "61") {
+		TRIAUGMENTED_DODECAHEDRON ("triaugmenteddodecahedron", "taud", "tad", "j61", "61") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new Kis(Arrays.asList(new FacePredicate.AtAngle(116.56505117707799)), new FaceVertexGen.Equilateral()),
@@ -578,7 +578,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		METABIDIMINISHED_ICOSAHEDRON ("metabidiminishedicosahedron", "mdi", "j62", "62") {
+		METABIDIMINISHED_ICOSAHEDRON ("metabidiminishedicosahedron", "mibdi", "mdi", "j62", "62") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new RemoveVertices(Arrays.asList(new VertexPredicate.AtAngle(116.56505117707799), new VertexPredicate.Index(0,1)), c),
@@ -586,7 +586,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		TRIDIMINISHED_ICOSAHEDRON ("tridiminishedicosahedron", "tdi", "j63", "63") {
+		TRIDIMINISHED_ICOSAHEDRON ("tridiminishedicosahedron", "teddi", "tdi", "j63", "63") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new RemoveVertices(Arrays.asList(new VertexPredicate.AtAngle(116.56505117707799)), c),
@@ -594,7 +594,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		AUGMENTED_TRIDIMINISHED_ICOSAHEDRON ("augmentedtridiminishedicosahedron", "atdi", "j64", "64") {
+		AUGMENTED_TRIDIMINISHED_ICOSAHEDRON ("augmentedtridiminishedicosahedron", "auteddi", "atdi", "j64", "64") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new Chain(
@@ -605,7 +605,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		AUGMENTED_TRUNCATED_TETRAHEDRON ("augmentedtruncatedtetrahedron", "att", "j65", "65") {
+		AUGMENTED_TRUNCATED_TETRAHEDRON ("augmentedtruncatedtetrahedron", "autut", "att", "j65", "65") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new Augment(
@@ -619,7 +619,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		AUGMENTED_TRUNCATED_CUBE ("augmentedtruncatedcube", "atc", "j66", "66") {
+		AUGMENTED_TRUNCATED_CUBE ("augmentedtruncatedcube", "autic", "atc", "j66", "66") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new Augment(
@@ -633,7 +633,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		BIAUGMENTED_TRUNCATED_CUBE ("biaugmentedtruncatedcube", "batc", "j67", "67") {
+		BIAUGMENTED_TRUNCATED_CUBE ("biaugmentedtruncatedcube", "bautic", "batc", "j67", "67") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new Augment(
@@ -647,7 +647,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		AUGMENTED_TRUNCATED_DODECAHEDRON ("augmentedtruncateddodecahedron", "atd", "j68", "68") {
+		AUGMENTED_TRUNCATED_DODECAHEDRON ("augmentedtruncateddodecahedron", "autid", "atd", "j68", "68") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new Augment(
@@ -661,7 +661,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		PARABIAUGMENTED_TRUNCATED_DODECAHEDRON ("parabiaugmentedtruncateddodecahedron", "patd", "j69", "69") {
+		PARABIAUGMENTED_TRUNCATED_DODECAHEDRON ("parabiaugmentedtruncateddodecahedron", "pabautid", "patd", "j69", "69") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new Augment(
@@ -675,7 +675,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		METABIAUGMENTED_TRUNCATED_DODECAHEDRON ("metabiaugmentedtruncateddodecahedron", "matd", "j70", "70") {
+		METABIAUGMENTED_TRUNCATED_DODECAHEDRON ("metabiaugmentedtruncateddodecahedron", "mabautid", "matd", "j70", "70") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new Augment(
@@ -689,7 +689,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		TRIAUGMENTED_TRUNCATED_DODECAHEDRON ("triaugmentedtruncateddodecahedron", "tatd", "j71", "71") {
+		TRIAUGMENTED_TRUNCATED_DODECAHEDRON ("triaugmentedtruncateddodecahedron", "tautid", "tatd", "j71", "71") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new Augment(
@@ -717,7 +717,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		PARABIGYRATE_RHOMBICOSIDODECAHEDRON ("parabigyraterhombicosidodecahedron", "pgyrid", "j73", "73") {
+		PARABIGYRATE_RHOMBICOSIDODECAHEDRON ("parabigyraterhombicosidodecahedron", "pabgyrid", "pgyrid", "j73", "73") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new Chain(
@@ -731,7 +731,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		METABIGYRATE_RHOMBICOSIDODECAHEDRON ("metabigyraterhombicosidodecahedron", "mgyrid", "j74", "74") {
+		METABIGYRATE_RHOMBICOSIDODECAHEDRON ("metabigyraterhombicosidodecahedron", "mabgyrid", "mgyrid", "j74", "74") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new Chain(
@@ -745,7 +745,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		TRIGYRATE_RHOMBICOSIDODECAHEDRON ("trigyraterhombicosidodecahedron", "tgyrid", "j75", "75") {
+		TRIGYRATE_RHOMBICOSIDODECAHEDRON ("trigyraterhombicosidodecahedron", "tagyrid", "tgyrid", "j75", "75") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new Chain(
@@ -759,7 +759,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		DIMINISHED_RHOMBICOSIDODECAHEDRON ("diminishedrhombicosidodecahedron", "drid", "j76", "76") {
+		DIMINISHED_RHOMBICOSIDODECAHEDRON ("diminishedrhombicosidodecahedron", "dirid", "drid", "j76", "76") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new RemoveFaces(Arrays.asList(new FacePredicate.Degree(5), new FacePredicate.Index(0)), c),
@@ -770,7 +770,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		PARAGYRATE_DIMINISHED_RHOMBICOSIDODECAHEDRON ("paragyratediminishedrhombicosidodecahedron", "pgydrid", "j77", "77") {
+		PARAGYRATE_DIMINISHED_RHOMBICOSIDODECAHEDRON ("paragyratediminishedrhombicosidodecahedron", "pagydrid", "pgydrid", "j77", "77") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new Chain(
@@ -784,7 +784,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		METAGYRATE_DIMINISHED_RHOMBICOSIDODECAHEDRON ("metagyratediminishedrhombicosidodecahedron", "mgydrid", "j78", "78") {
+		METAGYRATE_DIMINISHED_RHOMBICOSIDODECAHEDRON ("metagyratediminishedrhombicosidodecahedron", "magydrid", "mgydrid", "j78", "78") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new Chain(
@@ -798,7 +798,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		BIGYRATE_DIMINISHED_RHOMBICOSIDODECAHEDRON ("bigyratediminishedrhombicosidodecahedron", "bgydrid", "j79", "79") {
+		BIGYRATE_DIMINISHED_RHOMBICOSIDODECAHEDRON ("bigyratediminishedrhombicosidodecahedron", "bagydrid", "bgydrid", "j79", "79") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new Chain(
@@ -812,7 +812,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		PARABIDIMINISHED_RHOMBICOSIDODECAHEDRON ("parabidiminishedrhombicosidodecahedron", "pdrid", "j80", "80") {
+		PARABIDIMINISHED_RHOMBICOSIDODECAHEDRON ("parabidiminishedrhombicosidodecahedron", "pabidrid", "pdrid", "j80", "80") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new RemoveFaces(Arrays.asList(new FacePredicate.Degree(5), new FacePredicate.AtAngle(180)), c),
@@ -823,7 +823,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		METABIDIMINISHED_RHOMBICOSIDODECAHEDRON ("metabidiminishedrhombicosidodecahedron", "mdrid", "j81", "81") {
+		METABIDIMINISHED_RHOMBICOSIDODECAHEDRON ("metabidiminishedrhombicosidodecahedron", "mabidrid", "mdrid", "j81", "81") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new RemoveFaces(Arrays.asList(new FacePredicate.Degree(5), new FacePredicate.AtAngle(116.56505117707799), new FacePredicate.Index(0,1)), c),
@@ -834,7 +834,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		GYRATE_BIDIMINISHED_RHOMBICOSIDODECAHEDRON ("gyratebidiminishedrhombicosidodecahedron", "gybdrid", "j82", "82") {
+		GYRATE_BIDIMINISHED_RHOMBICOSIDODECAHEDRON ("gyratebidiminishedrhombicosidodecahedron", "gybadrid", "gybdrid", "j82", "82") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new Chain(
@@ -848,7 +848,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		TRIDIMINISHED_RHOMBICOSIDODECAHEDRON ("tridiminishedrhombicosidodecahedron", "tdrid", "j83", "83") {
+		TRIDIMINISHED_RHOMBICOSIDODECAHEDRON ("tridiminishedrhombicosidodecahedron", "tedrid", "tdrid", "j83", "83") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new RemoveFaces(Arrays.asList(new FacePredicate.Degree(5), new FacePredicate.AtAngle(116.56505117707799)), c),
@@ -859,7 +859,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		SNUB_DISPHENOID ("snubdisphenoid", "snds", "j84", "84") {
+		SNUB_DISPHENOID ("snubdisphenoid", "snadow", "snds", "j84", "84") {
 			public PolyhedronGen gen(double a, Color c) {
 				double q = 0.16902222942417583090; // 2*x^3 + 11*x^2 + 4*x - 1 = 0
 				double r = a/2 * Math.sqrt(q);
@@ -881,7 +881,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		SNUB_SQUARE_ANTIPRISM ("snubsquareantiprism", "sna4", "j85", "85") {
+		SNUB_SQUARE_ANTIPRISM ("snubsquareantiprism", "snisquap", "snsa", "sna4", "j85", "85") {
 			public PolyhedronGen gen(double a, Color c) {
 				double p = a * 0.18560702128217984757; // sqrt(8192*x^6 + 73728*x^5 + 90880*x^4 - 47872*x^3 + 5632*x^2 - 112*x - 1 = 0)
 				double q = a * 0.67686850903135608229; // sqrt(8192*x^6 + 24576*x^5 + 768*x^4 - 8448*x^3 - 512*x^2 + 688*x - 1 = 0)
@@ -912,7 +912,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		SPHENOCORONA ("sphenocorona", "sc", "j86", "86") {
+		SPHENOCORONA ("sphenocorona", "waco", "sc", "j86", "86") {
 			public PolyhedronGen gen(double a, Color c) {
 				double k = 0.85272694284641685541; // (6+sqrt(6)+2*sqrt(213-57*sqrt(6)))/30
 				double u = a/2;
@@ -938,7 +938,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		AUGMENTED_SPHENOCORONA ("augmentedsphenocorona", "asc", "j87", "87") {
+		AUGMENTED_SPHENOCORONA ("augmentedsphenocorona", "auwaco", "asc", "j87", "87") {
 			public PolyhedronGen gen(double a, Color c) {
 				return new Construct(
 					new Kis(Arrays.asList(new FacePredicate.Degree(4), new FacePredicate.Index(0)), new FaceVertexGen.Equilateral()),
@@ -946,7 +946,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		SPHENOMEGACORONA ("sphenomegacorona", "smc", "j88", "88") {
+		SPHENOMEGACORONA ("sphenomegacorona", "wamco", "smc", "j88", "88") {
 			public PolyhedronGen gen(double a, Color c) {
 				double k = 0.59463333563263853005; // 1680*x^16-4800*x^15-3712*x^14+17216*x^13+1568*x^12-24576*x^11+2464*x^10+17248*x^9-3384*x^8-5584*x^7+2000*x^6+240*x^5-776*x^4+304*x^3+200*x^2-56*x-23=0
 				double u = a/2;
@@ -976,7 +976,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		HEBESPHENOMEGACORONA ("hebesphenomegacorona", "hsmc", "j89", "89") {
+		HEBESPHENOMEGACORONA ("hebesphenomegacorona", "hawmco", "hsmc", "j89", "89") {
 			public PolyhedronGen gen(double a, Color c) {
 				double k = 0.21684481571345683717; // 26880*x^10+35328*x^9-25600*x^8-39680*x^7+6112*x^6+13696*x^5+2128*x^4-1808*x^3-1119*x^2+494*x-47=0
 				double u = Math.sqrt(1-k*k);
@@ -1008,7 +1008,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		DISPHENOCINGULUM ("disphenocingulum", "dsc", "j90", "90") {
+		DISPHENOCINGULUM ("disphenocingulum", "dawci", "dsc", "j90", "90") {
 			public PolyhedronGen gen(double a, Color c) {
 				double k = 0.76713111398346150192; // 256*x^12-512*x^11-1664*x^10+3712*x^9+1552*x^8-6592*x^7+1248*x^6+4352*x^5-2024*x^4-944*x^3+672*x^2-24*x-23=0
 				double u = Math.sqrt(1-k*k);
@@ -1042,7 +1042,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		BILUNABIROTUNDA ("bilunabirotunda", "blbr", "j91", "91") {
+		BILUNABIROTUNDA ("bilunabirotunda", "bilbiro", "blbr", "j91", "91") {
 			public PolyhedronGen gen(double a, Color c) {
 				double u = a/2;
 				double v = a*(Math.sqrt(5)+3)/4;
@@ -1068,7 +1068,7 @@ public class JohnsonSolid extends PolyhedronGen {
 				);
 			}
 		},
-		TRIANGULAR_HEBESPHENOROTUNDA ("triangularhebesphenorotunda", "thsr", "j92", "92") {
+		TRIANGULAR_HEBESPHENOROTUNDA ("triangularhebesphenorotunda", "thawro", "thsr", "j92", "92") {
 			public PolyhedronGen gen(double a, Color c) {
 				double o = a/2;
 				double p = a*Math.sqrt(3)/6;
