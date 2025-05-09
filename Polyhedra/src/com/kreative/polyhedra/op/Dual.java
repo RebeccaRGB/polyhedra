@@ -12,7 +12,7 @@ import com.kreative.polyhedra.PolyhedronOp;
 
 public class Dual extends PolyhedronOp {
 	public static enum RescaleMode {
-		NONE("s", "do not rescale dual polyhedron (strict mode)") {
+		NONE("d", "do not rescale dual polyhedron") {
 			public boolean rescale(Polyhedron seed, Polyhedron dual, List<Point3D> vertices) {
 				return false;
 			}
@@ -139,15 +139,6 @@ public class Dual extends PolyhedronOp {
 			return null;
 		}
 		
-		public static RescaleMode forFlagIgnoreCase(String flag) {
-			for (RescaleMode mode : values()) {
-				if (mode.flagWithDash.equalsIgnoreCase(flag) || mode.altFlagWithDash.equalsIgnoreCase(flag)) {
-					return mode;
-				}
-			}
-			return null;
-		}
-		
 		private static boolean rescaleChecked(Polyhedron seed, Polyhedron dual, List<Point3D> points, MetricAggregator agg, Metric metric) {
 			double seedScale = agg.aggregate(metric.iterator(seed, seed.center()));
 			double dualScale = agg.aggregate(metric.iterator(dual, dual.center()));
@@ -162,10 +153,12 @@ public class Dual extends PolyhedronOp {
 		}
 	}
 	
+	private final FaceVertexGen fvgen;
 	private final RescaleMode mode;
 	private final Color color;
 	
-	public Dual(RescaleMode mode, Color color) {
+	public Dual(FaceVertexGen fvgen, RescaleMode mode, Color color) {
+		this.fvgen = fvgen;
 		this.mode = mode;
 		this.color = color;
 	}
@@ -174,7 +167,12 @@ public class Dual extends PolyhedronOp {
 		List<Point3D> vertices = new ArrayList<Point3D>(seed.faces.size());
 		List<List<Integer>> faces = new ArrayList<List<Integer>>(seed.vertices.size());
 		List<Color> faceColors = new ArrayList<Color>(seed.vertices.size());
-		for (Polyhedron.Face f : seed.faces) vertices.add(f.center());
+		
+		fvgen.reset(seed, seed.points());
+		for (Polyhedron.Face face : seed.faces) {
+			vertices.add(fvgen.createVertex(face, face.points()));
+		}
+		
 		for (Polyhedron.Vertex v : seed.vertices) {
 			List<Polyhedron.Face> seedFaces = seed.getFaces(v);
 			while (!seedFaces.isEmpty()) {
@@ -187,6 +185,7 @@ public class Dual extends PolyhedronOp {
 				faceColors.add(color);
 			}
 		}
+		
 		Polyhedron dual = new Polyhedron(vertices, faces, faceColors);
 		if (!mode.rescale(seed, dual, vertices)) return dual;
 		return new Polyhedron(vertices, faces, faceColors);
@@ -196,15 +195,20 @@ public class Dual extends PolyhedronOp {
 		public String name() { return "Dual"; }
 		
 		public Dual parse(String[] args) {
-			RescaleMode mode = RescaleMode.MAX_VERTEX_MAGNITUDE;
+			FaceVertexGen fvgen = new FaceVertexGen.PolarReciprocal(MetricAggregator.AVERAGE, Metric.EDGE_MAGNITUDE);
+			FaceVertexGen.Builder fvtmp;
+			RescaleMode mode = RescaleMode.NONE;
 			RescaleMode mtmp;
 			Color color = Color.GRAY;
 			int argi = 0;
 			while (argi < args.length) {
 				String arg = args[argi++];
-				if ((mtmp = RescaleMode.forFlag(arg)) != null) {
-					mode = mtmp;
-				} else if ((mtmp = RescaleMode.forFlagIgnoreCase(arg)) != null) {
+				if (arg.equals("-s")) {
+					fvgen = new FaceVertexGen.FaceOffset(0);
+					mode = RescaleMode.NONE;
+				} else if ((fvtmp = FaceVertexGen.Builder.forFlag(arg)) != null && (fvtmp.ignoresArgument() || argi < args.length)) {
+					fvgen = fvtmp.buildFromArgument(fvtmp.ignoresArgument() ? null : args[argi++]);
+				} else if ((mtmp = RescaleMode.forFlag(arg)) != null) {
 					mode = mtmp;
 				} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
 					color = parseColor(args[argi++], color);
@@ -212,15 +216,23 @@ public class Dual extends PolyhedronOp {
 					return null;
 				}
 			}
-			return new Dual(mode, color);
+			return new Dual(fvgen, mode, color);
 		}
 		
 		public Option[] options() {
-			RescaleMode[] modes = RescaleMode.values();
-			Option[] options = new Option[modes.length + 1];
-			for (int i = 0; i < modes.length; i++) options[i] = modes[i].option();
-			options[modes.length] = new Option("c", Type.COLOR, "color");
-			return options;
+			List<Option> options = new ArrayList<Option>();
+			options.add(FaceVertexGen.Builder.FACE_OFFSET.option("s"));
+			options.add(FaceVertexGen.Builder.MAX_MAGNITUDE_OFFSET.option("s"));
+			options.add(FaceVertexGen.Builder.AVERAGE_MAGNITUDE_OFFSET.option("s"));
+			options.add(FaceVertexGen.Builder.FACE_MAGNITUDE_OFFSET.option("s"));
+			options.add(FaceVertexGen.Builder.INVERSION_ABOUT_VERTICES.option("s"));
+			options.add(FaceVertexGen.Builder.INVERSION_ABOUT_EDGES.option("s"));
+			options.add(FaceVertexGen.Builder.INVERSION_ABOUT_FACES.option("s"));
+			options.add(FaceVertexGen.Builder.INVERSION_ABOUT_RADIUS.option("s"));
+			for (RescaleMode mode : RescaleMode.values()) options.add(mode.option("s"));
+			options.add(new Option("s", Type.VOID, "create new vertices at centers and do not resize (strict mode)"));
+			options.add(new Option("c", Type.COLOR, "color"));
+			return options.toArray(new Option[options.size()]);
 		}
 	}
 	

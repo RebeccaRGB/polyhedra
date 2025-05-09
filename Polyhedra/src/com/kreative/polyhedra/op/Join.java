@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.kreative.polyhedra.Metric;
+import com.kreative.polyhedra.MetricAggregator;
 import com.kreative.polyhedra.Point3D;
 import com.kreative.polyhedra.Polyhedron;
 import com.kreative.polyhedra.PolyhedronOp;
@@ -55,13 +57,13 @@ public class Join extends PolyhedronOp {
 		public String name() { return "Join"; }
 		
 		public Join parse(String[] args) {
-			FaceVertexGen fvgen = new FaceVertexGen.Planar();
+			FaceVertexGen fvgen = new FaceVertexGen.PolarReciprocal(MetricAggregator.AVERAGE, Metric.EDGE_MAGNITUDE);
 			FaceVertexGen.Builder fvtmp;
 			Color color = Color.GRAY;
 			int argi = 0;
 			while (argi < args.length) {
 				String arg = args[argi++];
-				if (arg.equalsIgnoreCase("-s")) {
+				if (arg.equals("-s")) {
 					fvgen = new FaceVertexGen.FaceOffset(0);
 				} else if ((fvtmp = FaceVertexGen.Builder.forFlagIgnoreCase(arg)) != null && (fvtmp.ignoresArgument() || argi < args.length)) {
 					fvgen = fvtmp.buildFromArgument(fvtmp.ignoresArgument() ? null : args[argi++]);
@@ -80,7 +82,10 @@ public class Join extends PolyhedronOp {
 				FaceVertexGen.Builder.MAX_MAGNITUDE_OFFSET.option("s"),
 				FaceVertexGen.Builder.AVERAGE_MAGNITUDE_OFFSET.option("s"),
 				FaceVertexGen.Builder.FACE_MAGNITUDE_OFFSET.option("s"),
-				FaceVertexGen.Builder.PLANAR.option("s"),
+				FaceVertexGen.Builder.INVERSION_ABOUT_VERTICES.option("s"),
+				FaceVertexGen.Builder.INVERSION_ABOUT_EDGES.option("s"),
+				FaceVertexGen.Builder.INVERSION_ABOUT_FACES.option("s"),
+				FaceVertexGen.Builder.INVERSION_ABOUT_RADIUS.option("s"),
 				new Option("s", Type.VOID, "create new vertices at centers of original faces (strict mode)", FaceVertexGen.Builder.allOptionMutexes()),
 				new Option("c", Type.COLOR, "color"),
 			};

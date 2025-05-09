@@ -116,7 +116,7 @@ public abstract class EdgeVertexGen {
 				return new FaceOffset((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
-		MAX_MAGNITUDE_OFFSET ("m", Type.REAL, "create vertices from edges relative to the maximum magnitude") {
+		MAX_MAGNITUDE_OFFSET ("x", Type.REAL, "create vertices from edges relative to the maximum magnitude") {
 			public EdgeVertexGen build(Object arg) {
 				return new SeedVertexMagnitudeOffset(MetricAggregator.MAXIMUM, (arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
@@ -126,7 +126,7 @@ public abstract class EdgeVertexGen {
 				return new SeedVertexMagnitudeOffset(MetricAggregator.AVERAGE, (arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
-		MIN_MAGNITUDE_OFFSET ("i", Type.REAL, "create vertices from edges relative to the minimum magnitude") {
+		MIN_MAGNITUDE_OFFSET ("v", Type.REAL, "create vertices from edges relative to the minimum magnitude") {
 			public EdgeVertexGen build(Object arg) {
 				return new SeedVertexMagnitudeOffset(MetricAggregator.MINIMUM, (arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
@@ -136,7 +136,7 @@ public abstract class EdgeVertexGen {
 				return new EdgeMagnitudeOffset((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
-		VERTEX_MAGNITUDE_OFFSET ("v", Type.REAL, "create vertices from edges relative to the vertex magnitude") {
+		VERTEX_MAGNITUDE_OFFSET ("d", Type.REAL, "create vertices from edges relative to the vertex magnitude") {
 			public EdgeVertexGen build(Object arg) {
 				return new DefaultVertexMagnitudeOffset((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}

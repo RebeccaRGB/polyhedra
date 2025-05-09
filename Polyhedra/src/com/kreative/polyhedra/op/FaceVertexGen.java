@@ -100,15 +100,22 @@ public abstract class FaceVertexGen {
 	public static final class PolarReciprocal extends FaceVertexGen {
 		private final MetricAggregator agg;
 		private final Metric met;
+		private final Double rad;
 		public PolarReciprocal(MetricAggregator aggregator, Metric metric) {
 			this.agg = aggregator;
 			this.met = metric;
+			this.rad = null;
+		}
+		public PolarReciprocal(double radius) {
+			this.agg = null;
+			this.met = null;
+			this.rad = radius;
 		}
 		private Point3D sc;
 		private double sm;
 		public void reset(Polyhedron s, List<Point3D> sv) {
 			this.sc = Point3D.average(sv);
-			this.sm = agg.aggregate(met.iterator(s, sc));
+			this.sm = (agg != null && met != null) ? agg.aggregate(met.iterator(s, sc)) : rad;
 		}
 		public Point3D createVertex(Polyhedron.Face f, List<Point3D> fv) {
 			Point3D fc = Point3D.average(fv);
@@ -126,7 +133,7 @@ public abstract class FaceVertexGen {
 				return new FaceOffset((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
-		MAX_MAGNITUDE_OFFSET ("M", Type.REAL, "create vertices from faces relative to the maximum magnitude") {
+		MAX_MAGNITUDE_OFFSET ("X", Type.REAL, "create vertices from faces relative to the maximum magnitude") {
 			public FaceVertexGen build(Object arg) {
 				return new SeedVertexMagnitudeOffset(MetricAggregator.MAXIMUM, (arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
@@ -136,7 +143,7 @@ public abstract class FaceVertexGen {
 				return new SeedVertexMagnitudeOffset(MetricAggregator.AVERAGE, (arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
-		MIN_MAGNITUDE_OFFSET ("I", Type.REAL, "create vertices from faces relative to the minimum magnitude") {
+		MIN_MAGNITUDE_OFFSET ("V", Type.REAL, "create vertices from faces relative to the minimum magnitude") {
 			public FaceVertexGen build(Object arg) {
 				return new SeedVertexMagnitudeOffset(MetricAggregator.MINIMUM, (arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
@@ -154,6 +161,26 @@ public abstract class FaceVertexGen {
 		PLANAR ("P", Type.VOID, "attempt to create planar faces (not always possible)") {
 			public FaceVertexGen build(Object arg) {
 				return new Planar();
+			}
+		},
+		INVERSION_ABOUT_VERTICES ("R", Type.VOID, "create vertices by inversion about average vertex magnitude") {
+			public FaceVertexGen build(Object arg) {
+				return new PolarReciprocal(MetricAggregator.AVERAGE, Metric.VERTEX_MAGNITUDE);
+			}
+		},
+		INVERSION_ABOUT_EDGES ("M", Type.VOID, "create vertices by inversion about average edge magnitude") {
+			public FaceVertexGen build(Object arg) {
+				return new PolarReciprocal(MetricAggregator.AVERAGE, Metric.EDGE_MAGNITUDE);
+			}
+		},
+		INVERSION_ABOUT_FACES ("I", Type.VOID, "create vertices by inversion about average face magnitude") {
+			public FaceVertexGen build(Object arg) {
+				return new PolarReciprocal(MetricAggregator.AVERAGE, Metric.FACE_MAGNITUDE);
+			}
+		},
+		INVERSION_ABOUT_RADIUS ("S", Type.REAL, "create vertices by inversion about a specified radius") {
+			public FaceVertexGen build(Object arg) {
+				return new PolarReciprocal((arg instanceof Number) ? ((Number)arg).doubleValue() : 1);
 			}
 		};
 		private final String flagWithoutDash;

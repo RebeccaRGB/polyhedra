@@ -81,7 +81,7 @@ public class Gyro extends PolyhedronOp {
 			int argi = 0;
 			while (argi < args.length) {
 				String arg = args[argi++];
-				if (arg.equalsIgnoreCase("-s")) {
+				if (arg.equals("-s")) {
 					fvgen = new FaceVertexGen.FaceOffset(0);
 					gvgen = new GyroVertexGen.RelativeDistanceFromMidpointAlongEdge(1.0/3.0);
 					evgen = new EdgeVertexGen.FaceOffset(0);

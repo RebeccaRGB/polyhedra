@@ -43,7 +43,7 @@ public class BOM {
 			new Pyramid.Factory(),
 			new Quadrille.Factory(),
 			new Rotunda.Factory(),
-			// new Sharpohedron.Factory(),
+			new Sharpohedron.Factory(),
 			new SmallStellatedDodecahedron.Factory(),
 			new Tetrahedron.Factory(),
 			new Trapezohedron.Factory()
@@ -78,7 +78,7 @@ public class BOM {
 		con.put("P", new Prism.Factory());
 		con.put("Q", new Quadrille.Factory());
 		con.put("R", new Trapezohedron.Factory()); // extension
-		// con.put("S", new Sharpohedron.Factory()); // extension
+		con.put("S", new Sharpohedron.Factory()); // extension
 		con.put("T", new Tetrahedron.Factory());
 		con.put("U", new Cupola.Factory());
 		con.put("UU", new Bicupola.Factory()); // extension

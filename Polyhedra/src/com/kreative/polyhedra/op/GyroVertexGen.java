@@ -142,7 +142,7 @@ public abstract class GyroVertexGen {
 				return new RelativeDistanceFromVertexAlongEdge((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
-		FIXED_ANGLE_FROM_VERTEX_ALONG_EDGE ("W", Type.REAL, "create vertices along edges at a fixed angle from the vertex") {
+		FIXED_ANGLE_FROM_VERTEX_ALONG_EDGE ("w", Type.REAL, "create vertices along edges at a fixed angle from the vertex") {
 			public GyroVertexGen build(Object arg) {
 				return new FixedAngleFromVertexAlongEdge((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
@@ -157,7 +157,7 @@ public abstract class GyroVertexGen {
 				return new RelativeDistanceFromMidpointAlongEdge((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
-		FIXED_ANGLE_FROM_MIDPOINT_ALONG_EDGE ("N", Type.REAL, "create vertices along edges at a fixed angle from the midpoint") {
+		FIXED_ANGLE_FROM_MIDPOINT_ALONG_EDGE ("m", Type.REAL, "create vertices along edges at a fixed angle from the midpoint") {
 			public GyroVertexGen build(Object arg) {
 				return new FixedAngleFromMidpointAlongEdge((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
