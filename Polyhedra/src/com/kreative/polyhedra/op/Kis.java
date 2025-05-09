@@ -9,10 +9,10 @@ import com.kreative.polyhedra.Polyhedron;
 import com.kreative.polyhedra.PolyhedronOp;
 
 public class Kis extends PolyhedronOp {
-	private final List<FacePredicate> predicates;
+	private final List<? extends FacePredicate> predicates;
 	private final FaceVertexGen fvgen;
 	
-	public Kis(List<FacePredicate> predicates, FaceVertexGen fvgen) {
+	public Kis(List<? extends FacePredicate> predicates, FaceVertexGen fvgen) {
 		this.predicates = predicates;
 		this.fvgen = fvgen;
 	}

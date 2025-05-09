@@ -33,12 +33,12 @@ public class Augment extends PolyhedronOp {
 		public abstract boolean createTriangle(Polyhedron seed, Polyhedron.Edge edge, Polyhedron.Face face);
 	}
 	
-	private final List<FacePredicate> predicates;
+	private final List<? extends FacePredicate> predicates;
 	private final AugmentationSpec spec;
 	private final double r;
 	private final double h;
 	
-	public Augment(List<FacePredicate> predicates, AugmentationSpec spec, double r, double h) {
+	public Augment(List<? extends FacePredicate> predicates, AugmentationSpec spec, double r, double h) {
 		this.predicates = predicates;
 		this.spec = spec;
 		this.r = r;

@@ -14,10 +14,10 @@ import com.kreative.polyhedra.Polyhedron;
 import com.kreative.polyhedra.PolyhedronOp;
 
 public class RemoveVertices extends PolyhedronOp {
-	private final List<VertexPredicate> predicates;
+	private final List<? extends VertexPredicate> predicates;
 	private final Color color;
 	
-	public RemoveVertices(List<VertexPredicate> predicates, Color color) {
+	public RemoveVertices(List<? extends VertexPredicate> predicates, Color color) {
 		this.predicates = predicates;
 		this.color = color;
 	}

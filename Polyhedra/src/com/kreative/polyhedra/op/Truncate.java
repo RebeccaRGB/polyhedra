@@ -152,12 +152,12 @@ public class Truncate extends PolyhedronOp {
 		);
 	}
 	
-	private final List<VertexPredicate> predicates;
+	private final List<? extends VertexPredicate> predicates;
 	private final TruncatedVertexGen gen;
 	private final double size;
 	private final Color color;
 	
-	public Truncate(List<VertexPredicate> predicates, TruncatedVertexGen gen, double size, Color color) {
+	public Truncate(List<? extends VertexPredicate> predicates, TruncatedVertexGen gen, double size, Color color) {
 		this.predicates = predicates;
 		this.gen = gen;
 		this.size = size;

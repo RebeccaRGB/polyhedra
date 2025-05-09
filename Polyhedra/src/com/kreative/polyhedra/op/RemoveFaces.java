@@ -9,10 +9,10 @@ import com.kreative.polyhedra.Polyhedron;
 import com.kreative.polyhedra.PolyhedronOp;
 
 public class RemoveFaces extends PolyhedronOp {
-	private final List<FacePredicate> predicates;
+	private final List<? extends FacePredicate> predicates;
 	private final Color color;
 	
-	public RemoveFaces(List<FacePredicate> predicates, Color color) {
+	public RemoveFaces(List<? extends FacePredicate> predicates, Color color) {
 		this.predicates = predicates;
 		this.color = color;
 	}
