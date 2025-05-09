@@ -1,8 +1,7 @@
 package com.kreative.polyhedra.test;
 
 import java.awt.Color;
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import com.kreative.polyhedra.Metric;
@@ -34,7 +33,13 @@ public class JohnsonSolidTest {
 		52, 62, 62, 62, 62, 62, 52, 52, 52, 52, 42, 42, 42, 32, 12, 26, 14, 17, 18, 21, 24, 14, 20
 	};
 	
-	private static final List<Float> validAngles = Arrays.asList(60f, 90f, 108f, 120f, 135f, 144f);
+	private static final Map<Float,Integer> validAngles = validAngles();
+	private static Map<Float,Integer> validAngles() {
+		Map<Float,Integer> m = new HashMap<Float,Integer>();
+		m.put(60f, 3); m.put(90f, 4); m.put(108f, 5);
+		m.put(120f, 6); m.put(135f, 8); m.put(144f, 10);
+		return m;
+	}
 	
 	public static void main(String[] args) {
 		int index = -1;
@@ -43,10 +48,6 @@ public class JohnsonSolidTest {
 			System.out.print("\u001B[1;34m" + (index+1) + "\u001B[0m");
 			Polyhedron p1 = new JohnsonSolid(f, 1, Color.GRAY).gen();
 			Polyhedron p2 = new JohnsonSolid(f, 2, Color.GRAY).gen();
-			if (p1 == null || p2 == null) {
-				System.out.println("\t- \u001B[1;33mNot implemented\u001B[0m");
-				continue;
-			}
 			// Get/check/print vertex/edge/face count
 			System.out.print("\t- VEF:");
 			System.out.print(((p2.vertices.size() == vertexCount[index]) ? " \u001B[1;32m" : " \u001B[1;31m") + p2.vertices.size() + "\u001B[0m");
@@ -76,7 +77,9 @@ public class JohnsonSolidTest {
 			// Check/print edge angles
 			System.out.print("\t- Angles:");
 			for (Map.Entry<Float,Float> e : angles.entrySet()) {
-				System.out.print((validAngles.contains(e.getKey()) ? " \u001B[1;32m" : " \u001B[1;31m") + e.getValue() + "×" + e.getKey() + "°\u001B[0m");
+				Integer deg = validAngles.get(e.getKey());
+				boolean ok = (deg != null) && ((e.getValue() % deg) == 0);
+				System.out.print((ok ? " \u001B[1;32m" : " \u001B[1;31m") + e.getValue() + "×" + e.getKey() + "°\u001B[0m");
 			}
 			System.out.println();
 		}

@@ -3,102 +3,110 @@ package com.kreative.polyhedra.op;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import com.kreative.polyhedra.Metric;
+import com.kreative.polyhedra.MetricAggregator;
 import com.kreative.polyhedra.Point3D;
 import com.kreative.polyhedra.Polyhedron;
 import com.kreative.polyhedra.PolyhedronUtils.Option;
 import com.kreative.polyhedra.PolyhedronUtils.Type;
 
 public abstract class EdgeVertexGen {
+	public void reset(Polyhedron seed, List<Point3D> seedVertices) {}
+	
 	public abstract Point3D createVertex(
-		Polyhedron seed, List<Point3D> seedVertices,
 		Polyhedron.Face face, List<Point3D> faceVertices,
 		Polyhedron.Edge edge, Point3D defaultVertex
 	);
 	
 	public static final class FaceOffset extends EdgeVertexGen {
 		private final double size;
-		public FaceOffset(double size) { this.size = size; }
+		public FaceOffset(double size) {
+			this.size = size;
+		}
 		public Point3D createVertex(
-			Polyhedron seed, List<Point3D> sv,
 			Polyhedron.Face face, List<Point3D> fv,
-			Polyhedron.Edge edge, Point3D c
+			Polyhedron.Edge edge, Point3D dv
 		) {
-			if (fv == null || fv.isEmpty() || size == 0) return c;
-			return c.add(c.normal(fv).multiply(size));
+			if (fv == null || fv.isEmpty() || size == 0) return dv;
+			return dv.normal(fv).multiply(size).add(dv);
 		}
 	}
 	
-	public static final class MaxMagnitudeOffset extends EdgeVertexGen {
+	public static final class SeedVertexMagnitudeOffset extends EdgeVertexGen {
+		private final MetricAggregator agg;
 		private final double size;
-		public MaxMagnitudeOffset(double size) { this.size = size; }
-		public Point3D createVertex(
-			Polyhedron seed, List<Point3D> sv,
-			Polyhedron.Face face, List<Point3D> fv,
-			Polyhedron.Edge edge, Point3D c
-		) {
-			return c.normalize(Point3D.maxMagnitude(sv) + size);
+		public SeedVertexMagnitudeOffset(MetricAggregator aggregator, double size) {
+			this.agg = aggregator;
+			this.size = size;
 		}
-	}
-	
-	public static final class AverageMagnitudeOffset extends EdgeVertexGen {
-		private final double size;
-		public AverageMagnitudeOffset(double size) { this.size = size; }
-		public Point3D createVertex(
-			Polyhedron seed, List<Point3D> sv,
-			Polyhedron.Face face, List<Point3D> fv,
-			Polyhedron.Edge edge, Point3D c
-		) {
-			return c.normalize(Point3D.averageMagnitude(sv) + size);
+		private Point3D sc;
+		private double sm;
+		public void reset(Polyhedron s, List<Point3D> sv) {
+			this.sc = Point3D.average(sv);
+			this.sm = agg.aggregate(Metric.VERTEX_MAGNITUDE.iterator(s, sc));
 		}
-	}
-	
-	public static final class MinMagnitudeOffset extends EdgeVertexGen {
-		private final double size;
-		public MinMagnitudeOffset(double size) { this.size = size; }
 		public Point3D createVertex(
-			Polyhedron seed, List<Point3D> sv,
 			Polyhedron.Face face, List<Point3D> fv,
-			Polyhedron.Edge edge, Point3D c
+			Polyhedron.Edge edge, Point3D dv
 		) {
-			return c.normalize(Point3D.minMagnitude(sv) + size);
+			return dv.subtract(sc).normalize(sm + size).add(sc);
 		}
 	}
 	
 	public static final class EdgeMagnitudeOffset extends EdgeVertexGen {
 		private final double size;
-		public EdgeMagnitudeOffset(double size) { this.size = size; }
+		public EdgeMagnitudeOffset(double size) {
+			this.size = size;
+		}
+		private Point3D sc;
+		public void reset(Polyhedron s, List<Point3D> sv) {
+			this.sc = Point3D.average(sv);
+		}
 		public Point3D createVertex(
-			Polyhedron seed, List<Point3D> sv,
 			Polyhedron.Face face, List<Point3D> fv,
-			Polyhedron.Edge edge, Point3D c
+			Polyhedron.Edge edge, Point3D dv
 		) {
-			return c.normalize(edge.midpoint().magnitude() + size);
+			double em = edge.midpoint().subtract(sc).magnitude();
+			return dv.subtract(sc).normalize(em + size).add(sc);
 		}
 	}
 	
-	public static final class VertexMagnitudeOffset extends EdgeVertexGen {
+	public static final class DefaultVertexMagnitudeOffset extends EdgeVertexGen {
 		private final double size;
-		public VertexMagnitudeOffset(double size) { this.size = size; }
+		public DefaultVertexMagnitudeOffset(double size) {
+			this.size = size;
+		}
+		private Point3D sc;
+		public void reset(Polyhedron s, List<Point3D> sv) {
+			this.sc = Point3D.average(sv);
+		}
 		public Point3D createVertex(
-			Polyhedron seed, List<Point3D> sv,
 			Polyhedron.Face face, List<Point3D> fv,
-			Polyhedron.Edge edge, Point3D c
+			Polyhedron.Edge edge, Point3D dv
 		) {
-			return (size == 0) ? c : c.normalize(c.magnitude() + size);
+			if (size == 0) return dv;
+			dv = dv.subtract(sc);
+			dv = dv.normalize(dv.magnitude() + size);
+			return dv.add(sc);
 		}
 	}
 	
 	public static final class FaceOffsetFromOrigin extends EdgeVertexGen {
 		private final double size;
-		public FaceOffsetFromOrigin(double size) { this.size = size; }
+		public FaceOffsetFromOrigin(double size) {
+			this.size = size;
+		}
+		private Point3D sc;
+		public void reset(Polyhedron s, List<Point3D> sv) {
+			this.sc = Point3D.average(sv);
+		}
 		public Point3D createVertex(
-			Polyhedron seed, List<Point3D> sv,
 			Polyhedron.Face face, List<Point3D> fv,
-			Polyhedron.Edge edge, Point3D c
+			Polyhedron.Edge edge, Point3D dv
 		) {
-			if (fv == null || fv.isEmpty()) return c;
-			double centerMagnitude = Point3D.average(fv).magnitude();
-			return c.add(c.normal(fv).multiply(size - centerMagnitude));
+			if (fv == null || fv.isEmpty()) return dv;
+			double fm = Point3D.average(fv).subtract(sc).magnitude();
+			return dv.normal(fv).multiply(size - fm).add(dv);
 		}
 	}
 	
@@ -110,17 +118,17 @@ public abstract class EdgeVertexGen {
 		},
 		MAX_MAGNITUDE_OFFSET ("m", Type.REAL, "create vertices from edges relative to the maximum magnitude") {
 			public EdgeVertexGen build(Object arg) {
-				return new MaxMagnitudeOffset((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
+				return new SeedVertexMagnitudeOffset(MetricAggregator.MAXIMUM, (arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
 		AVERAGE_MAGNITUDE_OFFSET ("a", Type.REAL, "create vertices from edges relative to the average magnitude") {
 			public EdgeVertexGen build(Object arg) {
-				return new AverageMagnitudeOffset((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
+				return new SeedVertexMagnitudeOffset(MetricAggregator.AVERAGE, (arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
 		MIN_MAGNITUDE_OFFSET ("i", Type.REAL, "create vertices from edges relative to the minimum magnitude") {
 			public EdgeVertexGen build(Object arg) {
-				return new MinMagnitudeOffset((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
+				return new SeedVertexMagnitudeOffset(MetricAggregator.MINIMUM, (arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
 		EDGE_MAGNITUDE_OFFSET ("e", Type.REAL, "create vertices from edges relative to the edge magnitude") {
@@ -130,7 +138,7 @@ public abstract class EdgeVertexGen {
 		},
 		VERTEX_MAGNITUDE_OFFSET ("v", Type.REAL, "create vertices from edges relative to the vertex magnitude") {
 			public EdgeVertexGen build(Object arg) {
-				return new VertexMagnitudeOffset((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
+				return new DefaultVertexMagnitudeOffset((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
 		FACE_OFFSET_FROM_ORIGIN ("o", Type.REAL, "create vertices from edges along a normal to the original face (a)") {

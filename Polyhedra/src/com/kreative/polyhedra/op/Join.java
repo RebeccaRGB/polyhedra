@@ -25,12 +25,12 @@ public class Join extends PolyhedronOp {
 		List<List<Integer>> faces = new ArrayList<List<Integer>>(seed.edges.size());
 		List<Color> faceColors = new ArrayList<Color>(seed.edges.size());
 		
-		List<Point3D> seedVertices = seed.points();
-		vertices.addAll(seedVertices);
+		vertices.addAll(seed.points());
+		fvgen.reset(seed, vertices);
 		
 		Map<Polyhedron.Edge,Integer> edgeVertexMap = new HashMap<Polyhedron.Edge,Integer>();
 		for (Polyhedron.Face f : seed.faces) {
-			Point3D newVertex = fvgen.createVertex(seed, seedVertices, f, f.points());
+			Point3D newVertex = fvgen.createVertex(f, f.points());
 			if (newVertex != null) {
 				int i0 = vertices.size();
 				vertices.add(newVertex);

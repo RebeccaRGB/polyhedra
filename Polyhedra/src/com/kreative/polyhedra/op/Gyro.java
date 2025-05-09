@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.kreative.polyhedra.MetricAggregator;
 import com.kreative.polyhedra.Point3D;
 import com.kreative.polyhedra.Polyhedron;
 import com.kreative.polyhedra.PolyhedronOp;
@@ -27,8 +28,10 @@ public class Gyro extends PolyhedronOp {
 		List<List<Integer>> faces = new ArrayList<List<Integer>>();
 		List<Color> faceColors = new ArrayList<Color>();
 		
-		List<Point3D> seedVertices = seed.points();
-		vertices.addAll(seedVertices);
+		vertices.addAll(seed.points());
+		fvgen.reset(seed, vertices);
+		gvgen.reset(seed, vertices);
+		evgen.reset(seed, vertices);
 		
 		Map<Integer,Integer> edgeStartIndexMap = new HashMap<Integer,Integer>();
 		Map<Integer,List<Point3D>> faceVertexMap = new HashMap<Integer,List<Point3D>>();
@@ -37,15 +40,15 @@ public class Gyro extends PolyhedronOp {
 			List<Point3D> fv = f.points();
 			faceVertexMap.put(f.index, fv);
 			for (Polyhedron.Edge e : f.edges) {
-				Point3D v = gvgen.createVertex(seed, seedVertices, f, fv, e, e.vertex2.point);
-				vertices.add(evgen.createVertex(seed, seedVertices, f, fv, e, v));
+				Point3D v = gvgen.createVertex(f, fv, e, e.vertex2.point);
+				vertices.add(evgen.createVertex(f, fv, e, v));
 			}
 		}
 		
 		int faceStartIndex = vertices.size();
 		for (Polyhedron.Face f : seed.faces) {
 			List<Point3D> faceVertices = faceVertexMap.get(f.index);
-			vertices.add(fvgen.createVertex(seed, seedVertices, f, faceVertices));
+			vertices.add(fvgen.createVertex(f, faceVertices));
 			int fi = faceStartIndex + f.index;
 			int edgeStartIndex = edgeStartIndexMap.get(f.index);
 			for (int i = 0, n = f.vertices.size(); i < n; i++) {
@@ -69,9 +72,9 @@ public class Gyro extends PolyhedronOp {
 		public String name() { return "Gyro"; }
 		
 		public Gyro parse(String[] args) {
-			FaceVertexGen fvgen = new FaceVertexGen.AverageMagnitudeOffset(0);
+			FaceVertexGen fvgen = new FaceVertexGen.SeedVertexMagnitudeOffset(MetricAggregator.AVERAGE, 0);
 			GyroVertexGen gvgen = new GyroVertexGen.RelativeDistanceFromMidpointAlongEdge(1.0/3.0);
-			EdgeVertexGen evgen = new EdgeVertexGen.AverageMagnitudeOffset(0);
+			EdgeVertexGen evgen = new EdgeVertexGen.SeedVertexMagnitudeOffset(MetricAggregator.AVERAGE, 0);
 			FaceVertexGen.Builder fvtmp;
 			GyroVertexGen.Builder gvtmp;
 			EdgeVertexGen.Builder evtmp;

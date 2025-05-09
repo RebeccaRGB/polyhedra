@@ -9,17 +9,19 @@ import com.kreative.polyhedra.PolyhedronUtils.Option;
 import com.kreative.polyhedra.PolyhedronUtils.Type;
 
 public abstract class GyroVertexGen {
+	public void reset(Polyhedron seed, List<Point3D> seedVertices) {}
+	
 	public abstract Point3D createVertex(
-		Polyhedron seed, List<Point3D> seedVertices,
 		Polyhedron.Face face, List<Point3D> faceVertices,
 		Polyhedron.Edge edge, Point3D vertex
 	);
 	
 	public static final class FixedDistanceFromVertexAlongEdge extends GyroVertexGen {
 		private final double size;
-		public FixedDistanceFromVertexAlongEdge(double distance) { this.size = distance; }
+		public FixedDistanceFromVertexAlongEdge(double distance) {
+			this.size = distance;
+		}
 		public Point3D createVertex(
-			Polyhedron seed, List<Point3D> seedVertices,
 			Polyhedron.Face face, List<Point3D> faceVertices,
 			Polyhedron.Edge edge, Point3D vertex
 		) {
@@ -31,9 +33,10 @@ public abstract class GyroVertexGen {
 	
 	public static final class RelativeDistanceFromVertexAlongEdge extends GyroVertexGen {
 		private final double size;
-		public RelativeDistanceFromVertexAlongEdge(double distance) { this.size = distance; }
+		public RelativeDistanceFromVertexAlongEdge(double distance) {
+			this.size = distance;
+		}
 		public Point3D createVertex(
-			Polyhedron seed, List<Point3D> seedVertices,
 			Polyhedron.Face face, List<Point3D> faceVertices,
 			Polyhedron.Edge edge, Point3D vertex
 		) {
@@ -45,9 +48,10 @@ public abstract class GyroVertexGen {
 	
 	public static final class FixedAngleFromVertexAlongEdge extends GyroVertexGen {
 		private final double size;
-		public FixedAngleFromVertexAlongEdge(double angle) { this.size = angle; }
+		public FixedAngleFromVertexAlongEdge(double angle) {
+			this.size = angle;
+		}
 		public Point3D createVertex(
-			Polyhedron seed, List<Point3D> seedVertices,
 			Polyhedron.Face face, List<Point3D> faceVertices,
 			Polyhedron.Edge edge, Point3D vertex
 		) {
@@ -62,9 +66,10 @@ public abstract class GyroVertexGen {
 	
 	public static final class FixedDistanceFromMidpointAlongEdge extends GyroVertexGen {
 		private final double size;
-		public FixedDistanceFromMidpointAlongEdge(double distance) { this.size = distance; }
+		public FixedDistanceFromMidpointAlongEdge(double distance) {
+			this.size = distance;
+		}
 		public Point3D createVertex(
-			Polyhedron seed, List<Point3D> seedVertices,
 			Polyhedron.Face face, List<Point3D> faceVertices,
 			Polyhedron.Edge edge, Point3D vertex
 		) {
@@ -76,9 +81,10 @@ public abstract class GyroVertexGen {
 	
 	public static final class RelativeDistanceFromMidpointAlongEdge extends GyroVertexGen {
 		private final double size;
-		public RelativeDistanceFromMidpointAlongEdge(double distance) { this.size = distance; }
+		public RelativeDistanceFromMidpointAlongEdge(double distance) {
+			this.size = distance;
+		}
 		public Point3D createVertex(
-			Polyhedron seed, List<Point3D> seedVertices,
 			Polyhedron.Face face, List<Point3D> faceVertices,
 			Polyhedron.Edge edge, Point3D vertex
 		) {
@@ -90,9 +96,10 @@ public abstract class GyroVertexGen {
 	
 	public static final class FixedAngleFromMidpointAlongEdge extends GyroVertexGen {
 		private final double size;
-		public FixedAngleFromMidpointAlongEdge(double angle) { this.size = angle; }
+		public FixedAngleFromMidpointAlongEdge(double angle) {
+			this.size = angle;
+		}
 		public Point3D createVertex(
-			Polyhedron seed, List<Point3D> seedVertices,
 			Polyhedron.Face face, List<Point3D> faceVertices,
 			Polyhedron.Edge edge, Point3D vertex
 		) {
@@ -106,9 +113,10 @@ public abstract class GyroVertexGen {
 	
 	public static final class TwistAngle extends GyroVertexGen {
 		private final double size;
-		public TwistAngle(double angle) { this.size = angle; }
+		public TwistAngle(double angle) {
+			this.size = angle;
+		}
 		public Point3D createVertex(
-			Polyhedron seed, List<Point3D> seedVertices,
 			Polyhedron.Face face, List<Point3D> faceVertices,
 			Polyhedron.Edge edge, Point3D vertex
 		) {

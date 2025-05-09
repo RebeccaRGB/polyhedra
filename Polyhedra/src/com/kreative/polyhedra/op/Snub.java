@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.kreative.polyhedra.MetricAggregator;
 import com.kreative.polyhedra.Point3D;
 import com.kreative.polyhedra.Polyhedron;
 import com.kreative.polyhedra.PolyhedronOp;
@@ -27,6 +28,9 @@ public class Snub extends PolyhedronOp {
 		List<Color> faceColors = new ArrayList<Color>();
 		
 		List<Point3D> seedVertices = seed.points();
+		gvgen.reset(seed, seedVertices);
+		evgen.reset(seed, seedVertices);
+		
 		Map<Integer,Integer> edgeStartIndexMap = new HashMap<Integer,Integer>();
 		Map<Integer,List<Point3D>> faceVertexMap = new HashMap<Integer,List<Point3D>>();
 		for (Polyhedron.Face f : seed.faces) {
@@ -36,8 +40,8 @@ public class Snub extends PolyhedronOp {
 			List<Integer> faceVertexIndices = new ArrayList<Integer>(f.edges.size());
 			for (Polyhedron.Edge e : f.edges) {
 				faceVertexIndices.add(vertices.size());
-				Point3D v = gvgen.createVertex(seed, seedVertices, f, fv, e, e.vertex1.point);
-				vertices.add(evgen.createVertex(seed, seedVertices, f, fv, e, v));
+				Point3D v = gvgen.createVertex(f, fv, e, e.vertex1.point);
+				vertices.add(evgen.createVertex(f, fv, e, v));
 			}
 			faces.add(faceVertexIndices);
 			faceColors.add(f.color);
@@ -81,7 +85,7 @@ public class Snub extends PolyhedronOp {
 		
 		public Snub parse(String[] args) {
 			GyroVertexGen gvgen = new GyroVertexGen.RelativeDistanceFromMidpointAlongEdge(1.0/3.0);
-			EdgeVertexGen evgen = new EdgeVertexGen.AverageMagnitudeOffset(0);
+			EdgeVertexGen evgen = new EdgeVertexGen.SeedVertexMagnitudeOffset(MetricAggregator.AVERAGE, 0);
 			GyroVertexGen.Builder gvtmp;
 			EdgeVertexGen.Builder evtmp;
 			Color color = Color.GRAY;

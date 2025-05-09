@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import com.kreative.polyhedra.MetricAggregator;
 import com.kreative.polyhedra.Point3D;
 import com.kreative.polyhedra.Polyhedron;
 import com.kreative.polyhedra.PolyhedronOp;
@@ -23,17 +24,18 @@ public class Ortho extends PolyhedronOp {
 		List<List<Integer>> faces = new ArrayList<List<Integer>>();
 		List<Color> faceColors = new ArrayList<Color>();
 		
-		List<Point3D> seedVertices = seed.points();
-		vertices.addAll(seedVertices);
+		vertices.addAll(seed.points());
+		fvgen.reset(seed, vertices);
+		evgen.reset(seed, vertices);
 		
 		int edgeStartIndex = vertices.size();
 		for (Polyhedron.Edge e : seed.edges) {
-			vertices.add(evgen.createVertex(seed, seedVertices, null, null, e, e.midpoint()));
+			vertices.add(evgen.createVertex(null, null, e, e.midpoint()));
 		}
 		
 		int faceStartIndex = vertices.size();
 		for (Polyhedron.Face f : seed.faces) {
-			vertices.add(fvgen.createVertex(seed, seedVertices, f, f.points()));
+			vertices.add(fvgen.createVertex(f, f.points()));
 			int fi = faceStartIndex + f.index;
 			for (int i = 0, n = f.vertices.size(); i < n; i++) {
 				int vi = f.vertices.get(i).index;
@@ -51,8 +53,8 @@ public class Ortho extends PolyhedronOp {
 		public String name() { return "Ortho"; }
 		
 		public Ortho parse(String[] args) {
-			FaceVertexGen fvgen = new FaceVertexGen.AverageMagnitudeOffset(0);
-			EdgeVertexGen evgen = new EdgeVertexGen.AverageMagnitudeOffset(0);
+			FaceVertexGen fvgen = new FaceVertexGen.SeedVertexMagnitudeOffset(MetricAggregator.AVERAGE, 0);
+			EdgeVertexGen evgen = new EdgeVertexGen.SeedVertexMagnitudeOffset(MetricAggregator.AVERAGE, 0);
 			FaceVertexGen.Builder fvtmp;
 			EdgeVertexGen.Builder evtmp;
 			int argi = 0;
