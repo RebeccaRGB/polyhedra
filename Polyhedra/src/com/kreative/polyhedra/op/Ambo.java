@@ -56,7 +56,7 @@ public class Ambo extends PolyhedronOp {
 			int argi = 0;
 			while (argi < args.length) {
 				String arg = args[argi++];
-				if (arg.equalsIgnoreCase("-c") && argi < args.length) {
+				if (arg.equals("-c") && argi < args.length) {
 					color = parseColor(args[argi++], color);
 				} else {
 					return null;

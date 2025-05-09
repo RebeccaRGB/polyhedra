@@ -45,11 +45,11 @@ public class Translate extends PolyhedronOp {
 			int argi = 0;
 			while (argi < args.length) {
 				String arg = args[argi++];
-				if (arg.equalsIgnoreCase("-x") && argi < args.length) {
+				if (arg.equals("-x") && argi < args.length) {
 					tx = parseDouble(args[argi++], tx);
-				} else if (arg.equalsIgnoreCase("-y") && argi < args.length) {
+				} else if (arg.equals("-y") && argi < args.length) {
 					ty = parseDouble(args[argi++], ty);
-				} else if (arg.equalsIgnoreCase("-z") && argi < args.length) {
+				} else if (arg.equals("-z") && argi < args.length) {
 					tz = parseDouble(args[argi++], tz);
 				} else {
 					return null;

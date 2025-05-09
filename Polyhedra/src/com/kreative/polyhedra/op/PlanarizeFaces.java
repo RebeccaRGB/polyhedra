@@ -111,9 +111,9 @@ public class PlanarizeFaces extends PolyhedronOp {
 			int argi = 0;
 			while (argi < args.length) {
 				String arg = args[argi++];
-				if (arg.equalsIgnoreCase("-n") && argi < args.length) {
+				if (arg.equals("-n") && argi < args.length) {
 					maxIterations = parseInt(args[argi++], maxIterations);
-				} else if (arg.equalsIgnoreCase("-e") && argi < args.length) {
+				} else if (arg.equals("-e") && argi < args.length) {
 					maxDifference = parseDouble(args[argi++], maxDifference);
 				} else {
 					return null;

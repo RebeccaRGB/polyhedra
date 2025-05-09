@@ -167,15 +167,6 @@ public class Resize extends PolyhedronOp {
 			return null;
 		}
 		
-		public static ResizeMode forFlagIgnoreCase(String flag) {
-			for (ResizeMode mode : values()) {
-				if (mode.flagWithDash.equalsIgnoreCase(flag) || mode.altFlagWithDash.equalsIgnoreCase(flag)) {
-					return mode;
-				}
-			}
-			return null;
-		}
-		
 		private static boolean resizeChecked(Polyhedron seed, List<Point3D> points, Object arg, MetricAggregator agg, Metric metric) {
 			double current = agg.aggregate(metric.iterator(seed, seed.center()));
 			double size = (arg instanceof Number) ? ((Number)arg).doubleValue() : 1;
@@ -232,9 +223,7 @@ public class Resize extends PolyhedronOp {
 			while (argi < args.length) {
 				String arg = args[argi++];
 				if ((mtmp = ResizeMode.forFlag(arg)) != null && (mtmp.isVoidType() || argi < args.length)) {
-					mode = mtmp;
-					argument = mtmp.isVoidType() ? null : mtmp.parseArgument(args[argi++]);
-				} else if ((mtmp = ResizeMode.forFlagIgnoreCase(arg)) != null && (mtmp.isVoidType() || argi < args.length)) {
+					// -v -r -e -m -f -i -a -x -y -z -X -Y -Z
 					mode = mtmp;
 					argument = mtmp.isVoidType() ? null : mtmp.parseArgument(args[argi++]);
 				} else {
@@ -247,7 +236,7 @@ public class Resize extends PolyhedronOp {
 		public Option[] options() {
 			ResizeMode[] modes = ResizeMode.values();
 			Option[] options = new Option[modes.length];
-			for (int i = 0; i < modes.length; i++) options[i] = modes[i].option();
+			for (int i = 0; i < modes.length; i++) options[i] = modes[i].option(); // vremfiaxyzXYZ
 			return options;
 		}
 	}

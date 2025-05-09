@@ -207,10 +207,12 @@ public class Dual extends PolyhedronOp {
 					fvgen = new FaceVertexGen.FaceOffset(0);
 					mode = RescaleMode.NONE;
 				} else if ((fvtmp = FaceVertexGen.Builder.forFlag(arg)) != null && (fvtmp.ignoresArgument() || argi < args.length)) {
+					// -H -X -A -V -F -E -P -R -M -I -S
 					fvgen = fvtmp.buildFromArgument(fvtmp.ignoresArgument() ? null : args[argi++]);
 				} else if ((mtmp = RescaleMode.forFlag(arg)) != null) {
+					// -d -v -r -e -m -f -i -a -x -y -z
 					mode = mtmp;
-				} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
+				} else if (arg.equals("-c") && argi < args.length) {
 					color = parseColor(args[argi++], color);
 				} else {
 					return null;
@@ -221,15 +223,16 @@ public class Dual extends PolyhedronOp {
 		
 		public Option[] options() {
 			List<Option> options = new ArrayList<Option>();
-			options.add(FaceVertexGen.Builder.FACE_OFFSET.option("s"));
-			options.add(FaceVertexGen.Builder.MAX_MAGNITUDE_OFFSET.option("s"));
-			options.add(FaceVertexGen.Builder.AVERAGE_MAGNITUDE_OFFSET.option("s"));
-			options.add(FaceVertexGen.Builder.FACE_MAGNITUDE_OFFSET.option("s"));
-			options.add(FaceVertexGen.Builder.INVERSION_ABOUT_VERTICES.option("s"));
-			options.add(FaceVertexGen.Builder.INVERSION_ABOUT_EDGES.option("s"));
-			options.add(FaceVertexGen.Builder.INVERSION_ABOUT_FACES.option("s"));
-			options.add(FaceVertexGen.Builder.INVERSION_ABOUT_RADIUS.option("s"));
-			for (RescaleMode mode : RescaleMode.values()) options.add(mode.option("s"));
+			options.add(FaceVertexGen.Builder.FACE_OFFSET.option("s")); // H
+			options.add(FaceVertexGen.Builder.MAX_MAGNITUDE_OFFSET.option("s")); // X
+			options.add(FaceVertexGen.Builder.AVERAGE_MAGNITUDE_OFFSET.option("s")); // A
+			options.add(FaceVertexGen.Builder.MIN_MAGNITUDE_OFFSET.option("s")); // V
+			options.add(FaceVertexGen.Builder.FACE_MAGNITUDE_OFFSET.option("s")); // F
+			options.add(FaceVertexGen.Builder.INVERSION_ABOUT_VERTICES.option("s")); // R
+			options.add(FaceVertexGen.Builder.INVERSION_ABOUT_EDGES.option("s")); // M
+			options.add(FaceVertexGen.Builder.INVERSION_ABOUT_FACES.option("s")); // I
+			options.add(FaceVertexGen.Builder.INVERSION_ABOUT_RADIUS.option("s")); // S
+			for (RescaleMode mode : RescaleMode.values()) options.add(mode.option("s")); // dvremfiaxyz
 			options.add(new Option("s", Type.VOID, "create new vertices at centers and do not resize (strict mode)"));
 			options.add(new Option("c", Type.COLOR, "color"));
 			return options.toArray(new Option[options.size()]);

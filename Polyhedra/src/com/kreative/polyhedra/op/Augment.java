@@ -121,15 +121,16 @@ public class Augment extends PolyhedronOp {
 			int argi = 0;
 			while (argi < args.length) {
 				String arg = args[argi++];
-				if ((predtmp = FacePredicate.Builder.forFlagIgnoreCase(arg)) != null && (predtmp.ignoresArgument() || argi < args.length)) {
+				if ((predtmp = FacePredicate.Builder.forFlag(arg)) != null && (predtmp.ignoresArgument() || argi < args.length)) {
+					// -n -i -t -j
 					predicates.add(predtmp.buildFromArgument(predtmp.ignoresArgument() ? null : args[argi++]));
-				} else if (arg.equalsIgnoreCase("-o")) {
+				} else if (arg.equals("-o")) {
 					spec = AugmentationSpec.ORTHO;
-				} else if (arg.equalsIgnoreCase("-g")) {
+				} else if (arg.equals("-g")) {
 					spec = AugmentationSpec.GYRO;
-				} else if (arg.equalsIgnoreCase("-r") && argi < args.length) {
+				} else if (arg.equals("-r") && argi < args.length) {
 					r = parseDouble(args[argi++], r);
-				} else if (arg.equalsIgnoreCase("-h") && argi < args.length) {
+				} else if (arg.equals("-h") && argi < args.length) {
 					h = parseDouble(args[argi++], h);
 				} else {
 					return null;
@@ -140,7 +141,7 @@ public class Augment extends PolyhedronOp {
 		
 		public Option[] options() {
 			List<Option> options = new ArrayList<Option>();
-			for (FacePredicate.Builder bi : FacePredicate.Builder.values()) options.add(bi.option());
+			for (FacePredicate.Builder bi : FacePredicate.Builder.values()) options.add(bi.option()); // nitj
 			options.add(new Option("o", Type.VOID, "augment with orthocupola"));
 			options.add(new Option("g", Type.VOID, "augment with gyrocupola"));
 			options.add(new Option("r", Type.REAL, "radius of augmented face"));

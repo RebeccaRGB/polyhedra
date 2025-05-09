@@ -65,9 +65,10 @@ public class Needle extends PolyhedronOp {
 				String arg = args[argi++];
 				if (arg.equals("-s")) {
 					fvgen = new FaceVertexGen.FaceOffset(0);
-				} else if ((fvtmp = FaceVertexGen.Builder.forFlagIgnoreCase(arg)) != null && (fvtmp.ignoresArgument() || argi < args.length)) {
+				} else if ((fvtmp = FaceVertexGen.Builder.forFlag(arg)) != null && (fvtmp.ignoresArgument() || argi < args.length)) {
+					// -H -X -A -V -F -E -P -R -M -I -S
 					fvgen = fvtmp.buildFromArgument(fvtmp.ignoresArgument() ? null : args[argi++]);
-				} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
+				} else if (arg.equals("-c") && argi < args.length) {
 					color = parseColor(args[argi++], color);
 				} else {
 					return null;
@@ -78,10 +79,11 @@ public class Needle extends PolyhedronOp {
 		
 		public Option[] options() {
 			return new Option[] {
-				FaceVertexGen.Builder.FACE_OFFSET.option("s"),
-				FaceVertexGen.Builder.MAX_MAGNITUDE_OFFSET.option("s"),
-				FaceVertexGen.Builder.AVERAGE_MAGNITUDE_OFFSET.option("s"),
-				FaceVertexGen.Builder.FACE_MAGNITUDE_OFFSET.option("s"),
+				FaceVertexGen.Builder.FACE_OFFSET.option("s"), // H
+				FaceVertexGen.Builder.MAX_MAGNITUDE_OFFSET.option("s"), // X
+				FaceVertexGen.Builder.AVERAGE_MAGNITUDE_OFFSET.option("s"), // A
+				FaceVertexGen.Builder.MIN_MAGNITUDE_OFFSET.option("s"), // V
+				FaceVertexGen.Builder.FACE_MAGNITUDE_OFFSET.option("s"), // F
 				new Option("s", Type.VOID, "create new vertices at centers of original faces (strict mode)", FaceVertexGen.Builder.allOptionMutexes()),
 				new Option("c", Type.COLOR, "color"),
 			};

@@ -145,10 +145,6 @@ public abstract class FacePredicate {
 			for (Builder bi : values()) if (bi.flagWithDash.equals(flag)) return bi;
 			return null;
 		}
-		public static Builder forFlagIgnoreCase(String flag) {
-			for (Builder bi : values()) if (bi.flagWithDash.equalsIgnoreCase(flag)) return bi;
-			return null;
-		}
 	}
 	
 	public static void reset(Collection<? extends FacePredicate> c, Polyhedron seed) {

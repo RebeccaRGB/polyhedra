@@ -138,7 +138,7 @@ public class Expand extends PolyhedronOp {
 			int argi = 0;
 			while (argi < args.length) {
 				String arg = args[argi++];
-				if (arg.equalsIgnoreCase("-s")) {
+				if (arg.equals("-s")) {
 					gen = ExpandedFaceGen.RELATIVE_DISTANCE_FROM_VERTEX;
 					size = 0.5;
 				} else if (arg.equals("-A") && argi < args.length) {
@@ -153,15 +153,15 @@ public class Expand extends PolyhedronOp {
 				} else if (arg.equals("-d") && argi < args.length) {
 					gen = ExpandedFaceGen.FIXED_DISTANCE_FROM_CENTER;
 					size = parseDouble(args[argi++], size);
-				} else if (arg.equalsIgnoreCase("-r")) {
+				} else if (arg.equals("-r")) {
 					gen = ExpandedFaceGen.REGULAR;
 					size = 0;
-				} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
+				} else if (arg.equals("-c") && argi < args.length) {
 					Color c = parseColor(args[argi++], null);
 					if (c != null) edgeColor = vertexColor = c;
-				} else if (arg.equalsIgnoreCase("-e") && argi < args.length) {
+				} else if (arg.equals("-e") && argi < args.length) {
 					edgeColor = parseColor(args[argi++], edgeColor);
-				} else if (arg.equalsIgnoreCase("-v") && argi < args.length) {
+				} else if (arg.equals("-v") && argi < args.length) {
 					vertexColor = parseColor(args[argi++], vertexColor);
 				} else {
 					return null;

@@ -152,9 +152,10 @@ public class RemoveVertices extends PolyhedronOp {
 			int argi = 0;
 			while (argi < args.length) {
 				String arg = args[argi++];
-				if ((predtmp = VertexPredicate.Builder.forFlagIgnoreCase(arg)) != null && (predtmp.ignoresArgument() || argi < args.length)) {
+				if ((predtmp = VertexPredicate.Builder.forFlag(arg)) != null && (predtmp.ignoresArgument() || argi < args.length)) {
+					// -n -i -t -j
 					predicates.add(predtmp.buildFromArgument(predtmp.ignoresArgument() ? null : args[argi++]));
-				} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
+				} else if (arg.equals("-c") && argi < args.length) {
 					color = parseColor(args[argi++], color);
 				} else {
 					return null;
@@ -165,7 +166,7 @@ public class RemoveVertices extends PolyhedronOp {
 		
 		public Option[] options() {
 			List<Option> options = new ArrayList<Option>();
-			for (VertexPredicate.Builder bi : VertexPredicate.Builder.values()) options.add(bi.option());
+			for (VertexPredicate.Builder bi : VertexPredicate.Builder.values()) options.add(bi.option()); // nitj
 			options.add(new Option("c", Type.COLOR, "color of replacement faces"));
 			return options.toArray(new Option[options.size()]);
 		}

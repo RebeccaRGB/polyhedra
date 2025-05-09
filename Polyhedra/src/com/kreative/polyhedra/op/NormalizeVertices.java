@@ -42,7 +42,7 @@ public class NormalizeVertices extends PolyhedronOp {
 			int argi = 0;
 			while (argi < args.length) {
 				String arg = args[argi++];
-				if (arg.equalsIgnoreCase("-m") && argi < args.length) {
+				if (arg.equals("-m") && argi < args.length) {
 					magnitude = parseDouble(args[argi++], magnitude);
 				} else {
 					return null;

@@ -129,7 +129,7 @@ public class Zip extends PolyhedronOp {
 			int argi = 0;
 			while (argi < args.length) {
 				String arg = args[argi++];
-				if (arg.equalsIgnoreCase("-s")) {
+				if (arg.equals("-s")) {
 					gen = ZippedFaceGen.RELATIVE_DISTANCE_FROM_EDGE;
 					size = 0.5;
 				} else if (arg.equals("-A") && argi < args.length) {
@@ -144,10 +144,10 @@ public class Zip extends PolyhedronOp {
 				} else if (arg.equals("-d") && argi < args.length) {
 					gen = ZippedFaceGen.FIXED_DISTANCE_FROM_CENTER;
 					size = parseDouble(args[argi++], size);
-				} else if (arg.equalsIgnoreCase("-r")) {
+				} else if (arg.equals("-r")) {
 					gen = ZippedFaceGen.REGULAR;
 					size = 0;
-				} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
+				} else if (arg.equals("-c") && argi < args.length) {
 					color = parseColor(args[argi++], color);
 				} else {
 					return null;

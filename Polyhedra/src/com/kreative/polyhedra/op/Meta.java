@@ -66,8 +66,10 @@ public class Meta extends PolyhedronOp {
 					fvgen = new FaceVertexGen.FaceOffset(0);
 					evgen = new EdgeVertexGen.FaceOffset(0);
 				} else if ((fvtmp = FaceVertexGen.Builder.forFlag(arg)) != null && (fvtmp.ignoresArgument() || argi < args.length)) {
+					// -H -X -A -V -F -E -P -R -M -I -S
 					fvgen = fvtmp.buildFromArgument(fvtmp.ignoresArgument() ? null : args[argi++]);
 				} else if ((evtmp = EdgeVertexGen.Builder.forFlag(arg)) != null && (evtmp.ignoresArgument() || argi < args.length)) {
+					// -h -x -a -v -e -d -o
 					evgen = evtmp.buildFromArgument(evtmp.ignoresArgument() ? null : args[argi++]);
 				} else {
 					return null;
@@ -78,13 +80,15 @@ public class Meta extends PolyhedronOp {
 		
 		public Option[] options() {
 			return new Option[] {
-				FaceVertexGen.Builder.FACE_OFFSET.option("s"),
-				FaceVertexGen.Builder.MAX_MAGNITUDE_OFFSET.option("s"),
-				FaceVertexGen.Builder.AVERAGE_MAGNITUDE_OFFSET.option("s"),
-				FaceVertexGen.Builder.FACE_MAGNITUDE_OFFSET.option("s"),
-				EdgeVertexGen.Builder.MAX_MAGNITUDE_OFFSET.option("s"),
-				EdgeVertexGen.Builder.AVERAGE_MAGNITUDE_OFFSET.option("s"),
-				EdgeVertexGen.Builder.EDGE_MAGNITUDE_OFFSET.option("s"),
+				FaceVertexGen.Builder.FACE_OFFSET.option("s"), // H
+				FaceVertexGen.Builder.MAX_MAGNITUDE_OFFSET.option("s"), // X
+				FaceVertexGen.Builder.AVERAGE_MAGNITUDE_OFFSET.option("s"), // A
+				FaceVertexGen.Builder.MIN_MAGNITUDE_OFFSET.option("s"), // V
+				FaceVertexGen.Builder.FACE_MAGNITUDE_OFFSET.option("s"), // F
+				EdgeVertexGen.Builder.MAX_MAGNITUDE_OFFSET.option("s"), // x
+				EdgeVertexGen.Builder.AVERAGE_MAGNITUDE_OFFSET.option("s"), // a
+				EdgeVertexGen.Builder.MIN_MAGNITUDE_OFFSET.option("s"), // v
+				EdgeVertexGen.Builder.EDGE_MAGNITUDE_OFFSET.option("s"), // e
 				new Option(
 					"s", Type.VOID, "create new vertices at centers of original faces (strict mode)",
 					FaceVertexGen.Builder.allOptionMutexes(EdgeVertexGen.Builder.allOptionMutexes())

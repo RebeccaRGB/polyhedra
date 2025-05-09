@@ -227,9 +227,10 @@ public class Truncate extends PolyhedronOp {
 			int argi = 0;
 			while (argi < args.length) {
 				String arg = args[argi++];
-				if ((predtmp = VertexPredicate.Builder.forFlagIgnoreCase(arg)) != null && (predtmp.ignoresArgument() || argi < args.length)) {
+				if ((predtmp = VertexPredicate.Builder.forFlag(arg)) != null && (predtmp.ignoresArgument() || argi < args.length)) {
+					// -n -i -t -j
 					predicates.add(predtmp.buildFromArgument(predtmp.ignoresArgument() ? null : args[argi++]));
-				} else if (arg.equalsIgnoreCase("-s")) {
+				} else if (arg.equals("-s")) {
 					gen = TruncatedVertexGen.RELATIVE_DISTANCE_ALONG_EDGE;
 					size = (double)1 / (double)3;
 				} else if (arg.equals("-A") && argi < args.length) {
@@ -244,10 +245,10 @@ public class Truncate extends PolyhedronOp {
 				} else if (arg.equals("-h") && argi < args.length) {
 					gen = TruncatedVertexGen.FIXED_DISTANCE_FROM_VERTEX;
 					size = parseDouble(args[argi++], size);
-				} else if (arg.equalsIgnoreCase("-r")) {
+				} else if (arg.equals("-r")) {
 					gen = TruncatedVertexGen.REGULAR;
 					size = 0;
-				} else if (arg.equalsIgnoreCase("-c") && argi < args.length) {
+				} else if (arg.equals("-c") && argi < args.length) {
 					color = parseColor(args[argi++], color);
 				} else {
 					return null;
@@ -258,7 +259,7 @@ public class Truncate extends PolyhedronOp {
 		
 		public Option[] options() {
 			List<Option> options = new ArrayList<Option>();
-			for (VertexPredicate.Builder bi : VertexPredicate.Builder.values()) options.add(bi.option());
+			for (VertexPredicate.Builder bi : VertexPredicate.Builder.values()) options.add(bi.option()); // nitj
 			options.add(new Option("h", Type.REAL, "truncate at a fixed distance from the original vertices", "H","a","A","r","s"));
 			options.add(new Option("H", Type.REAL, "truncate at a relative distance from the original vertices", "h","a","A","r","s"));
 			options.add(new Option("a", Type.REAL, "truncate at a fixed distance along the original edges", "h","H","A","r","s"));

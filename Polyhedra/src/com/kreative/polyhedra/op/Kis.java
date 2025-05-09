@@ -62,10 +62,12 @@ public class Kis extends PolyhedronOp {
 			while (argi < args.length) {
 				String arg = args[argi++];
 				if ((predtmp = FacePredicate.Builder.forFlag(arg)) != null && (predtmp.ignoresArgument() || argi < args.length)) {
+					// -n -i -t -j
 					predicates.add(predtmp.buildFromArgument(predtmp.ignoresArgument() ? null : args[argi++]));
 				} else if (arg.equals("-s")) {
 					fvgen = new FaceVertexGen.FaceOffset(0);
 				} else if ((fvtmp = FaceVertexGen.Builder.forFlag(arg)) != null && (fvtmp.ignoresArgument() || argi < args.length)) {
+					// -H -X -A -V -F -E -P -R -M -I -S
 					fvgen = fvtmp.buildFromArgument(fvtmp.ignoresArgument() ? null : args[argi++]);
 				} else {
 					return null;
@@ -76,12 +78,13 @@ public class Kis extends PolyhedronOp {
 		
 		public Option[] options() {
 			List<Option> options = new ArrayList<Option>();
-			for (FacePredicate.Builder bi : FacePredicate.Builder.values()) options.add(bi.option());
-			options.add(FaceVertexGen.Builder.FACE_OFFSET.option("s"));
-			options.add(FaceVertexGen.Builder.MAX_MAGNITUDE_OFFSET.option("s"));
-			options.add(FaceVertexGen.Builder.AVERAGE_MAGNITUDE_OFFSET.option("s"));
-			options.add(FaceVertexGen.Builder.FACE_MAGNITUDE_OFFSET.option("s"));
-			options.add(FaceVertexGen.Builder.EQUILATERAL.option("s"));
+			for (FacePredicate.Builder bi : FacePredicate.Builder.values()) options.add(bi.option()); // nitj
+			options.add(FaceVertexGen.Builder.FACE_OFFSET.option("s")); // H
+			options.add(FaceVertexGen.Builder.MAX_MAGNITUDE_OFFSET.option("s")); // X
+			options.add(FaceVertexGen.Builder.AVERAGE_MAGNITUDE_OFFSET.option("s")); // A
+			options.add(FaceVertexGen.Builder.MIN_MAGNITUDE_OFFSET.option("s")); // V
+			options.add(FaceVertexGen.Builder.FACE_MAGNITUDE_OFFSET.option("s")); // F
+			options.add(FaceVertexGen.Builder.EQUILATERAL.option("s")); // E
 			options.add(new Option("s", Type.VOID, "create new vertices at centers of original faces (strict mode)", FaceVertexGen.Builder.allOptionMutexes()));
 			return options.toArray(new Option[options.size()]);
 		}

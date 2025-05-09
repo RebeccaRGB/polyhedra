@@ -56,13 +56,13 @@ public class Scale extends PolyhedronOp {
 			int argi = 0;
 			while (argi < args.length) {
 				String arg = args[argi++];
-				if (arg.equalsIgnoreCase("-s") && argi < args.length) {
+				if (arg.equals("-s") && argi < args.length) {
 					sx = sy = sz = parseDouble(args[argi++], (sx + sy + sz) / 3);
-				} else if (arg.equalsIgnoreCase("-x") && argi < args.length) {
+				} else if (arg.equals("-x") && argi < args.length) {
 					sx = parseDouble(args[argi++], sx);
-				} else if (arg.equalsIgnoreCase("-y") && argi < args.length) {
+				} else if (arg.equals("-y") && argi < args.length) {
 					sy = parseDouble(args[argi++], sy);
-				} else if (arg.equalsIgnoreCase("-z") && argi < args.length) {
+				} else if (arg.equals("-z") && argi < args.length) {
 					sz = parseDouble(args[argi++], sz);
 				} else {
 					return null;
