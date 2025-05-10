@@ -12,82 +12,82 @@ import com.kreative.polyhedra.op.FaceVertexGen;
 
 public class Sharpohedron extends PolyhedronGen {
 	public static enum FormSpecifier {
-		S1 (
+		TRIAETOS_TETRAHEDRON (
 			ArchimedeanSolid.FormSpecifier.TRUNCATED_TETRAHEDRON,
 			CatalanSolid.FormSpecifier.TRIAKIS_TETRAHEDRON,
-			"udu2", "s1", "1"
+			"triaetostetrahedron", "tat", "udu2", "s1", "1"
 		),
-		S2 (
+		DELTOIDAL_CUBOCTAHEDRON (
 			ArchimedeanSolid.FormSpecifier.CUBOCTAHEDRON,
 			CatalanSolid.FormSpecifier.RHOMBIC_DODECAHEDRON,
-			"udu7", "s2", "2"
+			"deltoidalcuboctahedron", "dco", "udu7", "s2", "2"
 		),
-		S3 (
+		TETRAETOS_HEXAHEDRON (
 			ArchimedeanSolid.FormSpecifier.TRUNCATED_OCTAHEDRON,
 			CatalanSolid.FormSpecifier.TETRAKIS_HEXAHEDRON,
-			"udu8", "s3", "3"
+			"tetraetoshexahedron", "tah", "udu8", "s3", "3"
 		),
-		S4 (
+		TRIAETOS_OCTAHEDRON (
 			ArchimedeanSolid.FormSpecifier.TRUNCATED_CUBE,
 			CatalanSolid.FormSpecifier.TRIAKIS_OCTAHEDRON,
-			"udu9", "s4", "4"
+			"triaetosoctahedron", "tao", "udu9", "s4", "4"
 		),
-		S5 (
+		RHOMBIDELTOIDAL_CUBOCTAHEDRON (
 			ArchimedeanSolid.FormSpecifier.SMALL_RHOMBICUBOCTAHEDRON,
 			CatalanSolid.FormSpecifier.DELTOIDAL_ICOSITETRAHEDRON,
-			"udu10", "s5", "5"
+			"rhombideltoidalcuboctahedron", "rdco", "udu10", "s5", "5"
 		),
-		S6 (
+		DELTOIDAL_RHOMBICUBOCTAHEDRON (
 			ArchimedeanSolid.FormSpecifier.GREAT_RHOMBICUBOCTAHEDRON,
 			CatalanSolid.FormSpecifier.DISDYAKIS_DODECAHEDRON,
-			"udu11", "s6", "6"
+			"deltoidalrhombicuboctahedron", "drco", "udu11", "s6", "6"
 		),
-		S7 (
+		RHOMBISNUB_TETRADELTOIDAL_HEXAHEDRON_LAEVO (
 			ArchimedeanSolid.FormSpecifier.SNUB_CUBE_LAEVO,
 			CatalanSolid.FormSpecifier.PENTAGONAL_ICOSITETRAHEDRON_DEXTRO,
-			"s7", "7"
+			"rhombisnubtetradeltoidalhexahedronlaevo", "lrsntdh", "s7", "7"
 		),
-		S8 (
+		RHOMBISNUB_TETRADELTOIDAL_HEXAHEDRON_DEXTRO (
 			ArchimedeanSolid.FormSpecifier.SNUB_CUBE_DEXTRO,
 			CatalanSolid.FormSpecifier.PENTAGONAL_ICOSITETRAHEDRON_LAEVO,
-			"s8", "8",
-			"udu12"
+			"rhombisnubtetradeltoidalhexahedrondextro", "rrsntdh", "s8", "8",
+			"rhombisnubtetradeltoidalhexahedron", "rsntdh", "udu12"
 		),
-		S9 (
+		DELTOIDAL_ICOSIDODECAHEDRON (
 			ArchimedeanSolid.FormSpecifier.ICOSIDODECAHEDRON,
 			CatalanSolid.FormSpecifier.RHOMBIC_TRIACONTAHEDRON,
-			"udu24", "s9", "9"
+			"deltoidalicosidodecahedron", "did", "udu24", "s9", "9"
 		),
-		S10 (
+		PENTAETOS_DODECAHEDRON (
 			ArchimedeanSolid.FormSpecifier.TRUNCATED_ICOSAHEDRON,
 			CatalanSolid.FormSpecifier.PENTAKIS_DODECAHEDRON,
-			"udu25", "s10", "10"
+			"pentaetosdodecahedron", "pad", "udu25", "s10", "10"
 		),
-		S11 (
+		TRIAETOS_ICOSAHEDRON (
 			ArchimedeanSolid.FormSpecifier.TRUNCATED_DODECAHEDRON,
 			CatalanSolid.FormSpecifier.TRIAKIS_ICOSAHEDRON,
-			"udu26", "s11", "11"
+			"triaetosicosahedron", "tai", "udu26", "s11", "11"
 		),
-		S12 (
+		SMALL_DELTOIDAL_RHOMBICOSIDODECAHEDRON (
 			ArchimedeanSolid.FormSpecifier.SMALL_RHOMBICOSIDODECAHEDRON,
 			CatalanSolid.FormSpecifier.DELTOIDAL_HEXECONTAHEDRON,
-			"udu27", "s12", "12"
+			"smalldeltoidalrhombicosidodecahedron", "sdrid", "udu27", "s12", "12"
 		),
-		S13 (
+		GREAT_DELTOIDAL_RHOMBICOSIDODECAHEDRON (
 			ArchimedeanSolid.FormSpecifier.GREAT_RHOMBICOSIDODECAHEDRON,
 			CatalanSolid.FormSpecifier.DISDYAKIS_TRIACONTAHEDRON,
-			"udu28", "s13", "13"
+			"greatdeltoidalrhombicosidodecahedron", "gdrid", "udu28", "s13", "13"
 		),
-		S14 (
+		RHOMBISNUB_PENTADELTOIDAL_DODECAHEDRON_LAEVO (
 			ArchimedeanSolid.FormSpecifier.SNUB_DODECAHEDRON_LAEVO,
 			CatalanSolid.FormSpecifier.PENTAGONAL_HEXECONTAHEDRON_DEXTRO,
-			"s14", "14"
+			"rhombisnubpentadeltoidaldodecahedronlaevo", "lrsnpdd", "s14", "14"
 		),
-		S15 (
+		RHOMBISNUB_PENTADELTOIDAL_DODECAHEDRON_DEXTRO (
 			ArchimedeanSolid.FormSpecifier.SNUB_DODECAHEDRON_DEXTRO,
 			CatalanSolid.FormSpecifier.PENTAGONAL_HEXECONTAHEDRON_LAEVO,
-			"s15", "15",
-			"udu29"
+			"rhombisnubpentadeltoidaldodecahedrondextro", "rrsnpdd", "s15", "15",
+			"rhombisnubpentadeltoidaldodecahedron", "rsnpdd", "udu29"
 		);
 		public final ArchimedeanSolid.FormSpecifier archimedeanComponent;
 		public final CatalanSolid.FormSpecifier catalanComponent;
@@ -99,21 +99,21 @@ public class Sharpohedron extends PolyhedronGen {
 		}
 		public static FormSpecifier forIndex(int index) {
 			switch (index) {
-				case  1: return S1;
-				case  2: return S2;
-				case  3: return S3;
-				case  4: return S4;
-				case  5: return S5;
-				case  6: return S6;
-				case  7: return S7;
-				case  8: return S8;
-				case  9: return S9;
-				case 10: return S10;
-				case 11: return S11;
-				case 12: return S12;
-				case 13: return S13;
-				case 14: return S14;
-				case 15: return S15;
+				case  1: return TRIAETOS_TETRAHEDRON;
+				case  2: return DELTOIDAL_CUBOCTAHEDRON;
+				case  3: return TETRAETOS_HEXAHEDRON;
+				case  4: return TRIAETOS_OCTAHEDRON;
+				case  5: return RHOMBIDELTOIDAL_CUBOCTAHEDRON;
+				case  6: return DELTOIDAL_RHOMBICUBOCTAHEDRON;
+				case  7: return RHOMBISNUB_TETRADELTOIDAL_HEXAHEDRON_LAEVO;
+				case  8: return RHOMBISNUB_TETRADELTOIDAL_HEXAHEDRON_DEXTRO;
+				case  9: return DELTOIDAL_ICOSIDODECAHEDRON;
+				case 10: return PENTAETOS_DODECAHEDRON;
+				case 11: return TRIAETOS_ICOSAHEDRON;
+				case 12: return SMALL_DELTOIDAL_RHOMBICOSIDODECAHEDRON;
+				case 13: return GREAT_DELTOIDAL_RHOMBICOSIDODECAHEDRON;
+				case 14: return RHOMBISNUB_PENTADELTOIDAL_DODECAHEDRON_LAEVO;
+				case 15: return RHOMBISNUB_PENTADELTOIDAL_DODECAHEDRON_DEXTRO;
 				default: return null;
 			}
 		}
@@ -150,7 +150,7 @@ public class Sharpohedron extends PolyhedronGen {
 		public String name() { return "Sharpohedron"; }
 		
 		public Sharpohedron parse(String[] args) {
-			FormSpecifier form = FormSpecifier.S1;
+			FormSpecifier form = FormSpecifier.TRIAETOS_TETRAHEDRON;
 			double midradius = 1;
 			Color color = Color.GRAY;
 			int argi = 0;
@@ -177,22 +177,22 @@ public class Sharpohedron extends PolyhedronGen {
 		
 		public Option[] options() {
 			final String toc = (
-				"which Archimedean and Catalan solid (by index or name)"
-				+ "\n\t\t 1  UdU2   truncated tetrahedron + triakis tetrahedron"
-				+ "\n\t\t 2  UdU7   cuboctahedron + rhombic dodecahedron"
-				+ "\n\t\t 3  UdU8   truncated octahedron + tetrakis hexahedron"
-				+ "\n\t\t 4  UdU9   truncated cube + triakis octahedron"
-				+ "\n\t\t 5  UdU10  small rhombicuboctahedron (rhombicuboctahedron) + deltoidal icositetrahedron"
-				+ "\n\t\t 6  UdU11  great rhombicuboctahedron (truncated cuboctahedron) + disdyakis dodecahedron"
-				+ "\n\t\t 7  UdU12  snub cube (laevo) + pentagonal icositetrahedron (dextro)"
-				+ "\n\t\t 8  UdU12  snub cube (dextro) + pentagonal icositetrahedron (laevo)"
-				+ "\n\t\t 9  UdU24  icosidodecahedron + rhombic triacontahedron"
-				+ "\n\t\t10  UdU25  truncated icosahedron + pentakis dodecahedron"
-				+ "\n\t\t11  UdU26  truncated dodecahedron + triakis icosahedron"
-				+ "\n\t\t12  UdU27  small rhombicosidodecahedron (rhombicosidodecahedron) + deltoidal hexecontahedron"
-				+ "\n\t\t13  UdU28  great rhombicosidodecahedron (truncated icosidodecahedron) + disdyakis triacontahedron"
-				+ "\n\t\t14  UdU29  snub dodecahedron (laevo) + pentagonal hexecontahedron (dextro)"
-				+ "\n\t\t15  UdU29  snub dodecahedron (dextro) + pentagonal hexecontahedron (laevo)"
+				"which Sharpohedron (by index or name)"
+				+ "\n\t\t 1  UdU2   tat      triaetos tetrahedron"
+				+ "\n\t\t 2  UdU7   dco      deltoidal cuboctahedron"
+				+ "\n\t\t 3  UdU8   tah      tetraetos hexahedron"
+				+ "\n\t\t 4  UdU9   tao      triaetos octahedron"
+				+ "\n\t\t 5  UdU10  rdco     rhombideltoidal cuboctahedron"
+				+ "\n\t\t 6  UdU11  drco     deltoidal rhombicuboctahedron"
+				+ "\n\t\t 7  UdU12  lrsntdh  rhombisnub tetradeltoidal hexahedron (laevo)"
+				+ "\n\t\t 8  UdU12  rrsntdh  rhombisnub tetradeltoidal hexahedron (dextro)"
+				+ "\n\t\t 9  UdU24  did      deltoidal icosidodecahedron"
+				+ "\n\t\t10  UdU25  pad      pentaetos dodecahedron"
+				+ "\n\t\t11  UdU26  tai      triaetos icosahedron"
+				+ "\n\t\t12  UdU27  sdrid    small deltoidal rhombicosidodecahedron"
+				+ "\n\t\t13  UdU28  gdrid    great deltoidal rhombicosidodecahedron"
+				+ "\n\t\t14  UdU29  lrsnpdd  rhombisnub pentadeltoidal dodecahedron (laevo)"
+				+ "\n\t\t15  UdU29  rrsnpdd  rhombisnub pentadeltoidal dodecahedron (dextro)"
 			);
 			return new Option[] {
 				new Option("n", Type.INT, toc),
