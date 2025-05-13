@@ -57,7 +57,7 @@ public class Join extends PolyhedronOp {
 		public String name() { return "Join"; }
 		
 		public Join parse(String[] args) {
-			FaceVertexGen fvgen = new FaceVertexGen.PolarReciprocal(MetricAggregator.AVERAGE, Metric.EDGE_MAGNITUDE);
+			FaceVertexGen fvgen = new FaceVertexGen.PolarReciprocal(MetricAggregator.AVERAGE, Metric.EDGE_DISTANCE_TO_ORIGIN);
 			FaceVertexGen.Builder fvtmp;
 			Color color = Color.GRAY;
 			int argi = 0;
@@ -80,13 +80,13 @@ public class Join extends PolyhedronOp {
 		public Option[] options() {
 			return new Option[] {
 				FaceVertexGen.Builder.FACE_OFFSET.option("s"), // H
-				FaceVertexGen.Builder.MAX_MAGNITUDE_OFFSET.option("s"), // X
-				FaceVertexGen.Builder.AVERAGE_MAGNITUDE_OFFSET.option("s"), // A
-				FaceVertexGen.Builder.MIN_MAGNITUDE_OFFSET.option("s"), // V
-				FaceVertexGen.Builder.FACE_MAGNITUDE_OFFSET.option("s"), // F
-				FaceVertexGen.Builder.INVERSION_ABOUT_VERTICES.option("s"), // R
-				FaceVertexGen.Builder.INVERSION_ABOUT_EDGES.option("s"), // M
-				FaceVertexGen.Builder.INVERSION_ABOUT_FACES.option("s"), // I
+				FaceVertexGen.Builder.MAX_VERTEX_MAGNITUDE_OFFSET.option("s"), // X
+				FaceVertexGen.Builder.AVERAGE_VERTEX_MAGNITUDE_OFFSET.option("s"), // A
+				FaceVertexGen.Builder.MIN_VERTEX_MAGNITUDE_OFFSET.option("s"), // V
+				FaceVertexGen.Builder.FACE_CENTER_MAGNITUDE_OFFSET.option("s"), // F
+				FaceVertexGen.Builder.INVERSION_ABOUT_CIRCUMRADIUS.option("s"), // R
+				FaceVertexGen.Builder.INVERSION_ABOUT_MIDRADIUS.option("s"), // M
+				FaceVertexGen.Builder.INVERSION_ABOUT_INRADIUS.option("s"), // I
 				FaceVertexGen.Builder.INVERSION_ABOUT_RADIUS.option("s"), // S
 				new Option("s", Type.VOID, "create new vertices at centers of original faces (strict mode)", FaceVertexGen.Builder.allOptionMutexes()),
 				new Option("c", Type.COLOR, "color"),

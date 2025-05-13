@@ -80,10 +80,10 @@ public class Needle extends PolyhedronOp {
 		public Option[] options() {
 			return new Option[] {
 				FaceVertexGen.Builder.FACE_OFFSET.option("s"), // H
-				FaceVertexGen.Builder.MAX_MAGNITUDE_OFFSET.option("s"), // X
-				FaceVertexGen.Builder.AVERAGE_MAGNITUDE_OFFSET.option("s"), // A
-				FaceVertexGen.Builder.MIN_MAGNITUDE_OFFSET.option("s"), // V
-				FaceVertexGen.Builder.FACE_MAGNITUDE_OFFSET.option("s"), // F
+				FaceVertexGen.Builder.MAX_VERTEX_MAGNITUDE_OFFSET.option("s"), // X
+				FaceVertexGen.Builder.AVERAGE_VERTEX_MAGNITUDE_OFFSET.option("s"), // A
+				FaceVertexGen.Builder.MIN_VERTEX_MAGNITUDE_OFFSET.option("s"), // V
+				FaceVertexGen.Builder.FACE_CENTER_MAGNITUDE_OFFSET.option("s"), // F
 				new Option("s", Type.VOID, "create new vertices at centers of original faces (strict mode)", FaceVertexGen.Builder.allOptionMutexes()),
 				new Option("c", Type.COLOR, "color"),
 			};

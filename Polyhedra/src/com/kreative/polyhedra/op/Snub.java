@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.kreative.polyhedra.Metric;
 import com.kreative.polyhedra.MetricAggregator;
 import com.kreative.polyhedra.Point3D;
 import com.kreative.polyhedra.Polyhedron;
@@ -85,7 +86,7 @@ public class Snub extends PolyhedronOp {
 		
 		public Snub parse(String[] args) {
 			GyroVertexGen gvgen = new GyroVertexGen.RelativeDistanceFromMidpointAlongEdge(1.0/3.0);
-			EdgeVertexGen evgen = new EdgeVertexGen.SeedVertexMagnitudeOffset(MetricAggregator.AVERAGE, 0);
+			EdgeVertexGen evgen = new EdgeVertexGen.MetricOffset(MetricAggregator.AVERAGE, Metric.VERTEX_MAGNITUDE, 0);
 			GyroVertexGen.Builder gvtmp;
 			EdgeVertexGen.Builder evtmp;
 			Color color = Color.GRAY;
@@ -120,11 +121,11 @@ public class Snub extends PolyhedronOp {
 				GyroVertexGen.Builder.FIXED_ANGLE_FROM_MIDPOINT_ALONG_EDGE.option("s"), // m
 				GyroVertexGen.Builder.TWIST_ANGLE.option("s"), // t
 				EdgeVertexGen.Builder.FACE_OFFSET.option("s"), // h
-				EdgeVertexGen.Builder.MAX_MAGNITUDE_OFFSET.option("s"), // x
-				EdgeVertexGen.Builder.AVERAGE_MAGNITUDE_OFFSET.option("s"), // a
-				EdgeVertexGen.Builder.MIN_MAGNITUDE_OFFSET.option("s"), // v
-				EdgeVertexGen.Builder.EDGE_MAGNITUDE_OFFSET.option("s"), // e
-				EdgeVertexGen.Builder.VERTEX_MAGNITUDE_OFFSET.option("s"), // d
+				EdgeVertexGen.Builder.MAX_VERTEX_MAGNITUDE_OFFSET.option("s"), // x
+				EdgeVertexGen.Builder.AVERAGE_VERTEX_MAGNITUDE_OFFSET.option("s"), // a
+				EdgeVertexGen.Builder.MIN_VERTEX_MAGNITUDE_OFFSET.option("s"), // v
+				EdgeVertexGen.Builder.EDGE_MIDPOINT_MAGNITUDE_OFFSET.option("s"), // e
+				EdgeVertexGen.Builder.DEFAULT_VERTEX_MAGNITUDE_OFFSET.option("s"), // d
 				EdgeVertexGen.Builder.FACE_OFFSET_FROM_ORIGIN.option("s"), // o
 				new Option(
 					"s", Type.VOID, "create new vertices along original edges (strict mode)",

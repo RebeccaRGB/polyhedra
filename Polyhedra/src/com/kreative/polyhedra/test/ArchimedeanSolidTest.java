@@ -3,7 +3,6 @@ package com.kreative.polyhedra.test;
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 import com.kreative.polyhedra.Metric;
 import com.kreative.polyhedra.MetricAggregator;
 import com.kreative.polyhedra.Point3D;
@@ -37,36 +36,25 @@ public class ArchimedeanSolidTest {
 			System.out.print(((p.edges.size() == edgeCount[index]) ? " \u001B[1;32m" : " \u001B[1;31m") + p.edges.size() + "\u001B[0m");
 			System.out.print(((p.faces.size() == faceCount[index]) ? " \u001B[1;32m" : " \u001B[1;31m") + p.faces.size() + "\u001B[0m");
 			System.out.println();
-			// Get metrics
-			double mrf1 = MetricAggregator.MINIMUM.aggregate(Metric.EDGE_MAGNITUDE.iterator(p, Point3D.ZERO)) / f.midradiusFactor;
-			double mrf2 = MetricAggregator.MAXIMUM.aggregate(Metric.EDGE_MAGNITUDE.iterator(p, Point3D.ZERO)) / f.midradiusFactor;
+			// Get/check/print metrics
+			double mrf1 = MetricAggregator.MINIMUM.aggregate(Metric.EDGE_DISTANCE_TO_ORIGIN.iterator(p, Point3D.ZERO)) / f.midradiusFactor;
+			double mrf2 = MetricAggregator.MAXIMUM.aggregate(Metric.EDGE_DISTANCE_TO_ORIGIN.iterator(p, Point3D.ZERO)) / f.midradiusFactor;
 			double crf1 = MetricAggregator.MINIMUM.aggregate(Metric.VERTEX_MAGNITUDE.iterator(p, Point3D.ZERO)) / f.circumradiusFactor;
 			double crf2 = MetricAggregator.MAXIMUM.aggregate(Metric.VERTEX_MAGNITUDE.iterator(p, Point3D.ZERO)) / f.circumradiusFactor;
 			double elf1 = MetricAggregator.MINIMUM.aggregate(Metric.EDGE_LENGTH.iterator(p, Point3D.ZERO));
 			double elf2 = MetricAggregator.MAXIMUM.aggregate(Metric.EDGE_LENGTH.iterator(p, Point3D.ZERO));
 			double[] mtx = {mrf1, mrf2, crf1, crf2, elf1, elf2};
-			// Check/print metrics
 			System.out.print("Metrics:");
 			for (double m : mtx) System.out.print(((1 == (float)m) ? " \u001B[1;32m" : " \u001B[1;31m") + (float)m + "\u001B[0m");
 			System.out.println();
-			// Get edge angles
-			TreeMap<Float,Float> angles = new TreeMap<Float,Float>();
-			for (Polyhedron.Face face : p.faces) {
-				for (int i = 0, n = face.vertices.size(); i < n; i++) {
-					Point3D vp = face.vertices.get(i).point;
-					Point3D np = face.vertices.get((i + 1) % n).point;
-					Point3D pp = face.vertices.get((i + n - 1) % n).point;
-					Float key = (float)vp.angle(pp, np);
-					Float value = angles.get(key);
-					angles.put(key, ((value != null) ? (value + 1) : 1));
-				}
-			}
-			// Check/print edge angles
+			// Get/check/print edge angles
+			Map<Float,Integer> angles = MetricAggregator.createHistogram(Metric.VERTEX_ANGLE.iterator(p, Point3D.ZERO));
 			System.out.print("Angles:");
-			for (Map.Entry<Float,Float> e : angles.entrySet()) {
+			for (Map.Entry<Float,Integer> e : angles.entrySet()) {
 				Integer deg = validAngles.get(e.getKey());
 				boolean ok = (deg != null) && ((e.getValue() % deg) == 0);
-				System.out.print((ok ? " \u001B[1;32m" : " \u001B[1;31m") + e.getValue() + "×" + e.getKey() + "°\u001B[0m");
+				float fc = e.getValue().floatValue() / deg.floatValue();
+				System.out.print((ok ? " \u001B[1;32m" : " \u001B[1;31m") + fc + "×" + e.getKey() + "°\u001B[0m");
 			}
 			System.out.println();
 			System.out.println();

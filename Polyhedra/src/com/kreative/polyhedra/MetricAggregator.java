@@ -1,6 +1,8 @@
 package com.kreative.polyhedra;
 
 import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 
 public enum MetricAggregator {
 	AVERAGE {
@@ -51,4 +53,14 @@ public enum MetricAggregator {
 		}
 	};
 	public abstract double aggregate(Iterator<Double> iterator);
+	
+	public static final Map<Float,Integer> createHistogram(Iterator<Double> iterator) {
+		TreeMap<Float,Integer> map = new TreeMap<Float,Integer>();
+		while (iterator.hasNext()) {
+			Float key = iterator.next().floatValue();
+			Integer value = map.get(key);
+			map.put(key, ((value != null) ? (value + 1) : 1));
+		}
+		return map;
+	}
 }

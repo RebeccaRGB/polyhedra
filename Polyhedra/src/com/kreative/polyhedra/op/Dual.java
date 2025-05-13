@@ -17,49 +17,79 @@ public class Dual extends PolyhedronOp {
 				return false;
 			}
 		},
-		MAX_VERTEX_MAGNITUDE("vmax", "rmax", "rescale dual polyhedron to match original maximum vertex magnitude") {
+		MAX_VERTEX_MAGNITUDE("rmax", "vmax", "rescale dual polyhedron to match original maximum circumradius") {
 			public boolean rescale(Polyhedron seed, Polyhedron dual, List<Point3D> vertices) {
 				return rescaleChecked(seed, dual, vertices, MetricAggregator.MAXIMUM, Metric.VERTEX_MAGNITUDE);
 			}
 		},
-		AVERAGE_VERTEX_MAGNITUDE("v", "r", "rescale dual polyhedron to match original average vertex magnitude") {
+		AVERAGE_VERTEX_MAGNITUDE("r", "v", "rescale dual polyhedron to match original average circumradius") {
 			public boolean rescale(Polyhedron seed, Polyhedron dual, List<Point3D> vertices) {
 				return rescaleChecked(seed, dual, vertices, MetricAggregator.AVERAGE, Metric.VERTEX_MAGNITUDE);
 			}
 		},
-		MIN_VERTEX_MAGNITUDE("vmin", "rmin", "rescale dual polyhedron to match original minimum vertex magnitude") {
+		MIN_VERTEX_MAGNITUDE("rmin", "vmin", "rescale dual polyhedron to match original minimum circumradius") {
 			public boolean rescale(Polyhedron seed, Polyhedron dual, List<Point3D> vertices) {
 				return rescaleChecked(seed, dual, vertices, MetricAggregator.MINIMUM, Metric.VERTEX_MAGNITUDE);
 			}
 		},
-		MAX_EDGE_MAGNITUDE("emax", "mmax", "rescale dual polyhedron to match original maximum edge magnitude") {
+		MAX_EDGE_MIDPOINT_MAGNITUDE("emax", "rescale dual polyhedron to match original maximum edge magnitude") {
 			public boolean rescale(Polyhedron seed, Polyhedron dual, List<Point3D> vertices) {
-				return rescaleChecked(seed, dual, vertices, MetricAggregator.MAXIMUM, Metric.EDGE_MAGNITUDE);
+				return rescaleChecked(seed, dual, vertices, MetricAggregator.MAXIMUM, Metric.EDGE_MIDPOINT_MAGNITUDE);
 			}
 		},
-		AVERAGE_EDGE_MAGNITUDE("e", "m", "rescale dual polyhedron to match original average edge magnitude") {
+		AVERAGE_EDGE_MIDPOINT_MAGNITUDE("e", "rescale dual polyhedron to match original average edge magnitude") {
 			public boolean rescale(Polyhedron seed, Polyhedron dual, List<Point3D> vertices) {
-				return rescaleChecked(seed, dual, vertices, MetricAggregator.AVERAGE, Metric.EDGE_MAGNITUDE);
+				return rescaleChecked(seed, dual, vertices, MetricAggregator.AVERAGE, Metric.EDGE_MIDPOINT_MAGNITUDE);
 			}
 		},
-		MIN_EDGE_MAGNITUDE("emin", "mmin", "rescale dual polyhedron to match original minimum edge magnitude") {
+		MIN_EDGE_MIDPOINT_MAGNITUDE("emin", "rescale dual polyhedron to match original minimum edge magnitude") {
 			public boolean rescale(Polyhedron seed, Polyhedron dual, List<Point3D> vertices) {
-				return rescaleChecked(seed, dual, vertices, MetricAggregator.MINIMUM, Metric.EDGE_MAGNITUDE);
+				return rescaleChecked(seed, dual, vertices, MetricAggregator.MINIMUM, Metric.EDGE_MIDPOINT_MAGNITUDE);
 			}
 		},
-		MAX_FACE_MAGNITUDE("fmax", "imax", "rescale dual polyhedron to match original maximum face magnitude") {
+		MAX_EDGE_DISTANCE_TO_ORIGIN("mmax", "rescale dual polyhedron to match original maximum midradius") {
 			public boolean rescale(Polyhedron seed, Polyhedron dual, List<Point3D> vertices) {
-				return rescaleChecked(seed, dual, vertices, MetricAggregator.MAXIMUM, Metric.FACE_MAGNITUDE);
+				return rescaleChecked(seed, dual, vertices, MetricAggregator.MAXIMUM, Metric.EDGE_DISTANCE_TO_ORIGIN);
 			}
 		},
-		AVERAGE_FACE_MAGNITUDE("f", "i", "rescale dual polyhedron to match original average face magnitude") {
+		AVERAGE_EDGE_DISTANCE_TO_ORIGIN("m", "rescale dual polyhedron to match original average midradius") {
 			public boolean rescale(Polyhedron seed, Polyhedron dual, List<Point3D> vertices) {
-				return rescaleChecked(seed, dual, vertices, MetricAggregator.AVERAGE, Metric.FACE_MAGNITUDE);
+				return rescaleChecked(seed, dual, vertices, MetricAggregator.AVERAGE, Metric.EDGE_DISTANCE_TO_ORIGIN);
 			}
 		},
-		MIN_FACE_MAGNITUDE("fmin", "imin", "rescale dual polyhedron to match original minimum face magnitude") {
+		MIN_EDGE_DISTANCE_TO_ORIGIN("mmin", "rescale dual polyhedron to match original minimum midradius") {
 			public boolean rescale(Polyhedron seed, Polyhedron dual, List<Point3D> vertices) {
-				return rescaleChecked(seed, dual, vertices, MetricAggregator.MINIMUM, Metric.FACE_MAGNITUDE);
+				return rescaleChecked(seed, dual, vertices, MetricAggregator.MINIMUM, Metric.EDGE_DISTANCE_TO_ORIGIN);
+			}
+		},
+		MAX_FACE_CENTER_MAGNITUDE("fmax", "rescale dual polyhedron to match original maximum face magnitude") {
+			public boolean rescale(Polyhedron seed, Polyhedron dual, List<Point3D> vertices) {
+				return rescaleChecked(seed, dual, vertices, MetricAggregator.MAXIMUM, Metric.FACE_CENTER_MAGNITUDE);
+			}
+		},
+		AVERAGE_FACE_CENTER_MAGNITUDE("f", "rescale dual polyhedron to match original average face magnitude") {
+			public boolean rescale(Polyhedron seed, Polyhedron dual, List<Point3D> vertices) {
+				return rescaleChecked(seed, dual, vertices, MetricAggregator.AVERAGE, Metric.FACE_CENTER_MAGNITUDE);
+			}
+		},
+		MIN_FACE_CENTER_MAGNITUDE("fmin", "rescale dual polyhedron to match original minimum face magnitude") {
+			public boolean rescale(Polyhedron seed, Polyhedron dual, List<Point3D> vertices) {
+				return rescaleChecked(seed, dual, vertices, MetricAggregator.MINIMUM, Metric.FACE_CENTER_MAGNITUDE);
+			}
+		},
+		MAX_FACE_DISTANCE_TO_ORIGIN("imax", "rescale dual polyhedron to match original maximum inradius") {
+			public boolean rescale(Polyhedron seed, Polyhedron dual, List<Point3D> vertices) {
+				return rescaleChecked(seed, dual, vertices, MetricAggregator.MAXIMUM, Metric.FACE_DISTANCE_TO_ORIGIN);
+			}
+		},
+		AVERAGE_FACE_DISTANCE_TO_ORIGIN("i", "rescale dual polyhedron to match original average inradius") {
+			public boolean rescale(Polyhedron seed, Polyhedron dual, List<Point3D> vertices) {
+				return rescaleChecked(seed, dual, vertices, MetricAggregator.AVERAGE, Metric.FACE_DISTANCE_TO_ORIGIN);
+			}
+		},
+		MIN_FACE_DISTANCE_TO_ORIGIN("imin", "rescale dual polyhedron to match original minimum inradius") {
+			public boolean rescale(Polyhedron seed, Polyhedron dual, List<Point3D> vertices) {
+				return rescaleChecked(seed, dual, vertices, MetricAggregator.MINIMUM, Metric.FACE_DISTANCE_TO_ORIGIN);
 			}
 		},
 		MAX_EDGE_LENGTH("amax", "rescale dual polyhedron to match original maximum edge length") {
@@ -195,7 +225,7 @@ public class Dual extends PolyhedronOp {
 		public String name() { return "Dual"; }
 		
 		public Dual parse(String[] args) {
-			FaceVertexGen fvgen = new FaceVertexGen.PolarReciprocal(MetricAggregator.AVERAGE, Metric.EDGE_MAGNITUDE);
+			FaceVertexGen fvgen = new FaceVertexGen.PolarReciprocal(MetricAggregator.AVERAGE, Metric.EDGE_DISTANCE_TO_ORIGIN);
 			FaceVertexGen.Builder fvtmp;
 			RescaleMode mode = RescaleMode.NONE;
 			RescaleMode mtmp;
@@ -224,13 +254,13 @@ public class Dual extends PolyhedronOp {
 		public Option[] options() {
 			List<Option> options = new ArrayList<Option>();
 			options.add(FaceVertexGen.Builder.FACE_OFFSET.option("s")); // H
-			options.add(FaceVertexGen.Builder.MAX_MAGNITUDE_OFFSET.option("s")); // X
-			options.add(FaceVertexGen.Builder.AVERAGE_MAGNITUDE_OFFSET.option("s")); // A
-			options.add(FaceVertexGen.Builder.MIN_MAGNITUDE_OFFSET.option("s")); // V
-			options.add(FaceVertexGen.Builder.FACE_MAGNITUDE_OFFSET.option("s")); // F
-			options.add(FaceVertexGen.Builder.INVERSION_ABOUT_VERTICES.option("s")); // R
-			options.add(FaceVertexGen.Builder.INVERSION_ABOUT_EDGES.option("s")); // M
-			options.add(FaceVertexGen.Builder.INVERSION_ABOUT_FACES.option("s")); // I
+			options.add(FaceVertexGen.Builder.MAX_VERTEX_MAGNITUDE_OFFSET.option("s")); // X
+			options.add(FaceVertexGen.Builder.AVERAGE_VERTEX_MAGNITUDE_OFFSET.option("s")); // A
+			options.add(FaceVertexGen.Builder.MIN_VERTEX_MAGNITUDE_OFFSET.option("s")); // V
+			options.add(FaceVertexGen.Builder.FACE_CENTER_MAGNITUDE_OFFSET.option("s")); // F
+			options.add(FaceVertexGen.Builder.INVERSION_ABOUT_CIRCUMRADIUS.option("s")); // R
+			options.add(FaceVertexGen.Builder.INVERSION_ABOUT_MIDRADIUS.option("s")); // M
+			options.add(FaceVertexGen.Builder.INVERSION_ABOUT_INRADIUS.option("s")); // I
 			options.add(FaceVertexGen.Builder.INVERSION_ABOUT_RADIUS.option("s")); // S
 			for (RescaleMode mode : RescaleMode.values()) options.add(mode.option("s")); // dvremfiaxyz
 			options.add(new Option("s", Type.VOID, "create new vertices at centers and do not resize (strict mode)"));

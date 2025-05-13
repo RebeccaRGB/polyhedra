@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.kreative.polyhedra.Metric;
 import com.kreative.polyhedra.MetricAggregator;
 import com.kreative.polyhedra.Point3D;
 import com.kreative.polyhedra.Polyhedron;
@@ -72,9 +73,9 @@ public class Gyro extends PolyhedronOp {
 		public String name() { return "Gyro"; }
 		
 		public Gyro parse(String[] args) {
-			FaceVertexGen fvgen = new FaceVertexGen.SeedVertexMagnitudeOffset(MetricAggregator.AVERAGE, 0);
+			FaceVertexGen fvgen = new FaceVertexGen.MetricOffset(MetricAggregator.AVERAGE, Metric.VERTEX_MAGNITUDE, 0);
 			GyroVertexGen gvgen = new GyroVertexGen.RelativeDistanceFromMidpointAlongEdge(1.0/3.0);
-			EdgeVertexGen evgen = new EdgeVertexGen.SeedVertexMagnitudeOffset(MetricAggregator.AVERAGE, 0);
+			EdgeVertexGen evgen = new EdgeVertexGen.MetricOffset(MetricAggregator.AVERAGE, Metric.VERTEX_MAGNITUDE, 0);
 			FaceVertexGen.Builder fvtmp;
 			GyroVertexGen.Builder gvtmp;
 			EdgeVertexGen.Builder evtmp;
@@ -104,10 +105,10 @@ public class Gyro extends PolyhedronOp {
 		public Option[] options() {
 			return new Option[] {
 				FaceVertexGen.Builder.FACE_OFFSET.option("s"), // H
-				FaceVertexGen.Builder.MAX_MAGNITUDE_OFFSET.option("s"), // X
-				FaceVertexGen.Builder.AVERAGE_MAGNITUDE_OFFSET.option("s"), // A
-				FaceVertexGen.Builder.MIN_MAGNITUDE_OFFSET.option("s"), // V
-				FaceVertexGen.Builder.FACE_MAGNITUDE_OFFSET.option("s"), // F
+				FaceVertexGen.Builder.MAX_VERTEX_MAGNITUDE_OFFSET.option("s"), // X
+				FaceVertexGen.Builder.AVERAGE_VERTEX_MAGNITUDE_OFFSET.option("s"), // A
+				FaceVertexGen.Builder.MIN_VERTEX_MAGNITUDE_OFFSET.option("s"), // V
+				FaceVertexGen.Builder.FACE_CENTER_MAGNITUDE_OFFSET.option("s"), // F
 				GyroVertexGen.Builder.FIXED_DISTANCE_FROM_VERTEX_ALONG_EDGE.option("s"), // u
 				GyroVertexGen.Builder.RELATIVE_DISTANCE_FROM_VERTEX_ALONG_EDGE.option("s"), // U
 				GyroVertexGen.Builder.FIXED_ANGLE_FROM_VERTEX_ALONG_EDGE.option("s"), // w
@@ -116,11 +117,11 @@ public class Gyro extends PolyhedronOp {
 				GyroVertexGen.Builder.FIXED_ANGLE_FROM_MIDPOINT_ALONG_EDGE.option("s"), // m
 				GyroVertexGen.Builder.TWIST_ANGLE.option("s"), // t
 				EdgeVertexGen.Builder.FACE_OFFSET.option("s"), // h
-				EdgeVertexGen.Builder.MAX_MAGNITUDE_OFFSET.option("s"), // x
-				EdgeVertexGen.Builder.AVERAGE_MAGNITUDE_OFFSET.option("s"), // a
-				EdgeVertexGen.Builder.MIN_MAGNITUDE_OFFSET.option("s"), // v
-				EdgeVertexGen.Builder.EDGE_MAGNITUDE_OFFSET.option("s"), // e
-				EdgeVertexGen.Builder.VERTEX_MAGNITUDE_OFFSET.option("s"), // d
+				EdgeVertexGen.Builder.MAX_VERTEX_MAGNITUDE_OFFSET.option("s"), // x
+				EdgeVertexGen.Builder.AVERAGE_VERTEX_MAGNITUDE_OFFSET.option("s"), // a
+				EdgeVertexGen.Builder.MIN_VERTEX_MAGNITUDE_OFFSET.option("s"), // v
+				EdgeVertexGen.Builder.EDGE_MIDPOINT_MAGNITUDE_OFFSET.option("s"), // e
+				EdgeVertexGen.Builder.DEFAULT_VERTEX_MAGNITUDE_OFFSET.option("s"), // d
 				EdgeVertexGen.Builder.FACE_OFFSET_FROM_ORIGIN.option("s"), // o
 				new Option(
 					"s", Type.VOID, "create new vertices at centers of original faces (strict mode)",

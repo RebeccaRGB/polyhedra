@@ -13,49 +13,79 @@ import com.kreative.polyhedra.PolyhedronOp;
 
 public class Resize extends PolyhedronOp {
 	public static enum ResizeMode {
-		MAX_VERTEX_MAGNITUDE("vmax", "rmax", Type.REAL, "scale uniformly to match the specified maximum vertex magnitude") {
+		MAX_VERTEX_MAGNITUDE("rmax", "vmax", Type.REAL, "scale uniformly to match the specified maximum circumradius") {
 			public boolean resize(Polyhedron seed, List<Point3D> points, Object arg) {
 				return resizeChecked(seed, points, arg, MetricAggregator.MAXIMUM, Metric.VERTEX_MAGNITUDE);
 			}
 		},
-		AVERAGE_VERTEX_MAGNITUDE("v", "r", Type.REAL, "scale uniformly to match the specified average vertex magnitude") {
+		AVERAGE_VERTEX_MAGNITUDE("r", "v", Type.REAL, "scale uniformly to match the specified average circumradius") {
 			public boolean resize(Polyhedron seed, List<Point3D> points, Object arg) {
 				return resizeChecked(seed, points, arg, MetricAggregator.AVERAGE, Metric.VERTEX_MAGNITUDE);
 			}
 		},
-		MIN_VERTEX_MAGNITUDE("vmin", "rmin", Type.REAL, "scale uniformly to match the specified minimum vertex magnitude") {
+		MIN_VERTEX_MAGNITUDE("rmin", "vmin", Type.REAL, "scale uniformly to match the specified minimum circumradius") {
 			public boolean resize(Polyhedron seed, List<Point3D> points, Object arg) {
 				return resizeChecked(seed, points, arg, MetricAggregator.MINIMUM, Metric.VERTEX_MAGNITUDE);
 			}
 		},
-		MAX_EDGE_MAGNITUDE("emax", "mmax", Type.REAL, "scale uniformly to match the specified maximum edge magnitude") {
+		MAX_EDGE_MIDPOINT_MAGNITUDE("emax", Type.REAL, "scale uniformly to match the specified maximum edge magnitude") {
 			public boolean resize(Polyhedron seed, List<Point3D> points, Object arg) {
-				return resizeChecked(seed, points, arg, MetricAggregator.MAXIMUM, Metric.EDGE_MAGNITUDE);
+				return resizeChecked(seed, points, arg, MetricAggregator.MAXIMUM, Metric.EDGE_MIDPOINT_MAGNITUDE);
 			}
 		},
-		AVERAGE_EDGE_MAGNITUDE("e", "m", Type.REAL, "scale uniformly to match the specified average edge magnitude") {
+		AVERAGE_EDGE_MIDPOINT_MAGNITUDE("e", Type.REAL, "scale uniformly to match the specified average edge magnitude") {
 			public boolean resize(Polyhedron seed, List<Point3D> points, Object arg) {
-				return resizeChecked(seed, points, arg, MetricAggregator.AVERAGE, Metric.EDGE_MAGNITUDE);
+				return resizeChecked(seed, points, arg, MetricAggregator.AVERAGE, Metric.EDGE_MIDPOINT_MAGNITUDE);
 			}
 		},
-		MIN_EDGE_MAGNITUDE("emin", "mmin", Type.REAL, "scale uniformly to match the specified minimum edge magnitude") {
+		MIN_EDGE_MIDPOINT_MAGNITUDE("emin", Type.REAL, "scale uniformly to match the specified minimum edge magnitude") {
 			public boolean resize(Polyhedron seed, List<Point3D> points, Object arg) {
-				return resizeChecked(seed, points, arg, MetricAggregator.MINIMUM, Metric.EDGE_MAGNITUDE);
+				return resizeChecked(seed, points, arg, MetricAggregator.MINIMUM, Metric.EDGE_MIDPOINT_MAGNITUDE);
 			}
 		},
-		MAX_FACE_MAGNITUDE("fmax", "imax", Type.REAL, "scale uniformly to match the specified maximum face magnitude") {
+		MAX_EDGE_DISTANCE_TO_ORIGIN("mmax", Type.REAL, "scale uniformly to match the specified maximum midradius") {
 			public boolean resize(Polyhedron seed, List<Point3D> points, Object arg) {
-				return resizeChecked(seed, points, arg, MetricAggregator.MAXIMUM, Metric.FACE_MAGNITUDE);
+				return resizeChecked(seed, points, arg, MetricAggregator.MAXIMUM, Metric.EDGE_DISTANCE_TO_ORIGIN);
 			}
 		},
-		AVERAGE_FACE_MAGNITUDE("f", "i", Type.REAL, "scale uniformly to match the specified average face magnitude") {
+		AVERAGE_EDGE_DISTANCE_TO_ORIGIN("m", Type.REAL, "scale uniformly to match the specified average midradius") {
 			public boolean resize(Polyhedron seed, List<Point3D> points, Object arg) {
-				return resizeChecked(seed, points, arg, MetricAggregator.AVERAGE, Metric.FACE_MAGNITUDE);
+				return resizeChecked(seed, points, arg, MetricAggregator.AVERAGE, Metric.EDGE_DISTANCE_TO_ORIGIN);
 			}
 		},
-		MIN_FACE_MAGNITUDE("fmin", "imin", Type.REAL, "scale uniformly to match the specified minimum face magnitude") {
+		MIN_EDGE_DISTANCE_TO_ORIGIN("mmin", Type.REAL, "scale uniformly to match the specified minimum midradius") {
 			public boolean resize(Polyhedron seed, List<Point3D> points, Object arg) {
-				return resizeChecked(seed, points, arg, MetricAggregator.MINIMUM, Metric.FACE_MAGNITUDE);
+				return resizeChecked(seed, points, arg, MetricAggregator.MINIMUM, Metric.EDGE_DISTANCE_TO_ORIGIN);
+			}
+		},
+		MAX_FACE_CENTER_MAGNITUDE("fmax", Type.REAL, "scale uniformly to match the specified maximum face magnitude") {
+			public boolean resize(Polyhedron seed, List<Point3D> points, Object arg) {
+				return resizeChecked(seed, points, arg, MetricAggregator.MAXIMUM, Metric.FACE_CENTER_MAGNITUDE);
+			}
+		},
+		AVERAGE_FACE_CENTER_MAGNITUDE("f", Type.REAL, "scale uniformly to match the specified average face magnitude") {
+			public boolean resize(Polyhedron seed, List<Point3D> points, Object arg) {
+				return resizeChecked(seed, points, arg, MetricAggregator.AVERAGE, Metric.FACE_CENTER_MAGNITUDE);
+			}
+		},
+		MIN_FACE_CENTER_MAGNITUDE("fmin", Type.REAL, "scale uniformly to match the specified minimum face magnitude") {
+			public boolean resize(Polyhedron seed, List<Point3D> points, Object arg) {
+				return resizeChecked(seed, points, arg, MetricAggregator.MINIMUM, Metric.FACE_CENTER_MAGNITUDE);
+			}
+		},
+		MAX_FACE_DISTANCE_TO_ORIGIN("imax", Type.REAL, "scale uniformly to match the specified maximum inradius") {
+			public boolean resize(Polyhedron seed, List<Point3D> points, Object arg) {
+				return resizeChecked(seed, points, arg, MetricAggregator.MAXIMUM, Metric.FACE_DISTANCE_TO_ORIGIN);
+			}
+		},
+		AVERAGE_FACE_DISTANCE_TO_ORIGIN("i", Type.REAL, "scale uniformly to match the specified average inradius") {
+			public boolean resize(Polyhedron seed, List<Point3D> points, Object arg) {
+				return resizeChecked(seed, points, arg, MetricAggregator.AVERAGE, Metric.FACE_DISTANCE_TO_ORIGIN);
+			}
+		},
+		MIN_FACE_DISTANCE_TO_ORIGIN("imin", Type.REAL, "scale uniformly to match the specified minimum inradius") {
+			public boolean resize(Polyhedron seed, List<Point3D> points, Object arg) {
+				return resizeChecked(seed, points, arg, MetricAggregator.MINIMUM, Metric.FACE_DISTANCE_TO_ORIGIN);
 			}
 		},
 		MAX_EDGE_LENGTH("amax", Type.REAL, "scale uniformly to match the specified maximum edge length") {

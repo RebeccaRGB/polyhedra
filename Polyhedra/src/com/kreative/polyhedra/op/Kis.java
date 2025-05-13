@@ -80,10 +80,10 @@ public class Kis extends PolyhedronOp {
 			List<Option> options = new ArrayList<Option>();
 			for (FacePredicate.Builder bi : FacePredicate.Builder.values()) options.add(bi.option()); // nitj
 			options.add(FaceVertexGen.Builder.FACE_OFFSET.option("s")); // H
-			options.add(FaceVertexGen.Builder.MAX_MAGNITUDE_OFFSET.option("s")); // X
-			options.add(FaceVertexGen.Builder.AVERAGE_MAGNITUDE_OFFSET.option("s")); // A
-			options.add(FaceVertexGen.Builder.MIN_MAGNITUDE_OFFSET.option("s")); // V
-			options.add(FaceVertexGen.Builder.FACE_MAGNITUDE_OFFSET.option("s")); // F
+			options.add(FaceVertexGen.Builder.MAX_VERTEX_MAGNITUDE_OFFSET.option("s")); // X
+			options.add(FaceVertexGen.Builder.AVERAGE_VERTEX_MAGNITUDE_OFFSET.option("s")); // A
+			options.add(FaceVertexGen.Builder.MIN_VERTEX_MAGNITUDE_OFFSET.option("s")); // V
+			options.add(FaceVertexGen.Builder.FACE_CENTER_MAGNITUDE_OFFSET.option("s")); // F
 			options.add(FaceVertexGen.Builder.EQUILATERAL.option("s")); // E
 			options.add(new Option("s", Type.VOID, "create new vertices at centers of original faces (strict mode)", FaceVertexGen.Builder.allOptionMutexes()));
 			return options.toArray(new Option[options.size()]);

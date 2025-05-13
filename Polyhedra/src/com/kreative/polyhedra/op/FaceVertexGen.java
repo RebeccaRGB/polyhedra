@@ -26,27 +26,29 @@ public abstract class FaceVertexGen {
 		}
 	}
 	
-	public static final class SeedVertexMagnitudeOffset extends FaceVertexGen {
+	public static final class MetricOffset extends FaceVertexGen {
 		private final MetricAggregator agg;
+		private final Metric met;
 		private final double size;
-		public SeedVertexMagnitudeOffset(MetricAggregator aggregator, double size) {
+		public MetricOffset(MetricAggregator aggregator, Metric metric, double size) {
 			this.agg = aggregator;
+			this.met = metric;
 			this.size = size;
 		}
 		private Point3D sc;
 		private double sm;
 		public void reset(Polyhedron s, List<Point3D> sv) {
 			this.sc = Point3D.average(sv);
-			this.sm = agg.aggregate(Metric.VERTEX_MAGNITUDE.iterator(s, sc));
+			this.sm = agg.aggregate(met.iterator(s, sc));
 		}
 		public Point3D createVertex(Polyhedron.Face f, List<Point3D> fv) {
 			return Point3D.average(fv).subtract(sc).normalize(sm + size).add(sc);
 		}
 	}
 	
-	public static final class FaceMagnitudeOffset extends FaceVertexGen {
+	public static final class FaceCenterMagnitudeOffset extends FaceVertexGen {
 		private final double size;
-		public FaceMagnitudeOffset(double size) {
+		public FaceCenterMagnitudeOffset(double size) {
 			this.size = size;
 		}
 		private Point3D sc;
@@ -56,9 +58,8 @@ public abstract class FaceVertexGen {
 		public Point3D createVertex(Polyhedron.Face f, List<Point3D> fv) {
 			Point3D fc = Point3D.average(fv);
 			if (size == 0) return fc;
-			fc = fc.subtract(sc);
-			fc = fc.normalize(fc.magnitude() + size);
-			return fc.add(sc);
+			double m = fc.distance(sc) + size;
+			return fc.subtract(sc).normalize(m).add(sc);
 		}
 	}
 	
@@ -133,24 +134,24 @@ public abstract class FaceVertexGen {
 				return new FaceOffset((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
-		MAX_MAGNITUDE_OFFSET ("X", Type.REAL, "create vertices from faces relative to the maximum magnitude") {
+		MAX_VERTEX_MAGNITUDE_OFFSET ("X", Type.REAL, "create vertices from faces relative to the maximum circumradius") {
 			public FaceVertexGen build(Object arg) {
-				return new SeedVertexMagnitudeOffset(MetricAggregator.MAXIMUM, (arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
+				return new MetricOffset(MetricAggregator.MAXIMUM, Metric.VERTEX_MAGNITUDE, (arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
-		AVERAGE_MAGNITUDE_OFFSET ("A", Type.REAL, "create vertices from faces relative to the average magnitude") {
+		AVERAGE_VERTEX_MAGNITUDE_OFFSET ("A", Type.REAL, "create vertices from faces relative to the average circumradius") {
 			public FaceVertexGen build(Object arg) {
-				return new SeedVertexMagnitudeOffset(MetricAggregator.AVERAGE, (arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
+				return new MetricOffset(MetricAggregator.AVERAGE, Metric.VERTEX_MAGNITUDE, (arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
-		MIN_MAGNITUDE_OFFSET ("V", Type.REAL, "create vertices from faces relative to the minimum magnitude") {
+		MIN_VERTEX_MAGNITUDE_OFFSET ("V", Type.REAL, "create vertices from faces relative to the minimum circumradius") {
 			public FaceVertexGen build(Object arg) {
-				return new SeedVertexMagnitudeOffset(MetricAggregator.MINIMUM, (arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
+				return new MetricOffset(MetricAggregator.MINIMUM, Metric.VERTEX_MAGNITUDE, (arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
-		FACE_MAGNITUDE_OFFSET ("F", Type.REAL, "create vertices from faces relative to the face magnitude") {
+		FACE_CENTER_MAGNITUDE_OFFSET ("F", Type.REAL, "create vertices from faces relative to the center magnitude") {
 			public FaceVertexGen build(Object arg) {
-				return new FaceMagnitudeOffset((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
+				return new FaceCenterMagnitudeOffset((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
 		EQUILATERAL ("E", Type.VOID, "attempt to create equilateral faces (not always possible)") {
@@ -163,19 +164,19 @@ public abstract class FaceVertexGen {
 				return new Planar();
 			}
 		},
-		INVERSION_ABOUT_VERTICES ("R", Type.VOID, "create vertices by inversion about average vertex magnitude") {
+		INVERSION_ABOUT_CIRCUMRADIUS ("R", Type.VOID, "create vertices by inversion about average circumradius") {
 			public FaceVertexGen build(Object arg) {
 				return new PolarReciprocal(MetricAggregator.AVERAGE, Metric.VERTEX_MAGNITUDE);
 			}
 		},
-		INVERSION_ABOUT_EDGES ("M", Type.VOID, "create vertices by inversion about average edge magnitude") {
+		INVERSION_ABOUT_MIDRADIUS ("M", Type.VOID, "create vertices by inversion about average midradius") {
 			public FaceVertexGen build(Object arg) {
-				return new PolarReciprocal(MetricAggregator.AVERAGE, Metric.EDGE_MAGNITUDE);
+				return new PolarReciprocal(MetricAggregator.AVERAGE, Metric.EDGE_DISTANCE_TO_ORIGIN);
 			}
 		},
-		INVERSION_ABOUT_FACES ("I", Type.VOID, "create vertices by inversion about average face magnitude") {
+		INVERSION_ABOUT_INRADIUS ("I", Type.VOID, "create vertices by inversion about average inradius") {
 			public FaceVertexGen build(Object arg) {
-				return new PolarReciprocal(MetricAggregator.AVERAGE, Metric.FACE_MAGNITUDE);
+				return new PolarReciprocal(MetricAggregator.AVERAGE, Metric.FACE_DISTANCE_TO_ORIGIN);
 			}
 		},
 		INVERSION_ABOUT_RADIUS ("S", Type.REAL, "create vertices by inversion about a specified radius") {

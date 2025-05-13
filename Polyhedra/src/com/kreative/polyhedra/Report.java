@@ -17,49 +17,80 @@ public class Report extends PolyhedronCon {
 	
 	public void consume(String source, Polyhedron p) {
 		System.out.println(source);
+		Point3D o = Point3D.ZERO;
+		Point3D c = p.center();
 		System.out.println("\tVertices: " + p.vertices.size());
+		TreeMap<Float,Integer> circumradii = new TreeMap<Float,Integer>();
 		for (Polyhedron.Vertex v : p.vertices) {
-			System.out.println("\t\t#" + v.index + "\t" + v.point + "\tmag=" + v.point.magnitude());
+			double m = v.point.distance(o);
+			double r = v.point.distance(c);
+			System.out.println("\t\t#" + v.index + "\t" + v.point + "\tmag=" + m + "\trad=" + r);
+			Float key = (float)r;
+			Integer value = circumradii.get(key);
+			circumradii.put(key, ((value != null) ? (value + 1) : 1));
 		}
 		System.out.println("\tEdges: " + p.edges.size());
+		TreeMap<Float,Integer> midradii = new TreeMap<Float,Integer>();
+		TreeMap<Float,Integer> lengths = new TreeMap<Float,Integer>();
 		TreeMap<Float,Integer> angles = new TreeMap<Float,Integer>();
 		for (Polyhedron.Edge e : p.edges) {
+			Point3D p1 = e.vertex1.point;
+			Point3D p2 = e.vertex2.point;
 			Point3D m = e.midpoint();
+			double l = e.length();
+			double d = o.distanceToLine(e.vertex1.point, e.vertex2.point);
+			double r = c.distanceToLine(e.vertex1.point, e.vertex2.point);
 			System.out.println("\t\t#" + e.vertex1.index + "-#" + e.vertex2.index);
-			System.out.println("\t\t\tV0: #" + e.vertex1.index + "\t" + e.vertex1.point + "\tmag=" + e.vertex1.point.magnitude());
-			System.out.println("\t\t\tV1: #" + e.vertex2.index + "\t" + e.vertex2.point + "\tmag=" + e.vertex2.point.magnitude());
-			System.out.println("\t\t\tmidpoint\t" + m + "\tmag=" + m.magnitude());
-			System.out.println("\t\t\tlength\t" + e.length());
+			System.out.println("\t\t\tV0: #" + e.vertex1.index + "\t" + p1 + "\tmag=" + p1.distance(o) + "\trad=" + p1.distance(c));
+			System.out.println("\t\t\tV1: #" + e.vertex2.index + "\t" + p2 + "\tmag=" + p2.distance(o) + "\trad=" + p2.distance(c));
+			System.out.println("\t\t\tmidpoint\t" + m + "\tmag=" + m.distance(o) + "\trad=" + m.distance(c));
+			System.out.println("\t\t\tlength\t" + l);
+			System.out.println("\t\t\tdistance to origin\t" + d);
+			System.out.println("\t\t\tdistance to center\t" + r);
 			List<Polyhedron.Face> faces = p.getFaces(e);
+			List<Point3D> normals = new ArrayList<Point3D>();
+			for (Polyhedron.Face face : faces) {
+				List<Point3D> fv = face.points();
+				normals.add(Point3D.average(fv).normal(fv));
+			}
 			for (int i = 0; i < faces.size(); i++) {
-				Point3D ci = faces.get(i).center();
+				Point3D ni = normals.get(i);
 				for (int j = i + 1; j < faces.size(); j++) {
-					Point3D cj = faces.get(j).center();
-					double deg = m.angle(ci, cj);
-					double rad = m.angleRad(ci, cj);
+					Point3D nj = normals.get(j);
+					double deg = 180 - ni.angle(nj);
+					double rad = Math.PI - ni.angleRad(nj);
 					System.out.println("\t\t\tdihedral angle\tdeg=" + deg + "\trad=" + rad);
 					Float key = (float)deg;
 					Integer value = angles.get(key);
 					angles.put(key, ((value != null) ? (value + 1) : 1));
 				}
 			}
+			Float key = (float)l;
+			Integer value = lengths.get(key);
+			lengths.put(key, ((value != null) ? (value + 1) : 1));
+			key = (float)r;
+			value = midradii.get(key);
+			midradii.put(key, ((value != null) ? (value + 1) : 1));
 		}
 		System.out.println("\tFaces: " + p.faces.size());
+		TreeMap<Float,Integer> inradii = new TreeMap<Float,Integer>();
 		HashMap<FaceInfo,Integer> faces = new HashMap<FaceInfo,Integer>();
 		for (Polyhedron.Face f: p.faces) {
-			FaceInfo key = new FaceInfo(f);
-			Integer value = faces.get(key);
-			faces.put(key, ((value != null) ? (value + 1) : 1));
+			FaceInfo info = new FaceInfo(f);
+			Integer value = faces.get(info);
+			faces.put(info, ((value != null) ? (value + 1) : 1));
 			List<Point3D> fv = f.points();
 			Point3D center = Point3D.average(fv);
 			Point3D normal = center.normal(fv);
-			System.out.println("\t\t#" + f.index + "\t" + key.typeString(1));
+			double d = o.distanceToPlane(center, normal);
+			double r = c.distanceToPlane(center, normal);
+			System.out.println("\t\t#" + f.index + "\t" + info.typeString(1));
 			System.out.println("\t\t\tVertices: " + f.vertices.size());
 			for (int i = 0; i < f.vertices.size(); i++) {
 				Polyhedron.Vertex v = f.vertices.get(i);
 				System.out.println(
 					"\t\t\t\tV" + i + ": #" + v.index + "\t" + v.point +
-					"\tmag=" + v.point.magnitude()
+					"\tmag=" + v.point.distance(o) + "\trad=" + v.point.distance(c)
 				);
 			}
 			System.out.println("\t\t\tEdges: " + f.edges.size());
@@ -67,7 +98,7 @@ public class Report extends PolyhedronCon {
 				Polyhedron.Edge e = f.edges.get(i);
 				System.out.println(
 					"\t\t\t\tE" + i + ": #" + e.vertex1.index + "-#" + e.vertex2.index +
-					"\tlen=" + e.length()
+					"\tlen=" + e.length() + "\trad=" + c.distanceToLine(e.vertex1.point, e.vertex2.point)
 				);
 			}
 			System.out.println("\t\t\tAngles: " + f.vertices.size());
@@ -81,9 +112,30 @@ public class Report extends PolyhedronCon {
 					"\trad=" + v.point.angleRad(pv.point, nv.point)
 				);
 			}
-			System.out.println("\t\t\tcenter\t" + center + "\tmag=" + center.magnitude());
+			System.out.println("\t\t\tcenter\t" + center + "\tmag=" + center.distance(o) + "\trad=" + center.distance(c));
 			System.out.println("\t\t\tnormal\t" + normal);
+			System.out.println("\t\t\tdistance to origin\t" + d);
+			System.out.println("\t\t\tdistance to center\t" + r);
 			System.out.println("\t\t\tcolor\t" + f.color.getRed() + "," + f.color.getGreen() + "," + f.color.getBlue());
+			Float key = (float)r;
+			value = inradii.get(key);
+			inradii.put(key, ((value != null) ? (value + 1) : 1));
+		}
+		System.out.println("\tCircumradii: " + circumradii.size());
+		for (Map.Entry<Float,Integer> e : circumradii.entrySet()) {
+			System.out.println("\t\t" + e.getValue() + "×" + e.getKey());
+		}
+		System.out.println("\tMidradii: " + midradii.size());
+		for (Map.Entry<Float,Integer> e : midradii.entrySet()) {
+			System.out.println("\t\t" + e.getValue() + "×" + e.getKey());
+		}
+		System.out.println("\tInradii: " + inradii.size());
+		for (Map.Entry<Float,Integer> e : inradii.entrySet()) {
+			System.out.println("\t\t" + e.getValue() + "×" + e.getKey());
+		}
+		System.out.println("\tEdge Lengths: " + lengths.size());
+		for (Map.Entry<Float,Integer> e : lengths.entrySet()) {
+			System.out.println("\t\t" + e.getValue() + "×" + e.getKey());
 		}
 		System.out.println("\tDihedral Angles: " + angles.size());
 		for (Map.Entry<Float,Integer> e : angles.entrySet()) {
@@ -98,16 +150,15 @@ public class Report extends PolyhedronCon {
 		for (Metric metric : Metric.values()) {
 			System.out.print("\t\t" + metric);
 			for (MetricAggregator agg : MetricAggregator.values()) {
-				System.out.print("\t" + agg + "=" + agg.aggregate(metric.iterator(p, Point3D.ZERO)));
+				System.out.print("\t" + agg + "=" + agg.aggregate(metric.iterator(p, o)));
 			}
 			System.out.println();
 		}
 		System.out.println("\tMetrics About Center:");
-		Point3D center = p.center();
 		for (Metric metric : Metric.values()) {
 			System.out.print("\t\t" + metric);
 			for (MetricAggregator agg : MetricAggregator.values()) {
-				System.out.print("\t" + agg + "=" + agg.aggregate(metric.iterator(p, center)));
+				System.out.print("\t" + agg + "=" + agg.aggregate(metric.iterator(p, c)));
 			}
 			System.out.println();
 		}

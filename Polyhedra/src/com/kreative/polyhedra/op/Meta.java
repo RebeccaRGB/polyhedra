@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import com.kreative.polyhedra.Metric;
 import com.kreative.polyhedra.MetricAggregator;
 import com.kreative.polyhedra.Point3D;
 import com.kreative.polyhedra.Polyhedron;
@@ -55,8 +56,8 @@ public class Meta extends PolyhedronOp {
 		public String name() { return "Meta"; }
 		
 		public Meta parse(String[] args) {
-			FaceVertexGen fvgen = new FaceVertexGen.SeedVertexMagnitudeOffset(MetricAggregator.AVERAGE, 0);
-			EdgeVertexGen evgen = new EdgeVertexGen.SeedVertexMagnitudeOffset(MetricAggregator.AVERAGE, 0);
+			FaceVertexGen fvgen = new FaceVertexGen.MetricOffset(MetricAggregator.AVERAGE, Metric.VERTEX_MAGNITUDE, 0);
+			EdgeVertexGen evgen = new EdgeVertexGen.MetricOffset(MetricAggregator.AVERAGE, Metric.VERTEX_MAGNITUDE, 0);
 			FaceVertexGen.Builder fvtmp;
 			EdgeVertexGen.Builder evtmp;
 			int argi = 0;
@@ -81,14 +82,14 @@ public class Meta extends PolyhedronOp {
 		public Option[] options() {
 			return new Option[] {
 				FaceVertexGen.Builder.FACE_OFFSET.option("s"), // H
-				FaceVertexGen.Builder.MAX_MAGNITUDE_OFFSET.option("s"), // X
-				FaceVertexGen.Builder.AVERAGE_MAGNITUDE_OFFSET.option("s"), // A
-				FaceVertexGen.Builder.MIN_MAGNITUDE_OFFSET.option("s"), // V
-				FaceVertexGen.Builder.FACE_MAGNITUDE_OFFSET.option("s"), // F
-				EdgeVertexGen.Builder.MAX_MAGNITUDE_OFFSET.option("s"), // x
-				EdgeVertexGen.Builder.AVERAGE_MAGNITUDE_OFFSET.option("s"), // a
-				EdgeVertexGen.Builder.MIN_MAGNITUDE_OFFSET.option("s"), // v
-				EdgeVertexGen.Builder.EDGE_MAGNITUDE_OFFSET.option("s"), // e
+				FaceVertexGen.Builder.MAX_VERTEX_MAGNITUDE_OFFSET.option("s"), // X
+				FaceVertexGen.Builder.AVERAGE_VERTEX_MAGNITUDE_OFFSET.option("s"), // A
+				FaceVertexGen.Builder.MIN_VERTEX_MAGNITUDE_OFFSET.option("s"), // V
+				FaceVertexGen.Builder.FACE_CENTER_MAGNITUDE_OFFSET.option("s"), // F
+				EdgeVertexGen.Builder.MAX_VERTEX_MAGNITUDE_OFFSET.option("s"), // x
+				EdgeVertexGen.Builder.AVERAGE_VERTEX_MAGNITUDE_OFFSET.option("s"), // a
+				EdgeVertexGen.Builder.MIN_VERTEX_MAGNITUDE_OFFSET.option("s"), // v
+				EdgeVertexGen.Builder.EDGE_MIDPOINT_MAGNITUDE_OFFSET.option("s"), // e
 				new Option(
 					"s", Type.VOID, "create new vertices at centers of original faces (strict mode)",
 					FaceVertexGen.Builder.allOptionMutexes(EdgeVertexGen.Builder.allOptionMutexes())

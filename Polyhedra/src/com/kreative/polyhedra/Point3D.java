@@ -165,6 +165,17 @@ public class Point3D {
 		return (dx * dx + dy * dy + dz * dz);
 	}
 	
+	public double distanceToLine(Point3D p1, Point3D p2) {
+		Point3D v1 = this.subtract(p1);
+		Point3D v2 = p2.subtract(p1);
+		Point3D v3 = v1.crossProduct(v2);
+		return v3.magnitude() / v2.magnitude();
+	}
+	
+	public double distanceToPlane(Point3D p, Point3D normal) {
+		return Math.abs(this.subtract(p).dotProduct(normal.normalize()));
+	}
+	
 	public Point3D divide(double factor) {
 		return new Point3D(x / factor, y / factor, z / factor);
 	}

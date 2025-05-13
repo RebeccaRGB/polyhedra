@@ -2,9 +2,10 @@ package com.kreative.polyhedra.test;
 
 import java.awt.Color;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import com.kreative.polyhedra.Metric;
+import com.kreative.polyhedra.MetricAggregator;
 import com.kreative.polyhedra.Point3D;
 import com.kreative.polyhedra.Polyhedron;
 import com.kreative.polyhedra.gen.Sharpohedron;
@@ -18,20 +19,7 @@ public class SharpohedronTest {
 			System.out.println("\u001B[1;34mS" + (index+1) + ": " + f + " (" + f.archimedeanComponent + " + " + f.catalanComponent + ")\u001B[0m");
 			Polyhedron p = new Sharpohedron(f, 1, Color.GRAY).gen();
 			// Get dihedral angles
-			TreeMap<Float,Integer> angles = new TreeMap<Float,Integer>();
-			for (Polyhedron.Edge edge : p.edges) {
-				Point3D m = edge.midpoint();
-				List<Polyhedron.Face> faces = p.getFaces(edge);
-				for (int i = 0; i < faces.size(); i++) {
-					Point3D ci = faces.get(i).center();
-					for (int j = i + 1; j < faces.size(); j++) {
-						Point3D cj = faces.get(j).center();
-						Float key = (float)m.angle(ci, cj);
-						Integer value = angles.get(key);
-						angles.put(key, ((value != null) ? (value + 1) : 1));
-					}
-				}
-			}
+			Map<Float,Integer> angles = MetricAggregator.createHistogram(Metric.DIHEDRAL_ANGLE.iterator(p, Point3D.ZERO));
 			// Get edge lengths and angles
 			int kites = 0, rhombs = 0, errors = 0;
 			HashMap<FaceInfo,Integer> faces = new HashMap<FaceInfo,Integer>();

@@ -32,18 +32,20 @@ public abstract class EdgeVertexGen {
 		}
 	}
 	
-	public static final class SeedVertexMagnitudeOffset extends EdgeVertexGen {
+	public static final class MetricOffset extends EdgeVertexGen {
 		private final MetricAggregator agg;
+		private final Metric met;
 		private final double size;
-		public SeedVertexMagnitudeOffset(MetricAggregator aggregator, double size) {
+		public MetricOffset(MetricAggregator aggregator, Metric metric, double size) {
 			this.agg = aggregator;
+			this.met = metric;
 			this.size = size;
 		}
 		private Point3D sc;
 		private double sm;
 		public void reset(Polyhedron s, List<Point3D> sv) {
 			this.sc = Point3D.average(sv);
-			this.sm = agg.aggregate(Metric.VERTEX_MAGNITUDE.iterator(s, sc));
+			this.sm = agg.aggregate(met.iterator(s, sc));
 		}
 		public Point3D createVertex(
 			Polyhedron.Face face, List<Point3D> fv,
@@ -53,9 +55,9 @@ public abstract class EdgeVertexGen {
 		}
 	}
 	
-	public static final class EdgeMagnitudeOffset extends EdgeVertexGen {
+	public static final class EdgeMidpointMagnitudeOffset extends EdgeVertexGen {
 		private final double size;
-		public EdgeMagnitudeOffset(double size) {
+		public EdgeMidpointMagnitudeOffset(double size) {
 			this.size = size;
 		}
 		private Point3D sc;
@@ -66,8 +68,8 @@ public abstract class EdgeVertexGen {
 			Polyhedron.Face face, List<Point3D> fv,
 			Polyhedron.Edge edge, Point3D dv
 		) {
-			double em = edge.midpoint().subtract(sc).magnitude();
-			return dv.subtract(sc).normalize(em + size).add(sc);
+			double m = edge.midpoint().distance(sc) + size;
+			return dv.subtract(sc).normalize(m).add(sc);
 		}
 	}
 	
@@ -85,9 +87,8 @@ public abstract class EdgeVertexGen {
 			Polyhedron.Edge edge, Point3D dv
 		) {
 			if (size == 0) return dv;
-			dv = dv.subtract(sc);
-			dv = dv.normalize(dv.magnitude() + size);
-			return dv.add(sc);
+			double m = dv.distance(sc) + size;
+			return dv.subtract(sc).normalize(m).add(sc);
 		}
 	}
 	
@@ -105,8 +106,9 @@ public abstract class EdgeVertexGen {
 			Polyhedron.Edge edge, Point3D dv
 		) {
 			if (fv == null || fv.isEmpty()) return dv;
-			double fm = Point3D.average(fv).subtract(sc).magnitude();
-			return dv.normal(fv).multiply(size - fm).add(dv);
+			Point3D normal = dv.normal(fv);
+			double fm = sc.distanceToPlane(dv, normal);
+			return normal.multiply(size - fm).add(dv);
 		}
 	}
 	
@@ -116,27 +118,27 @@ public abstract class EdgeVertexGen {
 				return new FaceOffset((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
-		MAX_MAGNITUDE_OFFSET ("x", Type.REAL, "create vertices from edges relative to the maximum magnitude") {
+		MAX_VERTEX_MAGNITUDE_OFFSET ("x", Type.REAL, "create vertices from edges relative to the maximum circumradius") {
 			public EdgeVertexGen build(Object arg) {
-				return new SeedVertexMagnitudeOffset(MetricAggregator.MAXIMUM, (arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
+				return new MetricOffset(MetricAggregator.MAXIMUM, Metric.VERTEX_MAGNITUDE, (arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
-		AVERAGE_MAGNITUDE_OFFSET ("a", Type.REAL, "create vertices from edges relative to the average magnitude") {
+		AVERAGE_VERTEX_MAGNITUDE_OFFSET ("a", Type.REAL, "create vertices from edges relative to the average circumradius") {
 			public EdgeVertexGen build(Object arg) {
-				return new SeedVertexMagnitudeOffset(MetricAggregator.AVERAGE, (arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
+				return new MetricOffset(MetricAggregator.AVERAGE, Metric.VERTEX_MAGNITUDE, (arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
-		MIN_MAGNITUDE_OFFSET ("v", Type.REAL, "create vertices from edges relative to the minimum magnitude") {
+		MIN_VERTEX_MAGNITUDE_OFFSET ("v", Type.REAL, "create vertices from edges relative to the minimum circumradius") {
 			public EdgeVertexGen build(Object arg) {
-				return new SeedVertexMagnitudeOffset(MetricAggregator.MINIMUM, (arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
+				return new MetricOffset(MetricAggregator.MINIMUM, Metric.VERTEX_MAGNITUDE, (arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
-		EDGE_MAGNITUDE_OFFSET ("e", Type.REAL, "create vertices from edges relative to the edge magnitude") {
+		EDGE_MIDPOINT_MAGNITUDE_OFFSET ("e", Type.REAL, "create vertices from edges relative to the midpoint magnitude") {
 			public EdgeVertexGen build(Object arg) {
-				return new EdgeMagnitudeOffset((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
+				return new EdgeMidpointMagnitudeOffset((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
 		},
-		VERTEX_MAGNITUDE_OFFSET ("d", Type.REAL, "create vertices from edges relative to the vertex magnitude") {
+		DEFAULT_VERTEX_MAGNITUDE_OFFSET ("d", Type.REAL, "create vertices from edges relative to the default magnitude") {
 			public EdgeVertexGen build(Object arg) {
 				return new DefaultVertexMagnitudeOffset((arg instanceof Number) ? ((Number)arg).doubleValue() : 0);
 			}
