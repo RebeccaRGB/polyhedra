@@ -10,6 +10,7 @@ import javax.media.j3d.BranchGroup;
 import javax.media.j3d.Canvas3D;
 import javax.media.j3d.DirectionalLight;
 import javax.media.j3d.Group;
+import javax.media.j3d.Material;
 import javax.media.j3d.Node;
 import javax.media.j3d.RotationInterpolator;
 import javax.media.j3d.Transform3D;
@@ -54,6 +55,12 @@ public class ViewerPanel extends JPanel {
 		GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
 		Canvas3D canvas = new Canvas3D(config);
 		add(canvas, BorderLayout.CENTER);
+		
+		Material faceMaterial = new Material();
+		faceMaterial.setAmbientColor(0.0f, 0.0f, 0.0f);
+		faceMaterial.setSpecularColor(0.0f, 0.0f, 0.0f);
+		faceAppearance = new Appearance();
+		faceAppearance.setMaterial(faceMaterial);
 		
 		geometryGroup = new Group();
 		geometryGroup.setCapability(Group.ALLOW_CHILDREN_EXTEND);
@@ -112,11 +119,15 @@ public class ViewerPanel extends JPanel {
 		AmbientLight al = new AmbientLight(new Color3f(1, 1, 1));
 		al.setInfluencingBounds(new BoundingSphere(new Point3d(0, 0, 0), 100));
 		
-		DirectionalLight dl = new DirectionalLight(new Color3f(1, 1, 1), new Vector3f(-1, 0, -1));
-		dl.setInfluencingBounds(new BoundingSphere(new Point3d(0, 0, 0), 100));
+		DirectionalLight dl1 = new DirectionalLight(new Color3f(1, 1, 1), new Vector3f(0, 0, -1));
+		dl1.setInfluencingBounds(new BoundingSphere(new Point3d(0, 0, 0), 100));
+		
+		DirectionalLight dl2 = new DirectionalLight(new Color3f(0.2f, 0.2f, 0.2f), new Vector3f(0, -1, -1));
+		dl2.setInfluencingBounds(new BoundingSphere(new Point3d(0, 0, 0), 100));
 		
 		BranchGroup scene = new BranchGroup();
-		scene.addChild(dl);
+		scene.addChild(dl2);
+		scene.addChild(dl1);
 		scene.addChild(al);
 		scene.addChild(panGroup);
 		scene.compile();

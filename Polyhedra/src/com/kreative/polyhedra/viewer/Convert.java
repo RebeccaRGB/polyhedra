@@ -6,6 +6,7 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -158,16 +159,17 @@ public class Convert {
 		AffineTransform3D elevationNeg = AffineTransform3D.getRotateXInstance(-elevation);
 		
 		// Transform the face to lie on the XY axis and turn it into a 2D path!
+		HashMap<Integer,Point2D.Double> transformedVertices = new HashMap<Integer,Point2D.Double>();
 		HashMap<Point2D.Float,Integer> vertexIndices = new HashMap<Point2D.Float,Integer>();
 		GeneralPath path = null;
 		for (Polyhedron.Vertex v : face.vertices) {
 			Point3D p = v.point.subtract(center);
 			p = azimuthNeg.transform(p);
 			p = elevationPos.transform(p);
-			Point2D.Float q = new Point2D.Float((float)p.getX(), (float)p.getY());
-			vertexIndices.put(q, v.index);
+			transformedVertices.put(v.index, new Point2D.Double(p.getX(), p.getY()));
+			vertexIndices.put(new Point2D.Float((float)p.getX(), (float)p.getY()), v.index);
 			if (path == null) {
-				path = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
+				path = new GeneralPath(GeneralPath.WIND_NON_ZERO);
 				path.moveTo(p.getX(), p.getY());
 			} else {
 				path.lineTo(p.getX(), p.getY());
@@ -193,6 +195,7 @@ public class Convert {
 					if (i == null) {
 						i = vertices.size();
 						vertexIndices.put(p, i);
+						transformedVertices.put(i, new Point2D.Double(coords[0], coords[1]));
 						Point3D q = new Point3D(coords[0], coords[1], 0);
 						q = elevationNeg.transform(q);
 						q = azimuthPos.transform(q);
@@ -201,8 +204,34 @@ public class Convert {
 					currentFace.add(i);
 					break;
 				case PathIterator.SEG_CLOSE:
+					Collections.reverse(currentFace);
+					removeConsecutiveDuplicates(currentFace);
+					// while there are more than three vertices:
+					// find a triangle that lies completely inside the polygon
+					// add the triangle to the list of faces
+					// remove the triangle from the polygon
+					// if no triangle is found, don't look again
+					boolean modified = true;
+					while (modified && currentFace.size() > 3) {
+						modified = false;
+						int j = 0, n = currentFace.size();
+						while (j < n) {
+							int cidx = currentFace.get(j);
+							int nidx = currentFace.get((j + 1) % n);
+							int pidx = currentFace.get((j + n - 1) % n);
+							if (containsLine(area, transformedVertices, currentFace, nidx, pidx)) {
+								faces.add(Arrays.asList(cidx, nidx, pidx));
+								faceColors.add(face.color);
+								currentFace.remove(j);
+								modified = true;
+								n--;
+							} else {
+								j++;
+							}
+						}
+					}
+					// add leftover triangle
 					if (currentFace.size() >= 3) {
-						Collections.reverse(currentFace);
 						faces.add(currentFace);
 						faceColors.add(face.color);
 					}
@@ -213,5 +242,45 @@ public class Convert {
 			}
 			pi.next();
 		}
+	}
+	
+	private static void removeConsecutiveDuplicates(List<?> list) {
+		int i = 0, n = list.size();
+		while (i < n) {
+			if (list.get(i).equals(list.get((i + 1) % n))) {
+				list.remove(i);
+				n--;
+			} else {
+				i++;
+			}
+		}
+	}
+	
+	private static boolean containsLine(Area a, HashMap<Integer,Point2D.Double> v, List<Integer> f, int i0, int i1) {
+		// return true if polygon completely contains a line segment
+		Point2D p0 = v.get(i0);
+		Point2D p1 = v.get(i1);
+		// area must contain a point on the line segment (here the midpoint)
+		if (!a.contains((p0.getX() + p1.getX()) / 2, (p0.getY() + p1.getY()) / 2)) return false;
+		// line must not intersect any edge of the polygon
+		for (int i = 0, n = f.size(); i < n; i++) {
+			Point2D p2 = v.get(f.get(i));
+			Point2D p3 = v.get(f.get((i + 1) % n));
+			if (linesIntersect(p0, p1, p2, p3)) return false;
+		}
+		return true;
+	}
+	
+	private static boolean linesIntersect(Point2D p0, Point2D p1, Point2D p2, Point2D p3) {
+		// return true if two line segments intersect
+		double s1x = p1.getX() - p0.getX();
+		double s1y = p1.getY() - p0.getY();
+		double s2x = p3.getX() - p2.getX();
+		double s2y = p3.getY() - p2.getY();
+		double det = s1x * s2y - s2x * s1y;
+		if (det == 0) return false; // lines are parallel or colinear
+		double t1 = ((p0.getY() - p2.getY()) * s1x - (p0.getX() - p2.getX()) * s1y) / det;
+		double t2 = ((p0.getY() - p2.getY()) * s2x - (p0.getX() - p2.getX()) * s2y) / det;
+		return (t1 > 0 && t1 < 1 && t2 > 0 && t2 < 1);
 	}
 }
